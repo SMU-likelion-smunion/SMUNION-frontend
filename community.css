@@ -1,0 +1,52 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: aliceblue;
+  margin: 0;
+}
+header{
+  background-color: rgb(235, 235, 235);
+  display: flex;
+  align-items: center;padding: 5px 140px;
+}
+.SMU {
+font-weight: bold;
+color: lightslategray;
+margin: 0%;
+
+}
+.lionImg{
+  width: 60px;
+  margin-left: 100px;
+}
+.runningImg{
+  width: 410px;
+  
+}
+.post_title{
+  background-color: white;
+  padding-left: 20px;
+ 
+}
+.main{ 
+  display: flex;
+  justify-content: center;
+}
+.footer{
+  background-color: white;
+  width: 110%;
+  margin-top:25px;
+}
+.navi_btns{
+  display: flex;
+  justify-content:center;
+  width: 100%;
+  gap:10px;
+}
+.navi_btn{
+  padding: 5px 10px;
+  cursor: pointer;
+
+}

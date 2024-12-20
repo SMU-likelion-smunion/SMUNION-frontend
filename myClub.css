@@ -1,0 +1,70 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: aliceblue;
+  margin: 0;
+}
+.header {
+  display: flex;
+  justify-content: center;
+}
+.title {
+  margin-right: 75px;
+  font-weight: bold;
+}
+.buttons {
+  display: flex;
+  margin-left: 75px;
+}
+button {
+  background-color: aliceblue;
+  border: none;
+  color: rgb(0, 0, 143);
+  font-weight: bolder;
+}
+.main {
+  width: 350px;
+  display: flex;
+  justify-content: center;
+}
+.clubs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+  gap: 10px;
+}
+.club {
+  width: 150px;
+  height: 150px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.05);
+  margin: 5px;
+}
+.club_title {
+  background-color: rgb(243, 205, 159);
+  color: white;
+  font-weight: bolder;
+  margin-top: 100px;
+  border-bottom-right-radius: 15px;
+  border-bottom-left-radius: 15px;
+  padding: 15px 17px;
+}
+.footer{
+  background-color: white;
+  width: 110%;
+  margin-top:35px;
+}
+.navi_btns{
+  display: flex;
+  justify-content:center;
+  width: 100%;
+  gap:10px;
+}
+.navi_btn{
+  padding: 5px 10px;
+  cursor: pointer;
+}
