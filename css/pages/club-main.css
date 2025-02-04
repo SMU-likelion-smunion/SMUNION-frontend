@@ -86,12 +86,43 @@ body {
 
 .club-cal-content {
   width: 327px;
-  height: 272px;
   border-radius: 8px;
   background-color: #ffffff;
   font-size: 20px;
   box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
+}
+
+.cal-days {
+  border-top: 1px solid #d9d9d9;
+  padding-top: 2px;
+}
+
+/* 선택 날짜 공지 보기 */
+.view-notice-items {
+  width: 327px;
+  height: 32px;
+  display: flex;
+  background-color: #ffffff;
+  align-items: center;
+  font-size: 13px;
+  padding-left: 13px;
+  border-bottom: 1px solid #d9d9d9;
+  padding-right: 10px;
+  cursor: pointer;
+}
+
+.view-notice-items img:nth-child(2) {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.view-notice-items img:nth-child(4) {
+  margin-left: auto;
+}
+
+.view-notice-items p:nth-child(1) {
+  color: #6a6a70;
 }
 
 .join {
