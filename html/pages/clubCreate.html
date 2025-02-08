@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>clubCreate</title>
   <link rel="stylesheet" href="../../css/pages/clubCreate.css" />
+  <script src="../../js/pages/clubCreate.js"defer></script>
 
 </head>
 
@@ -17,29 +18,25 @@
     <main class="main">
       <div class="post">
         <div class="reviseBtn">
-          <button>취소</button>
+          <button onclick="window.location.href='myClub.html'">취소</button>
           <button>완료</button>
         </div>
 
         <div class="uploadPic">
-          <img src="../../assets/icons/createBtn.png" class="createBtn">
+          <input id="fileInput" required type="file" accept="image/*">
+          <img src="../../assets/icons/createBtn.png" class="createBtn" alt="Upload Button">
         </div>
+
         <div class="content">
           <input type="text" placeholder="동아리명">
           <hr>
           <input type="text" placeholder="설명">
           <hr>
         </div>
-
-
-
-
-      
-        
-
       </div>
     </main>
   </div>
+ 
 </body>
 
 </html>

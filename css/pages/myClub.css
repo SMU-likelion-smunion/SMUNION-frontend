@@ -7,52 +7,63 @@
   width: 375px;
   margin: 0 auto;
   min-height: 100vh;
-  position: relative;
-  background: #F7F7F7;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  align-items:center;
+  background: #F7F7F7;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  justify-content: flex-start;
+  position: relative; /* navbar가 mobile-container 안에 위치하게 설정 */
 }
+
 .header {
   display: flex;
   justify-content: center;
+  align-items: center;
 }
+
 .title {
   margin-right: 75px;
   font-weight: bold;
   margin-top: 10px;
 }
+
 .buttons {
   display: flex;
   margin-left: 75px;
 }
+
 button {
   background-color: aliceblue;
   border: none;
   margin: 10px;
-
   color: rgb(0, 0, 143);
   font-weight: bolder;
 }
-.main {
-  width: 350px;
-  display: flex;
-  justify-content: center;
+button:hover{
+  cursor: pointer;
 }
-.clubs {
+.main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 70px;
   gap: 10px;
 }
+
+.clubs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0; /* 클럽 사이의 간격 제거 */
+
+}
+
 .club_img {
   width: 100%;
   height: 100%;
-  border-radius: 15px; /* 부모 요소와 일치 */
+  border-radius: 15px;
+  
 }
-
 
 .club {
   width: 150px;
@@ -63,10 +74,11 @@ button {
   box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.05);
   margin: 5px;
 }
+
 .club_title {
   position: absolute;
-  width: 100%; /* 부모 요소의 너비에 맞춤 */
-  height: 35px; /* 원하는 높이 설정 */
+  width: 100%;
+  height: 35px;
   bottom: 0;
   background-color: rgb(243, 205, 159);
   color: #ffffff;
@@ -74,8 +86,12 @@ button {
   border-bottom-right-radius: 15px;
   border-bottom-left-radius: 15px;
   text-align: center;
-  line-height: 35px; /* 텍스트가 높이 중앙에 위치하도록 설정 */
-  margin: 0; /* 기본 margin 제거 */
-  padding: 0; /* 기본 padding 제거 */
+  line-height: 35px;
 }
 
+#navbar-container {
+  position: absolute; /* mobile-container 안에 위치 고정 */
+  bottom: 0; /* 하단에 고정 */
+  left: 0; /* 왼쪽 정렬 */
+  width: 100%; /* mobile-container 너비에 맞춤 */
+}

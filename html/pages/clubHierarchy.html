@@ -7,6 +7,19 @@
   <title>clubHierarchy</title>
   <link rel="stylesheet" href="../../css/pages/clubHierarchy.css" />
   <script src="../../js/pages/clubHierarchy.js" defer></script>
+  <script src="../../js/pages/clubHierarchy_server.js"></script>
+  <style>
+    /* deleteBtn 크기 변경 (전체와 userBox 안의 deleteBtn 포함) */
+    .deleteBtn {
+      width: 15px;
+      height: 15px;
+    }
+    /* userBox 안의 deleteBtn도 동일한 크기 */
+    .userBox .deleteBtn {
+      width: 15px;
+      height: 15px;
+    }
+  </style>
 </head>
 
 <body>
@@ -20,109 +33,133 @@
         <p class="backBtn">뒤로가기</p>
         <div>
           <button>초대</button>
-          <button>편집</button>
+          <button id="reviseBtn">편집</button>
         </div>
-
       </div>
 
       <div class="uploadPic">
         <img src="../../assets/images/lion-face.png" class="clubPic">
+        <img src="../../assets/icons/add-btn.svg" class="addBtn">
       </div>
 
       <div class="clubInfo">
         <h3>멋쟁이사자처럼</h3>
-
         <p class="clubMemberNum">총 43명</p>
         <p class="detail">Hello...</p>
       </div>
+
+      <button id="deptAdd" class="deptAdd">부서 추가</button>
+      <div class="NewDept"></div>
+
+      
       <hr>
       <div class="clubDept">
-        <p>기획/디자인</p>
-        <img src="../../assets/icons/vector.png" onclick=deptMemSee(this);>
+        <div class="clubinnerDept">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <p>기획/디자인</p>
+        </div>
+        <img class="vector" src="../../assets/icons/vector.png" onclick="deptMemSee(this);">
       </div>
+
+      <div class="memberInfo" style="display: none; flex-direction: column;">
+        <hr class="bottom">
+        <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <img src="../../assets/images/user_1.png">
+          <p>caesar</p>
+        </div>
+        <hr>
+        <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <img src="../../assets/images/user_2.png">
+          <p>apollo</p>
+        </div>
+        <hr style="margin-left: 10px;">
+        <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <img src="../../assets/images/user_3.png">
+          <p>steve</p>
+        </div>
+        <hr style="margin-left: 10px;">
+        <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <img src="../../assets/images/user_4.png">
+          <p>ocean</p>
+        </div>
+      </div>
+
+      <hr>
+      <div class="clubDept">
+        <div class="clubinnerDept">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <p>프론트앤드</p>
+        </div>
+        <img class="vector" src="../../assets/icons/vector.png" onclick="deptMemSee(this);">
+      </div>
+
       <div class="memberInfo" style="display: none; flex-direction: column;">
         <hr>
         <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
           <img src="../../assets/images/user_1.png">
           <p>caesar</p>
         </div>
         <hr style="margin-left: 30px;">
         <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
           <img src="../../assets/images/user_2.png">
           <p>apollo</p>
         </div>
         <hr style="margin-left: 30px;">
-        <div class="userBox"><img src="../../assets/images/user_3.png">
+        <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <img src="../../assets/images/user_3.png">
           <p>steve</p>
         </div>
         <hr style="margin-left: 30px;">
-        <div class="userBox"><img src="../../assets/images/user_4.png">
+        <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <img src="../../assets/images/user_4.png">
           <p>ocean</p>
         </div>
-
-
-
       </div>
+
       <hr>
       <div class="clubDept">
-        <p>프론트엔드</p>
-        <img src="../../assets/icons/vector.png" onclick=deptMemSee(this);>
+        <div class="clubinnerDept">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <p>벡앤드</p>
+        </div>
+        <img class="vector" src="../../assets/icons/vector.png" onclick="deptMemSee(this);">
       </div>
+
       <div class="memberInfo" style="display: none; flex-direction: column;">
         <hr>
         <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
           <img src="../../assets/images/user_1.png">
           <p>caesar</p>
         </div>
         <hr style="margin-left: 30px;">
         <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
           <img src="../../assets/images/user_2.png">
           <p>apollo</p>
         </div>
         <hr style="margin-left: 30px;">
-        <div class="userBox"><img src="../../assets/images/user_3.png">
+        <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <img src="../../assets/images/user_3.png">
           <p>steve</p>
         </div>
         <hr style="margin-left: 30px;">
-        <div class="userBox"><img src="../../assets/images/user_4.png">
+        <div class="userBox">
+          <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <img src="../../assets/images/user_4.png">
           <p>ocean</p>
         </div>
-
-
-
       </div>
       <hr>
-      <div class="clubDept">
-        <p>벡앤드</p>
-        <img src="../../assets/icons/vector.png" onclick=deptMemSee(this);>
-      </div>
-      <div class="memberInfo" style="display: none; flex-direction: column;">
-        <hr>
-        <div class="userBox">
-          <img src="../../assets/images/user_1.png">
-          <p>caesar</p>
-        </div>
-        <hr style="margin-left: 30px;">
-        <div class="userBox">
-          <img src="../../assets/images/user_2.png">
-          <p>apollo</p>
-        </div>
-        <hr style="margin-left: 30px;">
-        <div class="userBox"><img src="../../assets/images/user_3.png">
-          <p>steve</p>
-        </div>
-        <hr style="margin-left: 30px;">
-        <div class="userBox"><img src="../../assets/images/user_4.png">
-          <p>ocean</p>
-        </div>
-
-
-
-      </div>
-      <hr>
-
-
-
     </main>
   </div>
 </body>

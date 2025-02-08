@@ -120,6 +120,11 @@ tr:first-child td {
 }
 
 .circle,
-.checked_circle {
-  width: 20px;
+.checked_circle{
+  width: 23px;
 }
+.circle,
+.checked_circle::hover {
+  cursor: pointer;
+}
+.add-btn{width: 75px;}

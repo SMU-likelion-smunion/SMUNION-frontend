@@ -52,12 +52,57 @@ button {
   align-items: center;
   width: 170px;
   height: 170px;
-  background-color: rgb(244, 244, 244);
+  background-color:transparent;
   border-radius: 20px;
   margin: 0 auto; /* 수평 중앙 정렬 */
   margin-top: 50px;
+  position: relative; /* 자식 요소의 절대 위치를 위한 relative */
 }
-button{
+.addBtn {
+  position: absolute; /* 절대 위치 */
+  top: 50%; /* 세로 중앙 */
+  left: 50%; /* 가로 중앙 */
+  transform: translate(-50%, -50%); /* 정확히 중앙에 위치시키기 위한 보정 */
+  z-index: 10; /* add-btn이 clubPic 위로 보이게 */
+  width: 80px; height: 80px; 
+  display: none;
+}
+.modal-overlay{
+position: absolute; /* 절대 위치 */
+top: 46%; /* 세로 중앙 */
+left: 50%; /* 가로 중앙 */
+transform: translate(-50%, -50%); /* 정확히 중앙에 위치시키기 위한 보정 */
+z-index: 10; /* add-btn이 clubPic 위로 보이게 */
+width: 200px; height: 90px; 
+background-color:#f7f7f7;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+border-radius: 10px;
+display: flex;
+flex-direction: column;
+align-items: center;
+padding-top: 13px;
+}
+.modal p {
+  margin: 0 ;
+text-align: center;
+color: black;
+}
+.modalBtn{
+display: flex;
+justify-content: space-between;
+padding-top: 15px;
+}
+.cancel-delete{
+  color: black;
+  font-weight: 100;
+  padding-right: 30px;
+}
+.confirm-delete{
+color: red;
+font-weight: 100;
+padding-left: 50px;
+}
+button {
   margin-right: 10px;
 }
 .clubInfo {
@@ -65,7 +110,6 @@ button{
   flex-direction: column;
   align-items: center;
   margin-top: 30px;
-
 }
 .clubMemberNum,
 p {
@@ -75,7 +119,7 @@ p {
 p {
   margin: 8px;
 }
-.detail{
+.detail {
   margin-bottom: 100px;
   margin-right: 160px;
 }
@@ -89,19 +133,40 @@ hr {
   justify-content: space-between;
   align-items: center;
 }
-img{
-  margin-right: 10px;
+.clubinnerDept {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
 }
-img:not(.clubPic):hover,button,.backBtn{
-cursor: pointer;
+.vector ,.starBtn,.checked_starBtn{
+  margin: 5px 10px;
 }
-.memberInfo img{
+
+img:not(.clubPic):hover,
+button,
+.backBtn {
+  cursor: pointer;
+}
+.memberInfo:not(.bottom) {
+  margin-left: 30px;
+}
+hr.bottom {
+  margin-left: 0; /* hr 요소에 따로 스타일 설정 */
+}
+.memberInfo img {
   width: 30px;
   height: 30px;
   margin: 5px;
-  margin-left: 35px;
 }
-.userBox{
+.userBox {
   align-items: center; /* 세로 중앙 정렬 */
   display: flex;
+}
+.deptAdd {
+  background-color: #0e207f;
+  color: white;
+  padding: 6px 18px;
+  margin: 10px;
+  border-radius: 20px;
+  display: none;
 }
