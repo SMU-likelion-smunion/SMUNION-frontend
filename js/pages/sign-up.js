@@ -138,10 +138,10 @@ document.addEventListener("DOMContentLoaded", function () {
       emailError.textContent = "sangmyung.kr 이메일을 사용해주세요.";
       emailError.style.display = "block";
       isValid = false;
-    } else if (!isEmailVerified) {
-      emailError.textContent = "이메일 인증이 필요합니다.";
-      emailError.style.display = "block";
-      isValid = false;
+      // } else if (!isEmailVerified) {
+      //   emailError.textContent = "이메일 인증이 필요합니다.";
+      //   emailError.style.display = "block";
+      //   isValid = false;
     } else {
       emailError.style.display = "none";
     }
@@ -175,7 +175,6 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.log("error", error);
-        alert("인증번호 전송 중 오류가 발생했습니다. 다시 시도해주세요.");
       });
   }
 
@@ -189,10 +188,18 @@ document.addEventListener("DOMContentLoaded", function () {
     var emailError = document.querySelector(".email-error");
 
     // 이메일 및 인증코드 확인
-    if (!email || !verificationCode) {
-      emailError.textContent = "이메일과 인증번호를 입력해주세요.";
+    if (!email) {
+      emailError.textContent = "이메일을 입력해주세요.";
       emailError.style.display = "block";
-      return;
+      isValid = false;
+    } else if (!email.endsWith("@sangmyung.kr")) {
+      emailError.textContent = "sangmyung.kr 이메일을 사용해주세요.";
+      emailError.style.display = "block";
+      isValid = false;
+    } else if (!isEmailVerified) {
+      emailError.textContent = "이메일 인증이 필요합니다.";
+      emailError.style.display = "block";
+      isValid = false;
     } else {
       emailError.style.display = "none";
     }
@@ -226,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         console.log("error", error);
-        alert("인증 중 오류가 발생했습니다. 다시 시도해주세요.");
+        // alert("인증 중 오류가 발생했습니다. 다시 시도해주세요.");
       });
   }
 
