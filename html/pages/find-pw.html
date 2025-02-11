@@ -21,26 +21,16 @@
       </div>
       <div class="find-pw-title">비밀번호 찾기</div>
       <div class="find-pw-form-container">
-        <div class="email-container">
-          <input
-            type="text"
-            class="input-box"
-            id="email"
-            placeholder="이메일"
-          />
-        </div>
-        <div class="verification-container">
-          <input
-            type="text"
-            class="input-box"
-            id="verification-code"
-            placeholder="인증번호 입력"
-          />
-          <div class="error-message email-error"></div>
-
-          <button class="send-btn">인증번호 전송</button>
-        </div>
+        <input type="text" class="input-box" id="email" placeholder="이메일" />
+        <button
+          id="submit-btn"
+          class="submit-btn"
+          onclick="location.href='../../html/pages/find-pw-verify.html'"
+        >
+          인증 번호 전송
+        </button>
       </div>
+      <div class="error-message"></div>
     </div>
   </body>
   <script src="../../js/pages/find-pw.js"></script>

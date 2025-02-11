@@ -12,7 +12,7 @@ body {
   justify-content: flex-start;
 }
 
-.change-pw-container {
+.find-pw-container {
   position: relative;
   width: 375px;
   text-align: center;
@@ -41,7 +41,6 @@ body {
 
 .login-title {
   margin-top: 150px;
-  margin-bottom: 30px;
 }
 
 .subtitle {
@@ -49,11 +48,17 @@ body {
   color: #6a6a70;
 }
 
-.change-pw-form-container {
+.find-pw-title {
+  font-size: 12px;
+  color: #6a6a70;
+}
+
+.find-pw-form-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   padding: 20px;
+  margin-top: 20px;
 }
 
 .input-box {
@@ -61,24 +66,8 @@ body {
   padding: 12px;
   font-size: 14px;
   border: 0.5px solid #ddd;
-  border-radius: 0;
+  border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.06);
-}
-
-#current-pw {
-  padding-left: 20px;
-  border-radius: 8px 8px 0 0; /* 위쪽만 둥글게 */
-  border-bottom: none;
-}
-
-#new-pw {
-  padding-left: 20px;
-}
-
-#new-pw-check {
-  padding-left: 20px;
-  border-top: none;
-  border-radius: 0 0 8px 8px; /* 아래쪽만 둥글게 */
 }
 
 input::placeholder {
