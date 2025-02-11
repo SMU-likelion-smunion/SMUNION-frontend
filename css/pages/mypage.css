@@ -28,13 +28,13 @@ body {
 /* 프로필 섹션 */
 .profile-container {
   text-align: center;
-  margin: 20px 20px 30px 20px;
+  margin: 20px;
 }
 
 .profile-image {
   /* position: relative; */
-  width: 115px;
-  height: 115px;
+  width: 140px;
+  height: 140px;
   margin: 0 auto;
 }
 
@@ -47,10 +47,10 @@ body {
 
 .edit-profile-btn {
   position: absolute;
-  top: 114px;
-  right: 171px;
-  width: 30px;
-  height: 30px;
+  top: 120px;
+  right: 169px;
+  width: 35px;
+  height: 35px;
   background-color: #0e207f;
   color: #fff;
   border: none;
@@ -62,7 +62,7 @@ body {
 .profile-info .profile-name {
   font-size: 27px;
   font-weight: bold;
-  margin: 18px 0 5px 0;
+  margin: 8px 0 5px 0;
 }
 
 .profile-major {
@@ -104,7 +104,6 @@ body {
   font-size: 19px;
   text-align: center;
 }
-
 /* .myclub-indicators {
   display: flex;
   justify-content: center;

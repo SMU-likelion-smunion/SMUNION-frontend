@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>비밀번호 찾기</title>
+    <link rel="stylesheet" href="../../css/pages/find-pw-verify.css" />
+  </head>
+  <body>
+    <div class="find-pw-container">
+      <div class="back-btn-container">
+        <a href="../pages/login.html" class="back-btn"
+          ><img src="../../assets/icons/back-btn.svg" alt=""
+        /></a>
+      </div>
+      <div class="login-title">
+        <h2 class="subtitle">상명대학교 동아리 서비스</h2>
+        <h1 class="title">
+          <img src="../../assets/icons/smunion.svg" alt="" />
+        </h1>
+      </div>
+      <div class="find-pw-form-container">
+        <input
+          type="text"
+          class="input-box"
+          id="email"
+          placeholder="인증 번호"
+        />
+        <button
+          id="submit-btn"
+          class="submit-btn"
+          onclick="location.href='../../html/pages/new-pw.html'"
+        >
+          다음
+        </button>
+      </div>
+      <div class="error-message">*인증번호가 틀렸습니다</div>
+    </div>
+  </body>
+  <script src="../../js/pages/find-pw.js"></script>
+</html>
