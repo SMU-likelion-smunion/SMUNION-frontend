@@ -28,9 +28,9 @@ document.addEventListener("DOMContentLoaded", function () {
   //   document.cookie = `${name}=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;`;
   // }
 
-  // 초기화: 상태 정리 및 로그인 상태 확인
   const accessToken = getCookie("accessToken");
 
+  // 로그인 상태 확인
   if (accessToken) {
     // 이미 로그인된 경우 홈 페이지로 리디렉션
     window.location.href = "/html/pages/home.html";
