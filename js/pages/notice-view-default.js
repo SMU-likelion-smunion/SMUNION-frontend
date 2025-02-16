@@ -1,7 +1,5 @@
-// notice-view-default.js
 const BASE_URL = "https://smunion.shop";
 
-// 쿠키에서 토큰 가져오기
 function getToken() {
   const cookies = document.cookie.split(";");
   for (let cookie of cookies) {
@@ -13,13 +11,11 @@ function getToken() {
   return null;
 }
 
-// URL에서 ID 파라미터 가져오기
 function getNoticeId() {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get("id");
 }
 
-// 날짜 포맷팅
 function formatDate(dateString) {
   const date = new Date(dateString);
   return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(
@@ -28,7 +24,6 @@ function formatDate(dateString) {
   )}.${String(date.getDate()).padStart(2, "0")}`;
 }
 
-// 남은 일수 계산
 function calculateRemainingDays(dateStr) {
   const targetDate = new Date(dateStr);
   const today = new Date();
@@ -37,17 +32,134 @@ function calculateRemainingDays(dateStr) {
   return diffDays > 0 ? `${diffDays}일 남음` : "기한 지남";
 }
 
-// 공지사항 데이터 불러오기
-async function loadNoticeDetail() {
-  const noticeId = getNoticeId();
-  const token = getToken();
-
-  if (!token) {
-    window.location.href = "login.html";
-    return;
-  }
-
+async function displayAdminView(notice) {
   try {
+    const token = getToken();
+    const response = await fetch(
+      `${BASE_URL}/api/v1/notices/basic/${notice.noticeId}/unread`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    const data = await response.json();
+    if (data.isSuccess) {
+      const noticeContent = document.querySelector(".notice-content");
+      noticeContent.innerHTML = `
+        <div class="notice-header">
+          <span class="notice-type">Notice</span>
+          <h1 class="notice-title">${notice.title}</h1>
+          <p class="notice-desc">${notice.content || ""}</p>
+          <div class="notice-info-wrapper">
+            <p class="notice-info">
+              <span class="target">대상: ${notice.target}</span>
+              <span class="date">${formatDate(notice.date)}</span>
+              <span class="tag">${calculateRemainingDays(notice.date)}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="notice-status-section">
+          <div class="status-header">
+            <h3>확인 현황</h3>
+            <p class="status-summary">
+              전체 ${data.result.unreadMembers.length}명 중 
+              ${data.result.unreadMembers.length}명 미확인
+            </p>
+          </div>
+
+          <div class="unread-section">
+            <h4>미확인자 목록</h4>
+            <div class="member-list">
+              ${
+                data.result.unreadMembers.length > 0
+                  ? data.result.unreadMembers
+                      .map(
+                        (member) => `
+                  <div class="member-item">
+                    <span class="member-nickname">${member.nickname}</span>
+                  </div>
+                `
+                      )
+                      .join("")
+                  : '<p class="empty-message">모든 멤버가 확인했습니다.</p>'
+              }
+            </div>
+          </div>
+        </div>
+      `;
+
+      // 추가 스타일
+      const style = document.createElement("style");
+      style.textContent = `
+        .notice-status-section {
+          margin-top: 32px;
+        }
+
+        .status-header {
+          margin-bottom: 24px;
+        }
+
+        .status-header h3 {
+          font-size: 18px;
+          color: #333;
+          margin-bottom: 8px;
+        }
+
+        .status-summary {
+          font-size: 14px;
+          color: #666;
+        }
+
+        .unread-section h4 {
+          font-size: 16px;
+          color: #666;
+          margin-bottom: 12px;
+        }
+
+        .member-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .member-item {
+          padding: 12px 16px;
+          background: #ffffff;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .member-nickname {
+          font-size: 14px;
+          color: #333;
+        }
+
+        .empty-message {
+          color: #999;
+          font-size: 14px;
+          text-align: center;
+          padding: 16px;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("현황을 불러오는데 실패했습니다.");
+  }
+}
+
+async function loadNoticeDetail() {
+  try {
+    const noticeId = getNoticeId();
+    const token = getToken();
+
+    if (!token) {
+      window.location.href = "login.html";
+      return;
+    }
+
     const response = await fetch(
       `${BASE_URL}/api/v1/notices/basic/${noticeId}`,
       {
@@ -59,10 +171,7 @@ async function loadNoticeDetail() {
     );
 
     const data = await response.json();
-
-    if (!data.isSuccess) {
-      throw new Error(data.message);
-    }
+    if (!data.isSuccess) throw new Error(data.message);
 
     displayNoticeDetail(data.result);
     setupEventHandlers(data.result);
@@ -72,18 +181,20 @@ async function loadNoticeDetail() {
   }
 }
 
-// 공지사항 내용 표시
 function displayNoticeDetail(notice) {
   document.querySelector(".notice-title").textContent = notice.title;
-  document.querySelector(".notice-desc").textContent = notice.content;
+  document.querySelector(".notice-desc").textContent = notice.content || "";
   document.querySelector(".target").textContent = `대상: ${notice.target}`;
   document.querySelector(".date").textContent = formatDate(notice.date);
-  document.querySelector(".tag").textContent = calculateRemainingDays(
-    notice.date
-  );
+
+  const remainingTime = calculateRemainingDays(notice.date);
+  const tagElement = document.querySelector(".tag");
+  tagElement.textContent = remainingTime;
+  if (remainingTime === "기한 지남") {
+    tagElement.classList.add("over");
+  }
 }
 
-// 이벤트 핸들러 설정
 function setupEventHandlers(notice) {
   // 뒤로가기 버튼
   document.querySelector(".back-btn").addEventListener("click", () => {
@@ -91,30 +202,12 @@ function setupEventHandlers(notice) {
   });
 
   // 현황 버튼
-  document.querySelector(".status-btn").addEventListener("click", async () => {
-    try {
-      const token = getToken();
-      const response = await fetch(
-        `${BASE_URL}/api/v1/notices/basic/${notice.noticeId}/unread`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await response.json();
-      if (data.isSuccess) {
-        // 현황 정보를 표시하는 모달이나 새 페이지로 이동
-        alert(`미확인 인원: ${data.result.unreadMembers.length}명`);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("현황을 불러오는데 실패했습니다.");
-    }
+  document.querySelector(".status-btn").addEventListener("click", () => {
+    displayAdminView(notice);
   });
 
-  // 확인 완료 버튼
-  document.querySelector(".submit-btn").addEventListener("click", async () => {
+  // 확인 버튼
+  document.querySelector(".submit-btn")?.addEventListener("click", async () => {
     try {
       const token = getToken();
       const response = await fetch(
@@ -123,12 +216,14 @@ function setupEventHandlers(notice) {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
           },
         }
       );
+
       const data = await response.json();
       if (data.isSuccess) {
-        alert("확인 완료되었습니다.");
+        alert("확인 처리되었습니다.");
         window.location.reload();
       }
     } catch (error) {
