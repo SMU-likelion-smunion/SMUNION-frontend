@@ -32,6 +32,172 @@ function calculateRemainingDays(dateStr) {
   return diffDays > 0 ? `${diffDays}일 남음` : "마감됨";
 }
 
+// 관리자용 현황 화면 표시
+async function displayAdminView(vote) {
+  try {
+    const token = getToken();
+
+    // 투표 결과와 미참여자 목록을 동시에 가져오기
+    const [resultsResponse, absenteesResponse] = await Promise.all([
+      fetch(`${BASE_URL}/api/v1/notices/votes/${vote.voteId}/results`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      fetch(`${BASE_URL}/api/v1/notices/votes/${vote.voteId}/absentees`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
+
+    const [resultsData, absenteesData] = await Promise.all([
+      resultsResponse.json(),
+      absenteesResponse.json(),
+    ]);
+
+    if (resultsData.isSuccess && absenteesData.isSuccess) {
+      const noticeContent = document.querySelector(".notice-content");
+      noticeContent.innerHTML = `
+        <div class="notice-header">
+          <span class="notice-type">Vote</span>
+          <h1 class="notice-title">${vote.title}</h1>
+          <p class="notice-desc">${vote.content || ""}</p>
+          <div class="notice-info-wrapper">
+            <p class="notice-info">
+              <span class="target">대상: ${vote.target}</span>
+              <span class="date">${formatDate(vote.createdAt)}</span>
+              <span class="tag">${calculateRemainingDays(vote.date)}</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="vote-section">
+          ${resultsData.result.results
+            .map(
+              (result) => `
+            <div class="vote-option status-view">
+              <div class="vote-result-text">
+                <span class="option-name">${result.optionName}</span>
+                <span class="vote-count">${result.votes}명(${result.percentage}%)</span>
+              </div>
+              <div class="vote-progress-bar">
+                <div class="progress" style="width: ${result.percentage}%"></div>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
+          
+          ${
+            resultsData.result.anonymous
+              ? `
+            <p class="anonymous-notice">
+              <i class="fas fa-lock"></i> 익명 투표입니다
+            </p>
+          `
+              : ""
+          }
+
+          <div class="absentees-section">
+            <h3 class="absentees-title">미참여자 목록</h3>
+            <div class="member-list">
+              ${absenteesData.result.absentees
+                .map(
+                  (member) => `
+                <div class="member-item">
+                  <span class="member-nickname">${member.nickname}</span>
+                </div>
+              `
+                )
+                .join("")}
+            </div>
+          </div>
+        </div>
+      `;
+
+      // 추가 스타일
+      const style = document.createElement("style");
+      style.textContent = `
+        .vote-option.status-view {
+          flex-direction: column;
+          gap: 8px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .vote-result-text {
+          display: flex;
+          justify-content: space-between;
+          width: 100%;
+          z-index: 1;
+        }
+
+        .vote-count {
+          color: #0e207f;
+          font-weight: 500;
+        }
+
+        .vote-progress-bar {
+          position: absolute;
+          left: 0;
+          top: 0;
+          height: 100%;
+          width: 100%;
+          background: transparent;
+        }
+
+        .progress {
+          height: 100%;
+          background-color: rgba(14, 32, 127, 0.1);
+          transition: width 0.3s ease;
+        }
+
+        .anonymous-notice {
+          text-align: right;
+          color: #666;
+          margin-top: 12px;
+          font-size: 12px;
+          padding: 0 20px;
+        }
+
+        .anonymous-notice i {
+          margin-right: 4px;
+        }
+
+        .absentees-section {
+          margin-top: 32px;
+          padding: 0 20px;
+        }
+
+        .absentees-title {
+          font-size: 16px;
+          color: #666;
+          margin-bottom: 16px;
+        }
+
+        .member-list {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+
+        .member-item {
+          padding: 12px 16px;
+          background: #ffffff;
+          border-radius: 8px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .member-nickname {
+          font-size: 14px;
+          color: #333;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("현황을 불러오는데 실패했습니다.");
+  }
+}
+
 async function loadVoteDetail() {
   try {
     const voteId = getVoteId();
@@ -42,13 +208,6 @@ async function loadVoteDetail() {
       return;
     }
 
-    if (!voteId) {
-      alert("잘못된 접근입니다.");
-      window.location.href = "notice-all.html";
-      return;
-    }
-
-    // 경로 수정: voteId -> id
     const response = await fetch(`${BASE_URL}/api/v1/notices/votes/${voteId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -57,23 +216,13 @@ async function loadVoteDetail() {
     });
 
     const data = await response.json();
-    console.log("API Response:", data); // 디버깅용 로그 추가
+    if (!data.isSuccess) throw new Error(data.message);
 
-    if (!data.isSuccess) {
-      throw new Error(data.message);
-    }
-
-    const vote = data.result;
-    displayVoteDetail(vote);
-    setupVoteOptions(vote);
-    setupEventHandlers(vote);
-
-    if (new Date(vote.date) < new Date()) {
-      document.querySelector(".submit-btn").style.display = "none";
-      loadVoteResults(vote.voteId);
-    }
+    displayVoteDetail(data.result);
+    setupVoteOptions(data.result);
+    setupEventHandlers(data.result);
   } catch (error) {
-    console.error("Error loading vote detail:", error); // 더 자세한 에러 로그
+    console.error("Error:", error);
     alert("투표 공지를 불러오는데 실패했습니다.");
   }
 }
@@ -89,6 +238,7 @@ function displayVoteDetail(vote) {
   tagElement.textContent = remainingTime;
   if (remainingTime === "마감됨") {
     tagElement.classList.add("over");
+    document.querySelector(".submit-btn")?.setAttribute("disabled", "true");
   }
 
   const voteTypeText = [];
@@ -99,7 +249,7 @@ function displayVoteDetail(vote) {
 
 function setupVoteOptions(vote) {
   const voteForm = document.querySelector(".vote-form");
-  voteForm.innerHTML = ""; // 기존 옵션 초기화
+  voteForm.innerHTML = "";
 
   vote.options.forEach((option) => {
     const optionDiv = document.createElement("div");
@@ -129,14 +279,14 @@ function setupEventHandlers(vote) {
 
   // 현황 버튼
   document.querySelector(".status-btn").addEventListener("click", () => {
-    loadVoteResults(vote.voteId);
+    displayAdminView(vote);
   });
 
   // 투표하기 버튼
-  document.querySelector(".submit-btn").addEventListener("click", async () => {
-    const selectedOptions = [];
-    const inputs = document.querySelectorAll('input[name="vote"]:checked');
-    inputs.forEach((input) => selectedOptions.push(parseInt(input.value)));
+  document.querySelector(".submit-btn")?.addEventListener("click", async () => {
+    const selectedOptions = [
+      ...document.querySelectorAll('input[name="vote"]:checked'),
+    ].map((input) => parseInt(input.value));
 
     if (selectedOptions.length === 0) {
       alert("투표 항목을 선택해주세요.");
@@ -153,9 +303,7 @@ function setupEventHandlers(vote) {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            voteOptionIds: selectedOptions,
-          }),
+          body: JSON.stringify({ voteOptionIds: selectedOptions }),
         }
       );
 
@@ -163,49 +311,12 @@ function setupEventHandlers(vote) {
       if (data.isSuccess) {
         alert("투표가 완료되었습니다.");
         window.location.reload();
-      } else {
-        throw new Error(data.message);
       }
     } catch (error) {
       console.error("Error:", error);
       alert("투표 처리에 실패했습니다.");
     }
   });
-}
-
-async function loadVoteResults(voteId) {
-  try {
-    const token = getToken();
-    const response = await fetch(
-      `${BASE_URL}/api/v1/notices/votes/${voteId}/results`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const data = await response.json();
-    if (data.isSuccess) {
-      displayVoteResults(data.result);
-    } else {
-      throw new Error(data.message);
-    }
-  } catch (error) {
-    console.error("Error:", error);
-    alert("투표 현황을 불러오는데 실패했습니다.");
-  }
-}
-
-function displayVoteResults(results) {
-  let resultHtml = "<h3>투표 현황</h3>";
-  results.results.forEach((result) => {
-    resultHtml += `
-      <div>
-        <p>${result.optionName}: ${result.votes}표 (${result.percentage}%)</p>
-      </div>
-    `;
-  });
-  alert(resultHtml);
 }
 
 // 페이지 로드 시 실행
