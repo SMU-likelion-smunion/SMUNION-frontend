@@ -1,4 +1,3 @@
-// notice-view-vote.js
 const BASE_URL = "https://smunion.shop";
 
 function getToken() {
@@ -34,15 +33,22 @@ function calculateRemainingDays(dateStr) {
 }
 
 async function loadVoteDetail() {
-  const voteId = getVoteId();
-  const token = getToken();
-
-  if (!token) {
-    window.location.href = "login.html";
-    return;
-  }
-
   try {
+    const voteId = getVoteId();
+    const token = getToken();
+
+    if (!token) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!voteId) {
+      alert("잘못된 접근입니다.");
+      window.location.href = "notice-all.html";
+      return;
+    }
+
+    // 경로 수정: voteId -> id
     const response = await fetch(`${BASE_URL}/api/v1/notices/votes/${voteId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -51,30 +57,40 @@ async function loadVoteDetail() {
     });
 
     const data = await response.json();
+    console.log("API Response:", data); // 디버깅용 로그 추가
 
     if (!data.isSuccess) {
       throw new Error(data.message);
     }
 
-    displayVoteDetail(data.result);
-    setupVoteOptions(data.result);
-    setupEventHandlers(data.result);
+    const vote = data.result;
+    displayVoteDetail(vote);
+    setupVoteOptions(vote);
+    setupEventHandlers(vote);
+
+    if (new Date(vote.date) < new Date()) {
+      document.querySelector(".submit-btn").style.display = "none";
+      loadVoteResults(vote.voteId);
+    }
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error loading vote detail:", error); // 더 자세한 에러 로그
     alert("투표 공지를 불러오는데 실패했습니다.");
   }
 }
 
 function displayVoteDetail(vote) {
   document.querySelector(".notice-title").textContent = vote.title;
-  document.querySelector(".notice-desc").textContent = vote.content;
+  document.querySelector(".notice-desc").textContent = vote.content || "";
   document.querySelector(".target").textContent = `대상: ${vote.target}`;
-  document.querySelector(".date").textContent = formatDate(vote.date);
-  document.querySelector(".tag").textContent = calculateRemainingDays(
-    vote.date
-  );
+  document.querySelector(".date").textContent = formatDate(vote.createdAt);
 
-  // 투표 유형 표시
+  const remainingTime = calculateRemainingDays(vote.date);
+  const tagElement = document.querySelector(".tag");
+  tagElement.textContent = remainingTime;
+  if (remainingTime === "마감됨") {
+    tagElement.classList.add("over");
+  }
+
   const voteTypeText = [];
   if (vote.allowDuplicate) voteTypeText.push("복수 선택");
   if (vote.anonymous) voteTypeText.push("익명 투표");
@@ -85,7 +101,7 @@ function setupVoteOptions(vote) {
   const voteForm = document.querySelector(".vote-form");
   voteForm.innerHTML = ""; // 기존 옵션 초기화
 
-  vote.options.forEach((option, index) => {
+  vote.options.forEach((option) => {
     const optionDiv = document.createElement("div");
     optionDiv.className = "vote-option";
 
@@ -112,25 +128,8 @@ function setupEventHandlers(vote) {
   });
 
   // 현황 버튼
-  document.querySelector(".status-btn").addEventListener("click", async () => {
-    try {
-      const token = getToken();
-      const response = await fetch(
-        `${BASE_URL}/api/v1/notices/votes/${vote.voteId}/results`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const data = await response.json();
-      if (data.isSuccess) {
-        displayVoteResults(data.result);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      alert("투표 현황을 불러오는데 실패했습니다.");
-    }
+  document.querySelector(".status-btn").addEventListener("click", () => {
+    loadVoteResults(vote.voteId);
   });
 
   // 투표하기 버튼
@@ -164,6 +163,8 @@ function setupEventHandlers(vote) {
       if (data.isSuccess) {
         alert("투표가 완료되었습니다.");
         window.location.reload();
+      } else {
+        throw new Error(data.message);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -172,14 +173,37 @@ function setupEventHandlers(vote) {
   });
 }
 
+async function loadVoteResults(voteId) {
+  try {
+    const token = getToken();
+    const response = await fetch(
+      `${BASE_URL}/api/v1/notices/votes/${voteId}/results`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const data = await response.json();
+    if (data.isSuccess) {
+      displayVoteResults(data.result);
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    alert("투표 현황을 불러오는데 실패했습니다.");
+  }
+}
+
 function displayVoteResults(results) {
   let resultHtml = "<h3>투표 현황</h3>";
   results.results.forEach((result) => {
     resultHtml += `
-            <div>
-                <p>${result.optionName}: ${result.votes}표 (${result.percentage}%)</p>
-            </div>
-        `;
+      <div>
+        <p>${result.optionName}: ${result.votes}표 (${result.percentage}%)</p>
+      </div>
+    `;
   });
   alert(resultHtml);
 }
