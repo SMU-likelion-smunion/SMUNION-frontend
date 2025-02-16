@@ -247,14 +247,26 @@ function initializeTabMenu() {
 // 공지사항 필터링
 function filterNoticesByCategory(category) {
   const allNotices = document.querySelectorAll(".notice-item");
+
   allNotices.forEach((notice) => {
-    const noticeCategory = notice
-      .querySelector(".notice-category")
-      .textContent.toLowerCase();
-    if (category === "all" || noticeCategory === category) {
+    const noticeCategory = notice.querySelector(".notice-category").textContent;
+
+    if (category === "all") {
       notice.style.display = "block";
     } else {
-      notice.style.display = "none";
+      // 카테고리 매핑
+      const categoryMap = {
+        vote: "투표",
+        fee: "회비",
+        attendance: "출석",
+      };
+
+      const mappedCategory = categoryMap[category];
+      if (noticeCategory === mappedCategory) {
+        notice.style.display = "block";
+      } else {
+        notice.style.display = "none";
+      }
     }
   });
 }
