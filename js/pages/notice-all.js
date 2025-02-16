@@ -21,6 +21,31 @@ async function fetchNotices() {
       return;
     }
 
+    try {
+      const refreshResponse = await fetch(`${BASE_URL}/api/v1/users/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          refreshToken: getRefreshToken(), // refresh token 가져오기
+        }),
+      });
+
+      if (refreshResponse.ok) {
+        const data = await refreshResponse.json();
+        // 새 토큰 저장
+        document.cookie = `accessToken=${data.result.accessToken}`;
+        // 페이지 새로고침
+        window.location.reload();
+        return;
+      }
+    } catch (error) {
+      console.error("Token refresh failed:", error);
+      window.location.href = "login.html";
+      return;
+    }
+
     // 타입별 호출
     const [basicResponse, voteResponse, feeResponse, attendanceResponse] =
       await Promise.all([
