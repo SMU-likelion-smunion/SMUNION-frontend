@@ -2,13 +2,11 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: sans-serif;
 }
-
 body {
   background-color: #ffffff;
 }
-
 .mobile-container {
   width: 375px;
   margin: 0 auto;
@@ -30,21 +28,12 @@ header {
   margin: 0%;
   padding: 16px;
 }
-.reviseBtn {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: white;
-  width: 375px;
-  padding: 5px;
-  font-weight: bold;
-  font-size: small;
-}
 button {
   background-color: transparent;
   border: none;
   color: rgb(19, 19, 162);
   font-weight: bold;
+  margin: 10px;
 }
 button:hover{
   cursor: pointer;
@@ -70,37 +59,28 @@ button:hover{
 p {
   font-size: 13px;
   color: rgb(94, 94, 94);
+  margin-top: 5px;
 }
-p {
-  margin: 8px;
-}
+.msgContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 140px;
 
-input {
-  border: none;
-  margin: 10px;
-  outline: none;
-  width: 300px;
 }
-input::placeholder {
-  font-size: 13px; /* 원하는 글자 크기 */
-  color: rgb(215, 215, 215); /* 텍스트 색상 */
+.msg{
+  color: rgb(19, 19, 162);
+  font-size: 22px;
+  font-weight: bolder;
+  margin: 0;
 }
-
-.codeAndNickname {
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-  margin: 0 auto; /* 수평 중앙 정렬 */
+.inviteBtn{
+  color: white;
+  background-color: rgb(19, 19, 162);
+  width: 100px;
+  padding: 8px 23px;
   border-radius: 10px;
-  width: 330px;
-  font-size: 14px;
-  margin-top: 100px;
 }
-.search {
-  width: 22px;
-  margin-right: 10px;
+.inviteBtn:hover {
+  background-color: #205688;
 }
-hr {
-  border: none; /* 기존 테두리 제거 */
-  height: 1px; /* 높이 설정 */
-  background-color: #e7e7e7;
-}
-
