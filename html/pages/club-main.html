@@ -12,7 +12,7 @@
     <div class="main-screen">
       <div class="main-container">
         <header class="main-header">
-          <div><img src="/assets/icons/left-sign.svg" /></div>
+          <div class="prev-screen"><img src="/assets/icons/left-sign.svg" /></div>
           <div><img src="/assets/images/lion-face2.png" /></div>
           <div>멋쟁이사자처럼</div>
           <div><img src="/assets/icons/under-sign.svg" /></div>
@@ -20,14 +20,14 @@
         <div class="club-cal">
           <div class="club-cal-top">
             <div>동아리 캘린더</div>
-            <div>전체보기</div>
+            <div id="cal-view-all">전체보기</div>
           </div>
           <div class="club-cal-content">
             <div class="date-set-cal">
               <!-- 캘린더 헤더 -->
-              <div class="cal-top-header">
+              <div class="cal-top-header" id="cal-top-header2">
                 <img src="/assets/icons/cal-left-btn.svg" />
-                <h1>2024년 11월 18일</h1>
+                <h1></h1>
                 <img src="/assets/icons/cal-right-btn.svg" />
               </div>
 
@@ -44,7 +44,7 @@
 
               <!-- 캘린더 날짜 -->
               <div class="cal-dates">
-                <div>
+                <!-- <div>
                   <span>10</span>
                   <div class="todo-list"></div>
                 </div>
@@ -105,7 +105,7 @@
                 <div>
                   <span>23</span>
                   <div class="todo-list"></div>
-                </div>
+                </div> -->
               </div>
 
               <div class="view-notice">
@@ -129,42 +129,42 @@
         <div class="join">
           <div class="join-top">
             <div>참여</div>
-            <div>생성</div>
+            <div class="notice-create-btn">생성</div>
           </div>
           <div class="join-content1">
-            <div class="join-items">
+            <div class="join-items" id="item1">
               <img src="/assets/icons/notice-icon.svg" />
               <p>전체 공지</p>
               <img src="/assets/icons/Forth.svg" />
             </div>
-            <div class="join-items">
+            <div class="join-items" id="item2">
               <img src="/assets/icons/vote-icon.svg" />
               <p>투표</p>
               <img src="/assets/icons/Forth.svg" />
             </div>
-            <div class="join-items">
+            <div class="join-items" id="item3">
               <img src="/assets/icons/pay-icon.svg" />
               <p>회비/정산</p>
               <img src="/assets/icons/Forth.svg" />
             </div>
-            <div class="join-items">
+            <div class="join-items" id="item4">
               <img src="/assets/icons/attend-icon.svg" />
               <p>출석</p>
               <img src="/assets/icons/Forth.svg" />
             </div>
-            <div class="join-items">
+            <div class="join-items" id="item5">
               <img src="/assets/icons/system-icon.svg" />
               <p>동아리 체계</p>
               <img src="/assets/icons/Forth.svg" />
             </div>
           </div>
-          <div class="join-content2">
+          <!-- <div class="join-content2">
             <div class="join-items">
               <img src="/assets/icons/history-icon.svg" />
               <p>활동내역</p>
               <img src="/assets/icons/Forth.svg" />
             </div>
-          </div>
+          </div> -->
         </div>
 
         <div class="gallery">
@@ -207,7 +207,7 @@
           <span class="nav-text">동아리</span>
         </a>
         <!-- 스뮤니온 -->
-        <a href="#" class="nav-item">
+        <a href="/html/pages/community.html" class="nav-item">
           <img src="/assets/icons/smunion-icon.svg" alt="스뮤니온" class="nav-icon" />
           <span class="nav-text">스뮤니온</span>
         </a>
@@ -230,5 +230,6 @@
         }
       });
     </script>
+    <script src="/js/pages/club-main.js"></script>
   </body>
 </html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>동아리/공지생성</title>
+    <link rel="stylesheet" href="/css/components/calendar.css" />
     <link rel="stylesheet" href="/css/pages/club-notice-create.css" />
     <link rel="stylesheet" href="/css/components/navbar.css" />
   </head>
@@ -21,12 +22,13 @@
             <img src="/assets/icons/full-check-circle.svg" />
             <p class="notice-create-factor">날짜 설정</p>
           </div>
+
+          <!-- 캘린더 헤더 -->
           <div class="date-set-cal">
-            <!-- 캘린더 헤더 -->
-            <div class="cal-top">
-              <h1>2024년 11월 18일</h1>
-              <button><</button>
-              <button>></button>
+            <div class="cal-top-header">
+              <img src="/assets/icons/cal-left-btn.svg" />
+              <h1></h1>
+              <img src="/assets/icons/cal-right-btn.svg" />
             </div>
 
             <!-- 캘린더 요일 -->
@@ -41,154 +43,7 @@
             </div>
 
             <!-- 캘린더 날짜 -->
-            <div class="cal-dates">
-              <div>
-                <span>27</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>28</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>29</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>30</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>31</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>1</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>2</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>3</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>4</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>5</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>6</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>7</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>8</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>9</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>10</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>11</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>12</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>13</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>14</span>
-                <div class="todo-list">
-                  <p>To-Do</p>
-                  <p>To-Do</p>
-                  <p>To-Do</p>
-                </div>
-              </div>
-              <div>
-                <span>15</span>
-                <div class="todo-list">
-                  <p>To-Do</p>
-                </div>
-              </div>
-              <div>
-                <span>16</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>17</span>
-                <div class="todo-list"></div>
-              </div>
-              <div class="selected-date">
-                <span>18</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>19</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>20</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>21</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>22</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>23</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>24</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>25</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>26</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>27</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>28</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>29</span>
-                <div class="todo-list"></div>
-              </div>
-              <div>
-                <span>30</span>
-                <div class="todo-list"></div>
-              </div>
-            </div>
+            <div class="cal-dates"></div>
           </div>
         </div>
         <div class="widget-set">
@@ -197,33 +52,32 @@
             <p class="notice-create-factor">참여형 위젯 설정</p>
           </div>
           <div class="widget-type">
-            <div class="slider">
-              <div class="widget-items">
-                <div>
-                  <p>Notice</p>
-                  <p>일반 공지</p>
-                </div>
-              </div>
-              <div class="widget-items">
-                <div>
-                  <p>Attend</p>
-                  <p>출석 체크</p>
-                </div>
-              </div>
-              <div class="widget-items">
-                <div>
-                  <p>Vote</p>
-                  <p>의견 수집</p>
-                </div>
-              </div>
-              <div class="widget-items">
-                <div>
-                  <p>Pay</p>
-                  <p>회비 납부</p>
-                </div>
+            <div class="widget-items" id="wi1">
+              <div>
+                <p>Notice</p>
+                <p>일반 공지</p>
               </div>
             </div>
-            <div class="tap-bar"></div>
+            <div class="widget-items" id="wi2">
+              <div>
+                <p>Attend</p>
+                <p>출석 체크</p>
+              </div>
+            </div>
+          </div>
+          <div class="widget-type">
+            <div class="widget-items" id="wi3">
+              <div>
+                <p>Vote</p>
+                <p>의견 수집</p>
+              </div>
+            </div>
+            <div class="widget-items" id="wi4">
+              <div>
+                <p>Pay</p>
+                <p>회비 납부</p>
+              </div>
+            </div>
           </div>
         </div>
         <div class="send-target">
@@ -260,5 +114,7 @@
         </div>
       </div>
     </div>
+
+    <script src="/js/pages/club-notice-create.js"></script>
   </body>
 </html>
