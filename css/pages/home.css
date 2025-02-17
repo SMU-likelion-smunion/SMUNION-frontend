@@ -51,6 +51,11 @@ body {
   border-radius: 8px;
 }
 
+#home-cal-top img:nth-child(2) {
+  margin-left: auto;
+  margin-right: 18px;
+}
+
 .check-list {
   padding-top: 48px;
   width: 327px;
@@ -75,6 +80,7 @@ body {
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
   cursor: pointer;
+  margin-top: 13px;
 }
 
 .items div {

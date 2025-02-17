@@ -17,8 +17,8 @@
           <div class="home-cal">
             <div class="date-set-cal">
               <!-- 캘린더 헤더 -->
-              <div class="cal-top">
-                <h1>2024년 11월 18일</h1>
+              <div class="cal-top" id="home-cal-top">
+                <h1></h1>
                 <img src="/assets/icons/cal-left-btn.svg" />
                 <img src="/assets/icons/cal-right-btn.svg" />
               </div>
@@ -35,94 +35,13 @@
               </div>
 
               <!-- 캘린더 날짜 -->
-              <div class="cal-dates">
-                <div>
-                  <span>10</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>11</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>12</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>13</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>14</span>
-                  <div class="todo-list">
-                    <p>To-Do</p>
-                    <p>To-Do</p>
-                    <p>To-Do</p>
-                  </div>
-                </div>
-                <div>
-                  <span>15</span>
-                  <div class="todo-list">
-                    <p>To-Do</p>
-                  </div>
-                </div>
-                <div>
-                  <span>16</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>17</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div class="selected-date">
-                  <span>18</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>19</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>20</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>21</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>22</span>
-                  <div class="todo-list"></div>
-                </div>
-                <div>
-                  <span>23</span>
-                  <div class="todo-list"></div>
-                </div>
-              </div>
+              <div class="cal-dates"></div>
             </div>
           </div>
         </div>
 
         <div class="check-list">
           <p class="check-list-header">체크리스트</p>
-          <div class="items">
-            <div class="club-name">멋쟁이사자처럼</div>
-            <div><img class="rec1" src="/assets/icons/rectangle1.svg" /></div>
-            <div>회식비 10000원 납부</div>
-            <div><img src="/assets/icons/Forth.svg" /></div>
-          </div>
-          <div class="items">
-            <div class="club-name">멋쟁이사자처럼</div>
-            <div><img class="rec1" src="/assets/icons/rectangle1.svg" /></div>
-            <div>기획/디자인 부서 스터디</div>
-            <div><img src="/assets/icons/Forth.svg" /></div>
-          </div>
-          <div class="items">
-            <div class="club-name">멋쟁이사자처럼</div>
-            <div><img class="rec1" src="/assets/icons/rectangle1.svg" /></div>
-            <div>교내 해커톤 아이디어 선정</div>
-            <div><img src="/assets/icons/Forth.svg" /></div>
-          </div>
         </div>
       </div>
 
@@ -134,7 +53,7 @@
           <span class="nav-text">홈</span>
         </a>
         <!-- 동아리 -->
-        <a href="#" class="nav-item">
+        <a href="/html/pages/myClub.html" class="nav-item">
           <img src="/assets/icons/club-icon.svg" alt="동아리" class="nav-icon" />
           <span class="nav-text">동아리</span>
         </a>
@@ -161,5 +80,6 @@
         }
       });
     </script>
+    <script src="/js/pages/home.js"></script>
   </body>
 </html>

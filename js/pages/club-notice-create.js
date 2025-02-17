@@ -32,15 +32,27 @@ function deleteCookie(name) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const prevScreen = document.querySelector(".prev-screen");
   //캘린더 헤더 날짜
   const calHeader = document.querySelector(".cal-top-header h1");
   const prevBtn = document.querySelector(".cal-top-header img:first-child");
   const nextBtn = document.querySelector(".cal-top-header img:last-child");
   const calDates = document.querySelector(".cal-dates");
 
+  const prevScreen = document.querySelector(".cancel-btn");
+
   let currentDate = new Date(); //현재 화면의 날짜
   const today = new Date(); //오늘 날짜
+
+  //이전 페이지에서 선택한 날짜 가져오기
+  const savedDate = localStorage.getItem("selectedDate");
+  let defaultDate;
+
+  //저장된 값 or 없으면 오늘 날짜
+  if (savedDate) {
+    defaultDate = new Date(savedDate);
+  } else {
+    defaultDate = today;
+  }
 
   function renderCalendar() {
     calDates.innerHTML = ""; //날짜 초기화
@@ -48,15 +60,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const month = currentDate.getMonth();
     const date = currentDate.getDate();
 
-    calHeader.textContent = `${year}년 ${month + 1}월 ${date}일`; //년 월 일
+    calHeader.textContent = `${year}년 ${month + 1}월 ${today.getDate()}일`; //년 월 일
 
     const firstDay = new Date(year, month, 1).getDay(); //이번 달 첫째날 (요일 계산->시작위치 설정)
     const lastDay = new Date(year, month + 1, 0).getDate(); //이번 달 마지막 날짜 (일수 계산)
     const prevLastDate = new Date(year, month, 0).getDate(); //이전 달 마지막 날짜
 
-    const todayYear = today.getFullYear();
-    const todayMonth = today.getMonth();
-    const todayDate = today.getDate();
+    const savedYear = defaultDate.getFullYear();
+    const savedMonth = defaultDate.getMonth();
+    const savedDay = defaultDate.getDate();
 
     //지난 달 날짜
     for (let i = 0; i < firstDay; i++) {
@@ -75,41 +87,27 @@ document.addEventListener("DOMContentLoaded", () => {
       let spanElement = document.createElement("span");
       spanElement.textContent = i;
 
-      //기본값으로 오늘 날짜 선택됨
-      if (i === todayDate && year === todayYear && month === todayMonth) {
+      //기본값으로 선택됨
+      if (i === savedDay && year === savedYear && month === savedMonth) {
         dateDiv.classList.add("selected-date");
+        calHeader.textContent = `${savedYear}년 ${savedMonth + 1}월 ${savedDay}일`;
       }
 
       dateDiv.appendChild(spanElement);
       calDates.appendChild(dateDiv);
 
-      // //날짜 클릭
-      // dateDiv.addEventListener("click", () => {
-      //   document.querySelectorAll(".selected-date").forEach((item) => {
-      //     item.classList.remove("selected-date");
-      //   });
-      //   dateDiv.classList.add("selected-date");
-      //   calHeader.textContent = `${year}년 ${month + 1}월 ${i}일`;
-      // });
-
-      // 날짜 클릭 이벤트
-      dateDiv.addEventListener("click", function () {
-        // 기존 선택된 날짜의 스타일 제거
+      //날짜 클릭
+      dateDiv.addEventListener("click", () => {
         document.querySelectorAll(".selected-date").forEach((item) => {
           item.classList.remove("selected-date");
         });
-
-        // 현재 클릭한 날짜에 스타일 추가
         dateDiv.classList.add("selected-date");
 
-        // 선택한 날짜 가져오기
+        //선택한 날짜 -> localStorage 저장
         const selectedDate = `${year}-${(month + 1).toString().padStart(2, "0")}-${i.toString().padStart(2, "0")}`;
-
-        // 캘린더 헤더 업데이트
-        calHeader.textContent = `${year}년 ${month + 1}월 ${i}일`;
-
-        // 선택한 날짜를 localStorage에 저장
         localStorage.setItem("selectedDate", selectedDate);
+
+        calHeader.textContent = `${year}년 ${month + 1}월 ${i}일`;
       });
     }
 
@@ -125,30 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         calDates.appendChild(nextBlankDiv);
       }
     }
-
-    //날짜 선택시 localStorage에 저장
-    document.querySelectorAll(".dates").forEach((dateDiv) => {
-      dateDiv.addEventListener("click", function (event) {
-        document.querySelectorAll(".selected-date").forEach((item) => {
-          item.classList.remove("selected-date");
-        });
-
-        dateDiv.classList.add("selected-date");
-
-        // 클릭한 날짜 가져오기 (event.target 사용)
-        const selectedDay = event.target.textContent.trim();
-
-        // 선택한 날짜를 YYYY-MM-DD 형식으로 저장
-        const selectedDate = `${year}-${(month + 1).toString().padStart(2, "0")}-${selectedDay.padStart(2, "0")}`;
-        localStorage.setItem("selectedDate", selectedDate);
-      });
-    });
   }
-
-  //이전 화면으로 이동
-  prevScreen.addEventListener("click", () => {
-    window.history.back();
-  });
 
   //이전 달 클릭 > 이동
   prevBtn.addEventListener("click", () => {
@@ -162,13 +137,49 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCalendar();
   });
 
-  //새로운 공지 추가 클릭
-  const addNotice = document.querySelector(".add-notice-box");
-  if (addNotice) {
-    addNotice.addEventListener("click", () => {
-      location.href = "club-notice-create.html";
-    });
-  }
-
   renderCalendar();
+
+  //-----------------------------------------------------------------------------------
+  //참여형 위젯 설정
+
+  const noticeItem = document.getElementById("wi1"); //일반 공지
+  const attendItem = document.getElementById("wi2"); //출석 체크
+  const voteItem = document.getElementById("wi3"); //의견 수집
+  const payItem = document.getElementById("wi4"); //회비 납부
+
+  //참여형 위젯 설정 > 일반 공지
+  noticeItem.addEventListener("click", function () {
+    const innerDiv = this.querySelector("div");
+    const savedCheck = innerDiv.querySelector(".saved-text");
+
+    if (savedCheck) {
+      //'저장됨' 있는지 확인
+      savedCheck.remove();
+    } else {
+      savedText = document.createElement("p");
+      savedText.textContent = "저장됨";
+      savedText.classList.add("saved-text");
+      innerDiv.appendChild(savedText);
+    }
+  });
+
+  //참여형 위젯 설정 > 출석 체크
+  attendItem.addEventListener("click", () => {
+    window.location.href = "";
+  });
+
+  //참여형 위젯 설정 > 의견 수집
+  voteItem.addEventListener("click", () => {
+    window.location.href = "";
+  });
+
+  //참여형 위젯 설정 > 회비 납부
+  payItem.addEventListener("click", () => {
+    window.location.href = "";
+  });
+
+  //'취소' 버튼 클릭 > 이전 화면
+  prevScreen.addEventListener("click", () => {
+    window.history.back();
+  });
 });
