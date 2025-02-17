@@ -24,13 +24,16 @@ header {
   width: 375px;
   justify-content: center;
 }
-.blank{
+.blank {
   color: rgb(53, 62, 72);
   height: 20px;
   margin: 0%;
   padding: 13px;
 }
-.reviseBtn{
+.headline {
+  font-size: 15px;
+}
+.reviseBtn {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -38,14 +41,16 @@ header {
   width: 375px;
   padding: 5px;
   font-weight: bold;
-  font-size: small ;
 }
-button{
+button {
   background-color: transparent;
   border: none;
   color: rgb(19, 19, 162);
-  font-weight: bold;
-
+  font-weight: bolder;
+  padding: 10px;
+}
+button:hover {
+  cursor: pointer;
 }
 .uploadPic {
   display: flex;
@@ -56,42 +61,45 @@ button{
   background-color: rgb(244, 244, 244);
   border-radius: 20px;
   margin: 0 auto; /* 수평 중앙 정렬 */
-  margin-top: 50px;
+  margin-top: 20px;
 }
-.clubInfo{
+.clubInfo {
   display: flex;
   flex-direction: column;
- align-items: center;
- margin-top: 30px;
+  align-items: center;
+  margin-top: 30px;
 }
-.clubMemberNum,p{
+.clubMemberNum,
+p {
   font-size: 13px;
   color: rgb(94, 94, 94);
 }
-p{
+p {
   margin: 8px;
 }
-.invite{
+.invite {
   display: flex;
   align-items: center;
   margin-left: 40px;
   margin-top: 50px;
-
 }
-table{
+
+table {
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   margin: 0 auto; /* 수평 중앙 정렬 */
   border-collapse: collapse; /* 테두리 중복 제거 */
   border-radius: 10px;
   overflow: hidden; /* 테두리가 둥글게 유지되도록 */
-  width: 300px;
+  width: 320px;
   font-size: 14px;
+
 }
 
 td {
   padding: 7px;
   border: none; /* 모든 셀 테두리 제거 */
-  border-top: 1px solid #ddd; /* 가로줄만 표시 */}
+  border-top: 1px solid #f2f2f2; /* 가로줄만 표시 */
+}
 
 .text {
   text-align: left; /* 텍스트 왼쪽 정렬 */
@@ -104,21 +112,38 @@ tr:first-child td {
 }
 .circle,
 .checked_circle {
-  width: 20px;
+  width: 19px;
+  height: 19px;
 }
-.code {
+.circle:hover,
+.checked_circle:hover {
+  cursor: pointer;
+}
+.codeBox {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   width: 200px;
-  padding: 8px 10px;
+  padding: 2px 10px;
   border-radius: 10px;
-margin-left: 35px;
-color: #0E207F;
+  margin-left: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.codeCreateBtn{
-  background-color: #0E207F;
+.code {
+  color: #0e207f;
+  font-weight: 100;
+}
+.pasteBtn {
+  width: 15px;
+  height: 18px;
+}
+.pasteBtn:hover{
+  cursor: pointer;
+}
+.codeCreateBtn {
+  background-color: #0e207f;
   color: white;
   margin-left: 15px;
-  padding-left: 15px;
-  padding-right: 15px;
+  padding: 10px 16px;
   border-radius: 8px;
 }

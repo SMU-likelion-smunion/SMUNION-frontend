@@ -4,7 +4,6 @@
   box-sizing: border-box;
   font-family: Arial, sans-serif;
 }
-
 body {
   background-color: #ffffff;
 }
@@ -36,7 +35,7 @@ header {
   align-items: center;
   background-color: white;
   width: 375px;
-  padding: 5px;
+  padding: 10px;
   font-weight: bold;
   font-size: small ;
 }
@@ -45,7 +44,9 @@ button{
   border: none;
   color: rgb(19, 19, 162);
   font-weight: bold;
-
+}
+button:hover{
+  cursor: pointer;
 }
 
 .dots{
@@ -89,10 +90,28 @@ hr{
   width: 170px;
   height: 170px;
   background-color: rgb(244, 244, 244);
-  border-radius: 20px;
+  border-radius: 15px;
   margin: 0 auto; /* 수평 중앙 정렬 */
   margin-top: 50px;
+  position: relative;
+  overflow: hidden; /* 이미지가 컨테이너를 넘지 않도록 */
+}
+
+.preview {
+  width: 100%;        /* 컨테이너 너비를 채움 */
+  height: 100%;       /* 컨테이너 높이를 채움 */
+  object-fit: cover;  /* 비율을 유지하며 컨테이너를 채움 */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+input[type="file"] {
+  display: none; /* 파일 선택창 숨기기 */
 }
 .createBtn{
   width: 40px;
+}
+.createBtn:hover{
+  cursor: pointer;
 }

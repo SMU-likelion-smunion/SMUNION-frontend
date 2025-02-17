@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>clubSignUp</title>
+  <link rel="stylesheet" href="../../css/pages/clubWaitApproval.css" />
+</head>
+<body>
+  <div class="mobile-container">
+    <header class="header">
+      <p class="blank"></p>
+    </header>
+    <main class="main">
+      <div class="post">
+          <button onclick="window.location.href='clubCreate.html'">뒤로가기</button>
+        <div class="uploadPic">
+          <img src="../../assets/images/lion-face.png" class="clubPic">
+        </div>
+        <div class="clubInfo">
+          <h3>멋쟁이사자처럼</h3>
+          <p class="clubMemberNum">총 43명</p>
+          <p>동아리의 자세한 설명 설명 설명</p>
+        </div>
+    </main>
+    <div class="msgContainer">
+      <p class="msg">학교의 승인을 받는중입니다.</p>
+      <p class="msg">잠시만 기다려 주세요.</p>
+      <p class="msg"style="display:none">학교 승인을 받았습니다.</p>
+      <button class="inviteBtn"style="display:none"onclick="window.location.href='clubInvite.html'">초대하기</button>
+    </div>
+  </div>
+  <script>
+    setTimeout(function() {
+      const msgs = document.querySelectorAll('.msg');
+      msgs[0].style.display = 'none'; // "학교의 승인을 받는중입니다."
+      msgs[1].style.display = 'none'; // "잠시만 기다려 주세요."
+      
+      const successMsg = document.querySelectorAll('.msg')[2]; 
+      const inviteBtn = document.querySelector('.inviteBtn');
+      
+      successMsg.style.display = 'block';
+      inviteBtn.style.display = 'block';
+    }, 3000); // 10초 후 실행 (10000ms)
+  </script>
+</body>
+
+</html>
