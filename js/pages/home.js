@@ -1,5 +1,5 @@
 const API_SERVER_DOMAIN = "https://smunion.shop";
-//토큰 만료시 getRefreshToken() 호출
+
 let accessToken = getCookie("accessToken");
 
 function getToken() {
@@ -43,37 +43,6 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
-//refreshToken 만료 시
-// function getRefreshToken() {
-//   const refreshToken = getCookie("refreshToken");
-
-//   fetch(API_SERVER_DOMAIN + `/api/v1/users/refresh`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ refreshToken }),
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data.isSuccess) {
-//         console.log("완료");
-
-//         //새 accessToken (2시간 유지)
-//         setCookie("accessToken", data.result.accessToken, 2);
-
-//         //새 refreshToken (7일 유지)
-//         setCookie("refreshToken", data.result.refreshToken, 168);
-
-//         console.log("New AccessToken:", data.result.accessToken);
-//         console.log("New RefreshToken:", data.result.refreshToken);
-
-//         getClubs();
-//       } else {
-//         console.error("만료");
-//       }
-//     })
-//     .catch((error) => console.error("오류 발생:", error));
-// }
-
 document.addEventListener("DOMContentLoaded", () => {
   if (!accessToken) {
     console.warn("AccessToken 없음. 로그인 페이지로 이동.");
@@ -115,6 +84,8 @@ document.addEventListener("DOMContentLoaded", () => {
       let spanElement = document.createElement("span");
       spanElement.textContent = createDate.getDate();
 
+      //캘린더 내 공지
+
       //기본값으로 오늘 날짜 선택됨
       if (
         createDate.getFullYear() === today.getFullYear() &&
@@ -129,6 +100,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       //날짜 클릭
       dateDiv.addEventListener("click", () => {
+        const prevSelectedDate = localStorage.getItem("selectedDate");
+        const newSelectedDate = `${createDate.getFullYear()}-${String(createDate.getMonth() + 1).padStart(2, "0")}-${String(createDate.getDate()).padStart(2, "0")}`;
+
+        if (prevSelectedDate === newSelectedDate) {
+          console.log("같은 날짜 클릭 - 공지 새로 불러오지 않음");
+          return;
+        }
+
         document.querySelectorAll(".selected-date").forEach((item) => {
           item.classList.remove("selected-date");
         });
@@ -160,8 +139,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   renderCalendar();
-  getClubs();
 });
+
+//-------------------------------------------------------------------------------------------
+//캘린더 공지
+
+//-------------------------------------------------------------------------------------------
+//체크리스트 공지
 
 function getClubs() {
   let accessToken = getToken();
@@ -175,12 +159,6 @@ function getClubs() {
     },
   })
     .then((response) => {
-      // if (response.status === 401) {
-      //   console.warn("AccessToken 만료");
-      //   window.location.href = "/login.html"; // 로그인 페이지로 리디렉션
-      //   return;
-      //   //return getRefreshToken().then(() => getClubs());
-      // }
       return response.json();
     })
     .then((data) => {
@@ -225,7 +203,6 @@ function selectClubAndClubDetail(clubId, index = 0) {
 //특정 동아리 세션에 저장
 function selectClub(memberClubId) {
   let accessToken = getCookie("accessToken");
-  //console.log("selectClub 부분: ", accessToken);
   console.log(memberClubId);
 
   return fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${memberClubId}`, {
@@ -286,10 +263,11 @@ function getClubDetail() {
           userDepartment,
           selectedDate
         );
+
         console.log("filtered notices: ", filteredNotices);
 
         //체크리스트에 추가
-        displayCheckList(filteredNotices);
+        displayCheckList(filteredNotices, data.result.name);
 
         return data;
       } else {
@@ -299,7 +277,7 @@ function getClubDetail() {
     .catch((error) => console.error("Error club detail:", error));
 }
 
-function displayCheckList(notices) {
+function displayCheckList(notices, clubName) {
   console.log("공지 업데이트 중 배열", notices);
 
   const checkListHeader = document.querySelector(".check-list-header");
@@ -308,7 +286,7 @@ function displayCheckList(notices) {
     const itemDiv = document.createElement("div");
     itemDiv.classList.add("items");
     itemDiv.innerHTML = `
-      <div class="club-name">${notice.clubName}</div>
+      <div class="club-name">${clubName}</div>
       <div><img class="rec1" src="/assets/icons/rectangle1.svg" /></div>
       <div>${notice.title}</div>
       <div><img src="/assets/icons/Forth.svg" /></div>
