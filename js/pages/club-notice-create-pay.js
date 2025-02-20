@@ -126,10 +126,10 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.addEventListener("click", () => {
       const payData = getPayData();
       if (payData) {
-        
+        // 로컬 스토리지에 데이터 저장
         localStorage.setItem("payData", JSON.stringify(payData));
         
-        // 미리 저장된 제목과 설명도 함께 저장
+        // 공지 데이터 구성
         const noticeData = {
           type: "pay",
           title: localStorage.getItem("noticeTitle") || "",

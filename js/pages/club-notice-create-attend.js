@@ -203,6 +203,21 @@ document.addEventListener("DOMContentLoaded", () => {
     // 저장 버튼
     submitBtn.addEventListener("click", () => {
       if (saveTimeData()) {
+        // 공지 데이터 구성
+        const attendData = JSON.parse(localStorage.getItem("attendData") || "{}");
+        const noticeData = {
+          type: "attendance",
+          title: localStorage.getItem("noticeTitle") || "",
+          description: localStorage.getItem("noticeDescription") || "",
+          targetDepartments: localStorage.getItem("targetDepartments") 
+            ? JSON.parse(localStorage.getItem("targetDepartments")) 
+            : ["전체"],
+          attendData: attendData,
+          date: attendData.time
+        };
+        
+        localStorage.setItem("noticeData", JSON.stringify(noticeData));
+        
         alert("출석 시간이 저장되었습니다.");
         window.history.back();
       }
