@@ -1,5 +1,16 @@
 const API_SERVER_DOMAIN = "https://smunion.shop";
-const accessToken = getCookie("accessToken");
+let accessToken = getCookie("accessToken");
+
+function getToken() {
+  const cookies = document.cookie.split(";");
+  for (let cookie of cookies) {
+    const [name, value] = cookie.trim().split("=");
+    if (name === "accessToken") {
+      return value;
+    }
+  }
+  return null;
+}
 
 /* 쿠키 관련 함수들 */
 function setCookie(name, value, days) {
@@ -31,7 +42,48 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
+function getClubId() {
+  fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs/selected`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log("data", data);
+
+      if (data.isSuccess) {
+        console.log("get memberClubId 완료");
+        const currentClubId = data.result.memberClubId;
+        localStorage.setItem("currentClubId", currentClubId);
+        console.log(currentClubId);
+      } else {
+        throw new Error("memberClubId 가져오기 실패");
+      }
+    })
+    .catch((error) => {
+      console.error("Error", error);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  let accessToken = getToken();
+  const storedClubId = localStorage.getItem("currentClubId");
+  localStorage.setItem("storedClubId", storedClubId);
+  localStorage.removeItem("storedclubId");
+  getClubId();
+  const currentClubId = localStorage.getItem("currentClubId");
+
+  if (currentClubId !== storedClubId) {
+    //localStorage.setItem("currentClubId", currentClubId);
+    localStorage.setItem("selectedDepartments", JSON.stringify([]));
+  }
+
+  const selectedDepartments = JSON.parse(localStorage.getItem("selectedDepartments")) || [];
+
   //캘린더 헤더 날짜
   const calHeader = document.querySelector(".cal-top-header h1");
   const prevBtn = document.querySelector(".cal-top-header img:first-child");
@@ -182,4 +234,105 @@ document.addEventListener("DOMContentLoaded", () => {
   prevScreen.addEventListener("click", () => {
     window.history.back();
   });
+
+  //-----------------------------------------------------------------------------------
+  //전달 대상
+  const targetType = document.querySelector(".target-type");
+  // const selectedDepartments = JSON.parse(localStorage.getItem("selectedDepartments")) || [];
+
+  fetch(API_SERVER_DOMAIN + `/api/v1/department/getAll`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log("target data", data);
+
+      if (data.isSuccess) {
+        const departments = data.result.departmentDTOS;
+
+        departments.forEach((department) => {
+          const targetItemDiv = document.createElement("div");
+          targetItemDiv.classList.add("target-type-items");
+
+          const departmentName = document.createElement("p");
+          departmentName.textContent = department.name;
+          targetItemDiv.appendChild(departmentName);
+
+          const circleImg = document.createElement("img");
+
+          //저장된 선택 상태 가져오기
+          if (selectedDepartments.includes(department.name)) {
+            circleImg.src = "/assets/icons/checked-target.svg";
+            circleImg.dataset.checked = "true";
+          } else {
+            circleImg.src = "/assets/icons/empty-circle.svg";
+            circleImg.dataset.checked = "false";
+          }
+
+          targetItemDiv.appendChild(circleImg);
+
+          // circleImg.src = "/assets/icons/empty-circle.svg";
+          // circleImg.dataset.checked = "false"; //체크 상태
+          // targetItemDiv.appendChild(circleImg);
+
+          //부서 클릭했을 때
+          targetItemDiv.addEventListener("click", () => {
+            let selectedDepartments = JSON.parse(localStorage.getItem("selectedDepartments")) || [];
+            if (circleImg.dataset.checked === "false") {
+              circleImg.src = "/assets/icons/checked-target.svg";
+              circleImg.dataset.checked = "true";
+              selectedDepartments.push(department.name); //추가
+            } else {
+              circleImg.src = "/assets/icons/empty-circle.svg";
+              circleImg.dataset.checked = "false";
+              const index = selectedDepartments.indexOf(department.name);
+              if (index > -1) selectedDepartments.splice(index, 1); //제거
+            }
+
+            localStorage.setItem("selectedDepartments", JSON.stringify(selectedDepartments));
+          });
+
+          targetType.appendChild(targetItemDiv);
+
+          const itemHr = document.createElement("hr");
+          targetType.appendChild(itemHr);
+        });
+
+        //'모두 선택' 클릭
+        const selectAll = document.querySelector(".all-select");
+
+        selectAll.addEventListener("click", () => {
+          const allDepartments = document.querySelectorAll(".target-type-items img");
+          const isAllSelected = [...allDepartments].every((img) => img.dataset.checked === "true");
+
+          if (isAllSelected) {
+            //해제
+            allDepartments.forEach((img) => {
+              img.src = "/assets/icons/empty-circle.svg";
+              img.dataset.checked = "false";
+            });
+            localStorage.setItem("selectedDepartments", JSON.stringify([]));
+          } else {
+            //모두 선택
+            const selectedNames = [];
+            allDepartments.forEach((img) => {
+              img.src = "/assets/icons/checked-target.svg";
+              img.dataset.checked = "true";
+              selectedNames.push(img.parentNode.querySelector("p").textContent);
+            });
+            localStorage.setItem("selectedDepartments", JSON.stringify(selectedNames));
+          }
+        });
+      } else {
+        throw new Error("가입된 동아리 목록 조회 실패");
+      }
+    })
+    .catch((error) => {
+      console.error("Error", error);
+    });
 });
