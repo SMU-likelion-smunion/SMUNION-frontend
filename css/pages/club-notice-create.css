@@ -121,7 +121,7 @@ body {
 }
 
 /* 캘린더 */
-.cal-top {
+/* .cal-top {
   display: flex;
   height: 40px;
   padding: 10px;
@@ -134,7 +134,7 @@ body {
 
 .cal-top button:nth-child(2) {
   margin-left: 140px;
-}
+} */
 
 .cal-days {
   display: grid;
@@ -151,6 +151,7 @@ body {
   display: grid;
   text-align: center;
   grid-template-columns: repeat(7, 1fr);
+  cursor: pointer;
 }
 
 .cal-dates span {
@@ -193,39 +194,57 @@ body {
 
 .widget-set {
   margin-bottom: 25px;
+  margin: 10px 24px 10px 24px;
 }
 
 .widget-type {
   width: 100%;
-  overflow-x: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.slider {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
 .widget-items {
   display: flex;
-  height: 160px;
-  width: 160px;
+  height: 148px;
+  width: 148px;
   text-align: center;
   font-weight: 400;
   font-size: 14px;
   color: #ffffff;
-  background-color: #0e207f;
-  margin: 0px 8px 0px 8px;
   border-radius: 10px;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .widget-items p:nth-child(1) {
   font-weight: 700;
   font-size: 34px;
+}
+
+#wi1 {
+  background: linear-gradient(270deg, #f4d47c 0%, #f9c139 100%);
+}
+
+#wi2 {
+  background: linear-gradient(270deg, #72d6be 0%, #58f6c3 100%);
+}
+
+#wi3 {
+  background: linear-gradient(270deg, #1838e1 0%, #0f2289 100%);
+}
+
+#wi4 {
+  background: linear-gradient(270deg, #85618e 0%, #bb4aad 100%);
+}
+
+.saved-text {
+  color: #ffffff;
+  opacity: 0.5;
 }
 
 /* 전달 대상 */

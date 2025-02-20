@@ -199,6 +199,17 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
+  //동아리 프로필 변경
+
+  // 동아리 프로필 변경 모달 변수
+  const ChangeClubModal = document.querySelector(".club-change-container");
+  const ChangeClubModalTriggers = document.querySelector(".club-change");
+
+  // 동아리 프로필 변경 모달 열기
+  ChangeClubModalTriggers.addEventListener("click", () => {
+    ChangeClubModal.style.display = "flex";
+  });
+
   // 로그아웃
 
   // 클라이언트 상태 초기화 함수
@@ -265,7 +276,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 동아리 탈퇴 요청
 
-  // 동아리 탈퇴 요청 모달  변수
+  // 동아리 탈퇴 요청 모달 변수
   const leaveClubModal = document.querySelector(".leave-club-modal-container");
   const leaveClubModalTriggers = document.querySelector(".leave-club-request");
   const leaveClubModalCancelBtn = document.querySelector(
