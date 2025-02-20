@@ -207,6 +207,7 @@ function createNoticeElement(notice) {
   return div;
 }
 
+
 function handleNoticeClick(notice) {
   // 각 카테고리별 상세 페이지로 이동
   switch (notice.category) {
