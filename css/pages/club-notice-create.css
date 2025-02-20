@@ -136,15 +136,15 @@ body {
   margin-left: 140px;
 } */
 
+.date-set-cal {
+  border-radius: 5px;
+}
+
 .cal-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
   font-size: 10px;
-}
-
-.cal-days {
-  border-bottom: 1px solid #d9d9d9;
 }
 
 .cal-dates {
@@ -263,7 +263,6 @@ body {
 }
 
 .target-type {
-  height: 123px;
   background-color: #ffffff;
   box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.08);
   border-radius: 8px;
