@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>동아리/공지생성/위젯(출석체크)</title>
+    <link rel="stylesheet" href="/css/pages/club-notice-create-attend.css" />
+    <script
+      src="https://kit.fontawesome.com/9125fcc41c.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="notice-create-screen">
+      <div class="notice-create-container">
+        <div class="attend-container">
+          <div class="attend-header">
+            <button id="cancel-btn">취소</button>
+            <h2>Attend</h2>
+            <button id="submit-btn">저장</button>
+          </div>
+
+          <div class="time-picker-container">
+            <div class="time-picker">
+              <div class="time-section hour-section">
+                <input type="number" id="hour-input" min="1" max="12" placeholder="00" />
+                <span class="time-label">시</span>
+              </div>
+              
+              <div class="time-section minute-section">
+                <input type="number" id="minute-input" min="0" max="59" placeholder="00" />
+                <span class="time-label">분</span>
+              </div>
+            </div>
+            
+            <div class="am-pm-selector">
+              <div class="am-pm-option" id="am-option">
+                <div class="am-pm-circle"></div>
+                <p>오전</p>
+              </div>
+              <div class="am-pm-option" id="pm-option">
+                <div class="am-pm-circle"></div>
+                <p>오후</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/pages/club-notice-create-attend.js"></script>
+  </body>
+</html>

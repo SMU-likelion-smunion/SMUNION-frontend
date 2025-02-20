@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>동아리/공지생성/위젯(회비)</title>
+    <link rel="stylesheet" href="/css/pages/club-notice-create-pay.css" />
+    <script
+      src="https://kit.fontawesome.com/9125fcc41c.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="notice-create-screen">
+      <div class="notice-create-container">
+        <div class="pay-container">
+          <div class="pay-header">
+            <button id="cancel-btn">취소</button>
+            <h2>Pay</h2>
+            <button id="submit-btn">저장</button>
+          </div>
+
+          <div class="pay-input-container">
+            <!-- 금액 입력 필드 -->
+            <div class="pay-input-field">
+              <input type="number" id="amount-input" placeholder="금액을 입력해주세요." />
+            </div>
+
+            <!-- 은행명 & 계좌번호 입력 필드 -->
+            <div class="pay-input-field bank-info">
+              <input type="text" id="bank-name-input" placeholder="은행명" />
+              <div class="separator"></div>
+              <input type="text" id="account-number-input" placeholder="계좌번호를 입력해주세요." />
+            </div>
+          </div>
+
+          <!-- 인원 선택 섹션 -->
+          <div class="people-counter-section" id="people-counter-section">
+            <div class="people-counter-label">인원</div>
+            <div class="people-counter">
+              <button id="decrease-btn" class="counter-btn">
+                <i class="fa-solid fa-minus"></i>
+              </button>
+              <span id="people-count">1</span>
+              <button id="increase-btn" class="counter-btn">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- 체크박스 옵션 -->
+          <div class="pay-options">
+            <div class="pay-option" id="auto-member-count">
+              <div class="pay-option-circle"></div>
+              <p>전달 대상에 맞게 인원 설정</p>
+            </div>
+            <div class="pay-option" id="exclude-writer">
+              <div class="pay-option-circle"></div>
+              <p>작성자 제외하기</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/pages/club-notice-create-pay.js"></script>
+  </body>
+</html>
