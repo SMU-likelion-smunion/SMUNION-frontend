@@ -143,10 +143,10 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.addEventListener("click", () => {
       const voteData = getVoteData();
       if (voteData) {
-
+        // 로컬 스토리지에 데이터 저장
         localStorage.setItem("voteData", JSON.stringify(voteData));
         
-
+        // 공지 데이터 구성
         const noticeData = {
           type: "vote",
           title: localStorage.getItem("noticeTitle") || "",
