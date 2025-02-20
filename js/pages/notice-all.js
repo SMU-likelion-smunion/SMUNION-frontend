@@ -207,7 +207,7 @@ function createNoticeElement(notice) {
   return div;
 }
 
-// 공지사항 클릭 핸들러
+
 // 공지사항 클릭 핸들러
 function handleNoticeClick(notice) {
   // 각 카테고리별 상세 페이지로 이동
