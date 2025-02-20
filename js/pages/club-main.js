@@ -203,7 +203,7 @@ document.addEventListener("DOMContentLoaded", () => {
       for (let i = 0; i < allNotices.length; i++) {
         const notice = allNotices[i];
 
-        // 공지 날짜와 부서 체크
+        //날짜 & 부서 필터링
         const noticeDate = new Date(notice.date);
         const isSameDate =
           createDate.getFullYear() === noticeDate.getFullYear() &&
@@ -211,16 +211,26 @@ document.addEventListener("DOMContentLoaded", () => {
           createDate.getDate() === noticeDate.getDate();
         const isTargetMatching = notice.target === "전체" || notice.target === userDepartment;
 
-        // 조건에 맞으면 공지 추가
+        //필터링 후 공지 추가
         if (isSameDate && isTargetMatching && count < 3) {
           const todoItem = document.createElement("p");
-          todoItem.textContent = notice.title; // 공지의 title을 표시
+          todoItem.textContent = notice.title;
           noticeList.appendChild(todoItem);
-          count++; // 추가된 공지 개수 증가
+          count++;
         }
 
-        // 만약 3개 공지가 추가되면 더 이상 추가하지 않음
+        //공지 최대 3개
         if (count >= 3) break;
+      }
+
+      if (
+        createDate.getFullYear() === today.getFullYear() &&
+        createDate.getMonth() === today.getMonth() &&
+        createDate.getDate() === today.getDate()
+      ) {
+        dateDiv.classList.add("selected-date");
+        const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+        localStorage.setItem("selectedDate", formattedDate);
       }
 
       dateDiv.appendChild(noticeList);
@@ -270,18 +280,10 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCalendar(allNotices);
   });
 
-  //캘린더 '>' 버튼 클릭
-  // nextBtn.addEventListener("click", () => {
-  //   currentDate.setDate(currentDate.getDate() + 14);
-  //   renderCalendar(allNotices);
-  // });
-
-  //test
+  // 캘린더 '>' 버튼 클릭
   nextBtn.addEventListener("click", () => {
     currentDate.setDate(currentDate.getDate() + 14);
-    getClubDetail().then((notices) => {
-      renderCalendar(allNotices);
-    });
+    renderCalendar(allNotices);
   });
 
   renderCalendar(allNotices);
