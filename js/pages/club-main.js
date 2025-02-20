@@ -209,7 +209,10 @@ document.addEventListener("DOMContentLoaded", () => {
           createDate.getFullYear() === noticeDate.getFullYear() &&
           createDate.getMonth() === noticeDate.getMonth() &&
           createDate.getDate() === noticeDate.getDate();
-        const isTargetMatching = notice.target === "전체" || notice.target === userDepartment;
+
+        const targetDepartments = notice.target.split(",").map((target) => target.trim());
+        const isTargetMatching =
+          targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
 
         //필터링 후 공지 추가
         if (isSameDate && isTargetMatching && count < 3) {

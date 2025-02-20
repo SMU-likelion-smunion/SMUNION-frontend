@@ -353,8 +353,14 @@ function filterNoticeByDepartmentAndDate(clubNotice, departmentName, selectedDat
   ];
 
   return allNotices.filter((notice) => {
-    const checkDepartment = notice.target === "전체" || notice.target === departmentName;
-    console.log(`부서 비교: ${notice.target} === ${departmentName} -> ${checkDepartment}`);
+    const targetDepartments = notice.target.split(",").map((dept) => dept.trim());
+    console.log("타겟부서: ", targetDepartments);
+
+    const checkDepartment =
+      targetDepartments.includes("전체") || targetDepartments.includes(departmentName);
+    console.log(
+      `부서 비교: ${notice.target} === ${targetDepartments}, 포함 여부: ${checkDepartment}`
+    );
 
     const checkDate = selectedDate ? isSameDate(notice.date, selectedDate) : true;
     console.log(`날짜 비교: ${notice.date} === ${selectedDate} -> ${checkDate}`);
