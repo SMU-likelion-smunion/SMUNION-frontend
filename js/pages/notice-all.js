@@ -207,8 +207,6 @@ function createNoticeElement(notice) {
   return div;
 }
 
-// 공지사항 클릭 핸들러
-// 공지사항 클릭 핸들러
 function handleNoticeClick(notice) {
   // 각 카테고리별 상세 페이지로 이동
   switch (notice.category) {
@@ -242,6 +240,17 @@ function initializeTabMenu() {
       filterNoticesByCategory(category);
     });
   });
+}
+
+
+// 공지 생성 버튼 연결
+function initializeFloatingButton() {
+  const floatingBtn = document.querySelector(".floating-btn");
+  if (floatingBtn) {
+    floatingBtn.addEventListener("click", () => {
+      window.location.href = "../../html/pages/club-notice-create.html";
+    });
+  }
 }
 
 // 공지사항 필터링
@@ -280,4 +289,5 @@ document.querySelector(".back-btn").addEventListener("click", () => {
 document.addEventListener("DOMContentLoaded", () => {
   initializeTabMenu();
   fetchNotices();
+  initializeFloatingButton();
 });
