@@ -13,7 +13,7 @@
       <div class="full-cal-container">
         <!-- 헤더 -->
         <div class="full-cal-header">
-          <div><img src="/assets/icons/left-sign.svg" /></div>
+          <div class="prev-screen"><img src="/assets/icons/left-sign.svg" /></div>
           <div>캘린더</div>
           <div><img src="/assets/images/lion-face2.png" /></div>
           <div><img src="/assets/icons/under-sign.svg" /></div>
@@ -21,7 +21,7 @@
 
         <!-- 캘린더 -->
         <div class="full-cal-main">
-          <div class="date-set-cal">
+          <div class="date-set-cal" id="date-set-cal2">
             <!-- 캘린더 헤더 -->
             <div class="cal-top-header">
               <img src="/assets/icons/cal-left-btn.svg" />
@@ -54,8 +54,10 @@
             </div>
           </div>
           <div class="add-notice">
-            <img src="/assets/icons/add-btn2.svg" />
-            <p>새로운 공지 추가</p>
+            <div class="add-notice-box">
+              <img src="/assets/icons/add-btn2.svg" />
+              <p>새로운 공지 추가</p>
+            </div>
           </div>
           <div class="view-notice">
             <div class="view-notice-items">
@@ -81,7 +83,7 @@
             <span class="nav-text">홈</span>
           </a>
           <!-- 동아리 -->
-          <a href="/html/pages/club-main.html" class="nav-item">
+          <a href="/html/pages/myClub.html" class="nav-item">
             <img src="/assets/icons/club-icon.svg" alt="동아리" class="nav-icon" />
             <span class="nav-text">동아리</span>
           </a>
@@ -99,6 +101,5 @@
       </div>
     </div>
     <script src="/js/pages/club-full-calendar.js"></script>
-    <script src="/js/components/calendar.js"></script>
   </body>
 </html>

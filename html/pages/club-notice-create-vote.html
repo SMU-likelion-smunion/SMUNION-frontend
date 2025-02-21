@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>동아리/공지생성/위젯(투표)</title>
+    <link rel="stylesheet" href="/css/components/calendar.css" />
+    <link rel="stylesheet" href="/css/pages/club-notice-create-vote.css" />
+    <link rel="stylesheet" href="/css/components/navbar.css" />
+    <script
+      src="https://kit.fontawesome.com/9125fcc41c.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <div class="notice-create-screen">
+      <div class="notice-create-container">
+        <div class="vote-container">
+          <div class="vote-header">
+            <button id="cancel-btn">취소</button>
+            <h2>Vote</h2>
+            <button id="submit-btn">저장</button>
+          </div>
+
+          <div class="vote-items" id="vote-items">
+
+            <div class="vote-item">
+              <input type="text" placeholder="항목을 입력해주세요." />
+              <button class="remove-btn"><i class="fa-solid fa-minus"></i></button>
+            </div>
+            <div class="vote-item">
+              <input type="text" placeholder="항목을 입력해주세요." />
+              <button class="remove-btn">
+                <i class="fa-solid fa-minus"></i>
+              </button>
+            </div>
+          </div>
+
+          <button class="add-item-btn" id="add-item-btn">
+            <i class="fa-solid fa-plus"></i>투표 항목 추가
+          </button>
+
+          <div class="vote-options">
+            <div class="vote-option" id="multiple-choice">
+              <div class="vote-option-circle"></div>
+              <p>중복 선택</p>
+            </div>
+            <div class="vote-option" id="anonymous-vote">
+              <div class="vote-option-circle"></div>
+              <p>익명 투표</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/pages/club-notice-create-vote.js"></script>
+  </body>
+</html>
