@@ -89,10 +89,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (accessToken.startsWith("Bearer ")) {
           accessToken = accessToken.substring(7); // "Bearer " 이후의 문자열 추출
         }
-
+        // console.log(accessToken);
         // 쿠키에 저장
         setCookie("accessToken", accessToken, 1);
         setCookie("refreshToken", refreshToken, 1);
+        // alert(accessToken);
+
         window.location.replace("home.html");
       })
       .catch((error) => {
