@@ -29,52 +29,21 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  // 사용자 정보를 가져오는 함수
-  function UserInfo() {
-    var requestOptions = {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      redirect: "follow",
-    };
+  // ========== DOM 요소 선택 ==========
+  const clubModal = document.querySelector(".club-change-container");
+  const clubList = document.querySelector(".club-change-wrap");
+  const myClubCard = document.querySelector(".myclub-card");
+  const clubNickname = document.querySelector(".club-nickname");
+  const changeClubBtn = document.querySelector(".club-change");
+  const leaveClubBtn = document.querySelector(".leave-club-request");
+  const leaveClubModal = document.querySelector(".leave-club-modal-container");
+  const leaveClubConfirmBtn = document.querySelector(
+    ".leave-club-modal-request"
+  );
+  const leaveClubCancelBtn = document.querySelector(".leave-club-modal-cancel");
 
-    fetch(API_SERVER_DOMAIN + "/api/v1/users", requestOptions)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.isSuccess && data.result) {
-          // 응답이 성공적이고 result가 존재할 경우
-          const userData = data.result; // result 내부 데이터 저장
-
-          const nameElement = document.querySelector(".profile-name");
-          if (nameElement) {
-            nameElement.textContent = userData.name || "이름없음";
-          }
-
-          const majorElement = document.querySelector(".profile-major");
-          if (majorElement) {
-            majorElement.textContent = userData.major || "전공없음";
-          }
-
-          const snoElement = document.querySelector(".profile-sno");
-          if (snoElement) {
-            snoElement.textContent = userData.studentNumber || "학번없음";
-          }
-        } else {
-          console.log("유효한 사용자 정보가 없습니다.");
-        }
-      })
-      .catch((error) => console.log("error", error));
-  }
-
-  UserInfo();
-
-  // 프로필 사진 변경 함수
-
+  // 프로필 이미지 관련
   const profileImage = document.querySelector(".profile-img");
-
-  // 프로필 사진 변경 모달  변수
   const editProfileModal = document.querySelector(
     ".edit-profile-modal-container"
   );
@@ -85,6 +54,295 @@ document.addEventListener("DOMContentLoaded", function () {
   const editProfileModalDefaultBtn = document.querySelector(
     ".edit-profile-modal-default"
   );
+
+  // 계정 탈퇴 모달 관련
+  const deleteAccountModal = document.querySelector(
+    ".delete-account-modal-container"
+  );
+  const deleteAccountModalTriggers = document.querySelector(".delete-account");
+  const deleteAccountModalCancelBtn = document.querySelector(
+    ".delete-account-modal-cancel"
+  );
+  const deleteAccountModalRequestBtn = document.querySelector(
+    ".delete-account-modal-request"
+  );
+
+  // ========== 사용자 정보 ==========
+
+  // 사용자 정보를 가져오는 함수
+  function UserInfo() {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      redirect: "follow",
+    };
+
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.isSuccess && data.result) {
+          const userData = data.result;
+          const nameElement = document.querySelector(".profile-name");
+          if (nameElement) {
+            nameElement.textContent = userData.name || "이름없음";
+          }
+          const majorElement = document.querySelector(".profile-major");
+          if (majorElement) {
+            majorElement.textContent = userData.major || "전공없음";
+          }
+          const snoElement = document.querySelector(".profile-sno");
+          if (snoElement) {
+            snoElement.textContent = userData.studentNumber || "학번없음";
+          }
+          // 가입된 동아리가 없으면 clubNickname에 사용자 이름을 설정
+          if (
+            clubNickname &&
+            (!clubNickname.textContent ||
+              clubNickname.textContent === "Unknown")
+          ) {
+            clubNickname.textContent = userData.name || "사용자";
+          }
+        } else {
+          console.log("유효한 사용자 정보가 없습니다.");
+        }
+      })
+      .catch((error) => console.log("error", error));
+  }
+
+  // ========== 동아리 관련 함수 ==========
+
+  // 마이페이지 UI 업데이트
+  function updateMyPageProfile(club) {
+    // 동아리명 업데이트
+    if (myClubCard) {
+      myClubCard.textContent = club.clubName;
+    }
+    // 닉네임 업데이트
+    if (clubNickname) {
+      // club.nickname이 없으면 기존 값 유지 (UserInfo()에서 사용자 이름이 들어갈 수 있음)
+      if (club.nickname) {
+        clubNickname.textContent = club.nickname;
+      }
+    }
+  }
+
+  // 동아리 리스트 모달에 표시
+  function displayClubs(clubs) {
+    clubList.innerHTML = "";
+    if (clubs.length === 0) {
+      clubModal.style.display = "none";
+      return;
+    }
+    // 동아리 목록이 있으면 모달 열기
+    clubModal.style.display = "block";
+
+    clubs.forEach((club) => {
+      const clubItem = document.createElement("div");
+      clubItem.className = "club";
+      clubItem.dataset.clubId = club.memberClubId;
+
+      const clubImage = document.createElement("img");
+      // clubImage.src = club.imageUrl || "기본_이미지_URL";
+      clubImage.className = "club_img";
+
+      const clubName = document.createElement("p");
+      clubName.textContent = club.clubName;
+      clubName.className = "club-name";
+
+      clubItem.appendChild(clubImage);
+      clubItem.appendChild(clubName);
+
+      clubItem.addEventListener("click", () => selectClubProfile(club));
+      clubList.appendChild(clubItem);
+    });
+  }
+
+  // 가입된 동아리 목록 가져오기
+  function fetchUserClubs() {
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.isSuccess && Array.isArray(data.result)) {
+          if (data.result.length === 0) {
+            // 가입된 동아리가 없는 경우
+            if (myClubCard) {
+              myClubCard.textContent = "가입된 동아리가 없습니다";
+            }
+            clubModal.style.display = "none";
+          } else {
+            displayClubs(data.result);
+          }
+        } else {
+          console.error("Failed to load clubs:", data.message);
+        }
+      })
+      .catch((error) => console.error("Error fetching clubs:", error));
+  }
+
+  // 현재 선택된 동아리 가져오기
+  function fetchSelectedClub() {
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/selected`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.isSuccess && data.result) {
+          // 선택된 동아리가 있을 때
+          updateMyPageProfile(data.result);
+        } else {
+          // 선택된 동아리가 없으면 가입된 동아리 목록 확인
+          fetchUserClubs();
+        }
+      })
+      .catch((error) => console.error("Error fetching selected club:", error));
+  }
+
+  // 동아리 선택 후 서버 저장
+  function selectClubProfile(club) {
+    const formData = new URLSearchParams();
+    formData.append("memberClubId", club.memberClubId);
+
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: formData.toString(),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          console.error(`HTTP Error: ${response.status}`);
+          return response.text().then((text) => {
+            console.error("서버 응답 본문:", text);
+          });
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data && data.isSuccess) {
+          clubModal.style.display = "none";
+          updateMyPageProfile(club);
+        } else {
+          console.error(
+            "Failed to select club profile:",
+            data?.message || "No message"
+          );
+        }
+      })
+      .catch((error) => console.error("Error selecting club profile:", error));
+  }
+
+  // ========== 초기 실행 ==========
+  // 1) 사용자 정보 먼저 로드
+  UserInfo();
+  // 2) 동아리 정보 로드
+  fetchSelectedClub();
+
+  // ========== 이벤트 바인딩 ==========
+
+  // 동아리 프로필 변경 버튼
+  if (changeClubBtn) {
+    changeClubBtn.addEventListener("click", function () {
+      // 가입된 동아리가 없으면 모달 열지 않음
+      if (myClubCard && myClubCard.textContent === "가입된 동아리가 없습니다") {
+        return;
+      }
+      // 동아리 목록을 다시 가져와 모달 표시
+      fetchUserClubs();
+    });
+  }
+
+  // 동아리 모달 바깥 클릭 시 닫기
+  if (clubModal) {
+    clubModal.addEventListener("click", function (event) {
+      if (event.target === clubModal) {
+        clubModal.style.display = "none";
+      }
+    });
+  }
+
+  // 동아리 탈퇴 요청 버튼
+  if (leaveClubBtn) {
+    leaveClubBtn.addEventListener("click", function () {
+      // 가입된 동아리가 없으면 모달 열지 않음
+      if (
+        !myClubCard ||
+        myClubCard.textContent === "가입된 동아리가 없습니다"
+      ) {
+        return;
+      }
+      // 동아리가 있을 경우에만 탈퇴 모달 열기
+      leaveClubModal.style.display = "flex";
+    });
+  }
+
+  // 동아리 탈퇴 모달 내부 버튼
+  if (leaveClubConfirmBtn) {
+    leaveClubConfirmBtn.addEventListener("click", function () {
+      fetch(`${API_SERVER_DOMAIN}/api/v1/club/withdrawal`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (!response.ok) {
+            console.error(`HTTP Error: ${response.status}`);
+            return response.text().then((text) => {
+              console.error("서버 응답 본문:", text);
+              alert("동아리 탈퇴에 실패했습니다.");
+            });
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data && data.isSuccess) {
+            alert("동아리 탈퇴가 완료되었습니다.");
+            // 탈퇴 모달 닫기
+            leaveClubModal.style.display = "none";
+            fetchUserClubs();
+          } else {
+            console.error("탈퇴 실패:", data?.message || "No message");
+            alert("동아리 탈퇴에 실패했습니다.");
+          }
+        })
+        .catch((error) => {
+          console.error("Error during club withdrawal:", error);
+          alert("동아리 탈퇴 중 오류가 발생했습니다.");
+        });
+    });
+  }
+
+  if (leaveClubCancelBtn) {
+    leaveClubCancelBtn.addEventListener("click", function () {
+      leaveClubModal.style.display = "none";
+    });
+  }
+
+  if (leaveClubModal) {
+    leaveClubModal.addEventListener("click", function (event) {
+      if (event.target === leaveClubModal) {
+        leaveClubModal.style.display = "none";
+      }
+    });
+  }
+
+  // ========== 프로필 사진 변경 관련 ==========
 
   // 프로필 사진 변경 모달 열기
   editProfileModalTriggers.addEventListener("click", () => {
@@ -103,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 2. 서버에서 사용자 프로필 이미지 가져오기
   function fetchUserProfileImage() {
-    fetch(API_SERVER_DOMAIN + "/api/v1/users/profile-image", {
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users/profile-image`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -130,7 +388,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const formData = new FormData();
     formData.append("image", file);
 
-    fetch(API_SERVER_DOMAIN + "/api/v1/users/profile-image", {
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users/profile-image`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -169,11 +427,9 @@ document.addEventListener("DOMContentLoaded", function () {
     editProfileModal.style.display = "none";
   });
 
-  // 5. 프로필 사진 삭제 (기본 이미지 적용)
-
   // 기본 이미지 적용 버튼 클릭 이벤트
   editProfileModalDefaultBtn.addEventListener("click", function () {
-    fetch(API_SERVER_DOMAIN + "/api/v1/users/profile-image", {
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users/profile-image`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -184,10 +440,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (result.isSuccess) {
           // 로컬스토리지에서 프로필 이미지 제거
           localStorage.removeItem("profileImage");
-
           // 기본 프로필 이미지 적용
           profileImage.src = "../../assets/images/default-profile-image.png";
-
           // 모달 닫기
           editProfileModal.style.display = "none";
         } else {
@@ -199,20 +453,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 
-  //동아리 프로필 변경
+  // ========== 로그아웃 ==========
 
-  // 동아리 프로필 변경 모달 변수
-  const ChangeClubModal = document.querySelector(".club-change-container");
-  const ChangeClubModalTriggers = document.querySelector(".club-change");
-
-  // 동아리 프로필 변경 모달 열기
-  ChangeClubModalTriggers.addEventListener("click", () => {
-    ChangeClubModal.style.display = "flex";
-  });
-
-  // 로그아웃
-
-  // 클라이언트 상태 초기화 함수
   function clearClientState() {
     deleteCookie("accessToken");
     sessionStorage.removeItem("isLogin");
@@ -220,13 +462,11 @@ document.addEventListener("DOMContentLoaded", function () {
     sessionStorage.clear();
   }
 
-  // 로그아웃 함수
   function logout(event) {
     event.preventDefault();
     clearClientState();
 
     var logoutBtn = document.querySelector(".logout a");
-
     const accessToken = getCookie("accessToken");
     if (!accessToken) {
       window.location.replace("/html/pages/login.html");
@@ -241,7 +481,7 @@ document.addEventListener("DOMContentLoaded", function () {
       },
     };
 
-    fetch(API_SERVER_DOMAIN + "/api/v1/users/logout", requestOptions)
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users/logout`, requestOptions)
       .then((response) => {
         if (!response.ok) {
           if (response.status === 401 || response.status === 403) {
@@ -271,49 +511,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // 로그아웃 버튼에 이벤트 리스너 추가
   document.querySelector(".logout a").addEventListener("click", logout);
 
-  // 동아리 탈퇴 요청
-
-  // 동아리 탈퇴 요청 모달 변수
-  const leaveClubModal = document.querySelector(".leave-club-modal-container");
-  const leaveClubModalTriggers = document.querySelector(".leave-club-request");
-  const leaveClubModalCancelBtn = document.querySelector(
-    ".leave-club-modal-cancel"
-  );
-  const leaveClubModalRequestBtn = document.querySelector(
-    ".leave-club-modal-request"
-  );
-
-  // 동아리 탈퇴 요청 모달 열기
-  leaveClubModalTriggers.addEventListener("click", () => {
-    leaveClubModal.style.display = "flex";
-  });
-
-  // 동아리 탈퇴 요청 모달 닫기
-  leaveClubModalCancelBtn.addEventListener("click", () => {
-    leaveClubModal.style.display = "none";
-  });
-
-  // //동아리 탈퇴 처리
-  // leaveClubModalRequestBtn.addEventListener("click", () => {
-  //   leaveClub();
-  // });
-
-  //계정 탈퇴
-
-  // 계정 탈퇴 모달 관련 변수
-  const deleteAccountModal = document.querySelector(
-    ".delete-account-modal-container"
-  );
-  const deleteAccountModalTriggers = document.querySelector(".delete-account");
-  const deleteAccountModalCancelBtn = document.querySelector(
-    ".delete-account-modal-cancel"
-  );
-  const deleteAccountModalRequestBtn = document.querySelector(
-    ".delete-account-modal-request"
-  );
+  // ========== 계정 탈퇴 ==========
 
   // 계정 탈퇴 모달 열기
   deleteAccountModalTriggers.addEventListener("click", () => {
@@ -325,22 +525,15 @@ document.addEventListener("DOMContentLoaded", function () {
     deleteAccountModal.style.display = "none";
   });
 
-  //계정 탈퇴 처리
+  // 계정 탈퇴 처리
   deleteAccountModalRequestBtn.addEventListener("click", () => {
     deleteAccount();
   });
 
-  // 계정 탈퇴 API 호출
-
-  // var data = JSON.stringify({
-  //   email,
-  //   password,
-  // });
-
   function deleteAccount(email, password) {
     const data = JSON.stringify({ email, password });
 
-    var requestOptions = {
+    const requestOptions = {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -350,7 +543,7 @@ document.addEventListener("DOMContentLoaded", function () {
       redirect: "follow",
     };
 
-    fetch(API_SERVER_DOMAIN + "/api/v1/users/delete", requestOptions)
+    fetch(`${API_SERVER_DOMAIN}/api/v1/users/delete`, requestOptions)
       .then((response) => {
         if (response.status === 200) {
           // 성공적으로 삭제되었지만 내용이 없는 경우
