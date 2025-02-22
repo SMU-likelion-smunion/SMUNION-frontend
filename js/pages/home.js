@@ -81,13 +81,30 @@ document.addEventListener("DOMContentLoaded", () => {
       let createDate = new Date(firstDay);
       createDate.setDate(firstDay.getDate() + i);
 
+      let dateStr = `${createDate.getFullYear()}-${String(createDate.getMonth() + 1).padStart(2, "0")}-${String(createDate.getDate()).padStart(2, "0")}`;
+
       let dateDiv = document.createElement("div");
       dateDiv.classList.add("dates");
 
       let spanElement = document.createElement("span");
       spanElement.textContent = createDate.getDate();
 
-      //캘린더 내 공지
+      // 공지 리스트 추가
+      let todoListDiv = document.createElement("div");
+      todoListDiv.classList.add("todo-list");
+
+      console.log("96", noticesByDate);
+
+      if (noticesByDate[dateStr]) {
+        noticesByDate[dateStr].forEach((title) => {
+          let pElement = document.createElement("p");
+          pElement.textContent = title;
+          todoListDiv.appendChild(pElement);
+        });
+      }
+      dateDiv.appendChild(spanElement);
+      dateDiv.appendChild(todoListDiv);
+      calDates.appendChild(dateDiv);
 
       //기본값으로 오늘 날짜 선택됨
       if (
@@ -97,9 +114,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ) {
         dateDiv.classList.add("selected-date");
       }
-
-      dateDiv.appendChild(spanElement);
-      calDates.appendChild(dateDiv);
 
       //날짜 클릭
       dateDiv.addEventListener("click", () => {
@@ -237,6 +251,8 @@ function selectClub(memberClubId) {
     });
 }
 
+const noticesByDate = {};
+
 //동아리 상세 정보 조회
 function getClubDetail(memberClubId) {
   let accessToken = getCookie("accessToken");
@@ -268,6 +284,16 @@ function getClubDetail(memberClubId) {
         );
         console.log("filtered notices: ", filteredNotices);
 
+        filteredNotices.forEach((notice) => {
+          const noticeDate = notice.date; // 공지 날짜 (YYYY-MM-DD)
+          if (!noticesByDate[noticeDate]) {
+            noticesByDate[noticeDate] = [];
+          }
+          noticesByDate[noticeDate].push(notice.title);
+        });
+
+        console.log("날짜별 공지 데이터 ", noticesByDate);
+
         //체크리스트에 추가
         displayCheckList(filteredNotices, data.result.name, memberClubId);
 
@@ -279,6 +305,7 @@ function getClubDetail(memberClubId) {
     .catch((error) => console.error("Error club detail:", error));
 }
 
+//상세공지로 이동
 function moveToNoticeDetail(notice, memberClubId) {
   console.log("이동할 공지:", notice);
   console.log("선택해야 할 동아리 memberClubId:", memberClubId);

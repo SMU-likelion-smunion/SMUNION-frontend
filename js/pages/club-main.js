@@ -71,10 +71,8 @@ function getDepartmentName() {
     });
 }
 
+//공지 가져오기
 function getClubDetail() {
-  // let accessToken = getCookie("accessToken");
-  //console.log("getClubDetail 부분: ", accessToken);
-
   return fetch(API_SERVER_DOMAIN + `/api/v1/club/detail`, {
     method: "GET",
     headers: {
@@ -107,38 +105,6 @@ function getClubDetail() {
     .catch((error) => console.error("Error club detail:", error));
 }
 
-// function filterNoticeByDepartmentAndDate(clubNotice, departmentName, selectedDate) {
-//   console.log("target: ", departmentName);
-//   console.log("date: ", selectedDate);
-
-//   const {
-//     basicNoticeDetailResponseList = [],
-//     attendanceDetailResponseList = [],
-//     feeNoticeResponseList = [],
-//     voteResponseList = [],
-//   } = clubNotice;
-
-//   //모든 공지 -> 배열
-//   // const allNotices = [
-//   //   ...basicNoticeDetailResponseList,
-//   //   ...attendanceDetailResponseList,
-//   //   ...feeNoticeResponseList,
-//   //   ...voteResponseList,
-//   // ];
-
-//   return allNotices.filter((notice) => {
-//     const checkDepartment = notice.target === "전체" || notice.target === departmentName;
-//     console.log(`부서 비교: ${notice.target} === ${departmentName} -> ${checkDepartment}`);
-
-//     const checkDate = selectedDate ? isSameDate(notice.date, selectedDate) : true;
-//     console.log(`날짜 비교: ${notice.date} === ${selectedDate} -> ${checkDate}`);
-
-//     console.log("최종 필터링", checkDepartment && checkDate);
-
-//     return checkDepartment && checkDate;
-//   });
-// }
-
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
   console.log(accessToken);
@@ -149,9 +115,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
   getClubDetail().then((notices) => {
     allNotices = notices || [];
-    console.log("line 152", allNotices);
+    console.log("line 150", allNotices);
     renderCalendar(allNotices);
+
+    const today = new Date();
+    const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+    //localStorage.setItem("selectedDate", todayFormatted);
+
+    updateViewNotice(allNotices, todayFormatted);
   });
+
+  function updateViewNotice(allNotices, selectedDate) {
+    const userDepartment = localStorage.getItem("departmentName");
+    const viewNotice = document.querySelector(".view-notice");
+    viewNotice.innerHTML = ""; // 기존 공지 초기화
+
+    let noticesHTML = "";
+    let count = 0;
+
+    allNotices.forEach((notice) => {
+      const noticeDate = new Date(notice.date);
+      const noticeFormatted = `${noticeDate.getFullYear()}-${String(noticeDate.getMonth() + 1).padStart(2, "0")}-${String(noticeDate.getDate()).padStart(2, "0")}`;
+
+      const targetDepartments = notice.target.split(",").map((target) => target.trim());
+      const isTargetMatching =
+        targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
+
+      if (noticeFormatted === selectedDate && isTargetMatching && count < 2) {
+        noticesHTML += `
+          <div class="view-notice-items">
+            <p>${notice.target}</p>
+            <img src="/assets/icons/rectangle1.svg" />
+            <p>${notice.title}</p>
+            <img src="/assets/icons/Forth.svg" />
+          </div>
+        `;
+        count++;
+      }
+    });
+    viewNotice.innerHTML = noticesHTML;
+  }
 
   const prevScreen = document.querySelector(".prev-screen");
 
@@ -194,7 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
       dateDiv.classList.add("dates");
       dateDiv.appendChild(spanElement);
 
-      /// 공지 추가
+      // 공지 추가
       const noticeList = document.createElement("div");
       noticeList.classList.add("todo-list");
 
@@ -256,6 +259,42 @@ document.addEventListener("DOMContentLoaded", () => {
         dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
           p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
         });
+
+        //캘린더 아래 공지 추가
+        const viewNotice = document.querySelector(".view-notice");
+        viewNotice.innerHTML = ""; // 기존 공지 초기화
+
+        let noticesHTML = "";
+        let count = 0;
+        console.log("allNotices", allNotices);
+
+        for (let i = 0; i < allNotices.length; i++) {
+          const notice = allNotices[i];
+          const noticeDate = new Date(notice.date);
+
+          const isSameDate =
+            createDate.getFullYear() === noticeDate.getFullYear() &&
+            createDate.getMonth() === noticeDate.getMonth() &&
+            createDate.getDate() === noticeDate.getDate();
+
+          const targetDepartments = notice.target.split(",").map((target) => target.trim());
+          const isTargetMatching =
+            targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
+
+          if (isSameDate && isTargetMatching && count < 2) {
+            noticesHTML += `
+                <div class="view-notice-items">
+                  <p>${notice.target}</p>
+                  <img src="/assets/icons/rectangle1.svg" />
+                  <p>${notice.title}</p>
+                  <img src="/assets/icons/Forth.svg" />
+                </div>
+              `;
+            count++;
+          }
+          if (count >= 2) break; // 최대 2개까지만 추가
+        }
+        viewNotice.innerHTML = noticesHTML;
       });
 
       //기본값으로 오늘 날짜 선택됨
@@ -290,6 +329,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   renderCalendar(allNotices);
+  // 페이지 로드 시 오늘 날짜의 공지를 자동으로 표시
+  const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const todayElement = [...document.querySelectorAll(".dates")].find((dateDiv) => {
+    return dateDiv.classList.contains("selected-date");
+  });
+
+  if (todayElement) {
+    localStorage.setItem("selectedDate", todayFormatted);
+    todayElement.click(); // 오늘 날짜를 자동으로 클릭하여 공지를 표시
+  }
 
   //'전체보기' 클릭
   document.getElementById("cal-view-all").addEventListener("click", function () {
