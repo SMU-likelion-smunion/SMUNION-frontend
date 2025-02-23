@@ -11,6 +11,14 @@ document.addEventListener("DOMContentLoaded", () => {
     let isMultipleChoice = false;
     let isAnonymousVote = false;
     
+    localStorage.removeItem("noticeData");
+    localStorage.removeItem("voteData");
+    localStorage.removeItem("payData");
+    localStorage.removeItem("attendData");
+    localStorage.removeItem("noticeTitle");
+    localStorage.removeItem("noticeDescription");
+
+
     // 초기 상태 설정
     const initFromLocalStorage = () => {
       // 기존 저장값 불러오기
