@@ -10,12 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isPM = false;
 
-    localStorage.removeItem("noticeData");
-    localStorage.removeItem("voteData");
-    localStorage.removeItem("payData");
-    localStorage.removeItem("attendData");
-    localStorage.removeItem("noticeTitle");
-    localStorage.removeItem("noticeDescription");
+    
     
 
     const initFromLocalStorage = () => {

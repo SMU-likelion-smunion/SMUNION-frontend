@@ -16,12 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let isAutoMemberCount = false;
     let isExcludeWriter = false;
 
-    localStorage.removeItem("noticeData");
-    localStorage.removeItem("voteData");
-    localStorage.removeItem("payData");
-    localStorage.removeItem("attendData");
-    localStorage.removeItem("noticeTitle");
-    localStorage.removeItem("noticeDescription");
+    
   
     // 초기 상태 설정
     const initFromLocalStorage = () => {
