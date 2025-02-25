@@ -553,11 +553,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  //<관리자 권한> '생성' 클릭
+  //[관리자 권한] 참여 > '생성' 클릭
   const noticeCreate = document.querySelector(".notice-create-btn");
   if (noticeCreate) {
     noticeCreate.addEventListener("click", () => {
       location.href = "club-notice-create.html";
+    });
+  }
+
+  //[관리자 권한] 갤러리 > '참여' 클릭
+  const galleryCreate = document.querySelector(".gallery-create-btn");
+  if (galleryCreate) {
+    galleryCreate.addEventListener("click", () => {
+      location.href = "gallery-create.html";
     });
   }
 
