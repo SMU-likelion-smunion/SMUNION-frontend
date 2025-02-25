@@ -460,6 +460,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((data) => {
         //console.log("공지 등록 성공:", data);
         alert("공지 등록이 완료되었습니다!");
+        window.history.back();
       })
       .catch((error) => {
         console.error("공지 등록 실패:", error);
