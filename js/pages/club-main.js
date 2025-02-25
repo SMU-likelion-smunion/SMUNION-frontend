@@ -297,6 +297,8 @@ document.addEventListener("DOMContentLoaded", () => {
         viewNotice.innerHTML = noticesHTML;
       });
 
+      //
+
       //기본값으로 오늘 날짜 선택됨
       if (
         createDate.getFullYear() === today.getFullYear() &&

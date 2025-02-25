@@ -209,8 +209,22 @@ body {
 }
 
 .gallery-top {
+  display: flex;
   font-size: 14px;
   margin-bottom: 10px;
+  align-items: center;
+}
+
+.gallery-top div:nth-child(1) {
+  font-size: 14px;
+  color: #383a3d;
+}
+
+.gallery-top div:nth-child(2) {
+  font-size: 11px;
+  color: #6a6a70;
+  margin-left: auto;
+  cursor: pointer;
 }
 
 .gallery-items {
