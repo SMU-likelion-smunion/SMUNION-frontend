@@ -43,6 +43,29 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
+async function changeModalData() {
+  try {
+    const response = await fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await response.json();
+    console.log("changeModalData", data);
+
+    if (data.isSuccess) {
+      return data.result;
+    } else {
+      throw new Error("가입된 동아리 목록 조회 실패");
+    }
+  } catch (error) {
+    console.error("Error", error);
+    return [];
+  }
+}
+
 function getDepartmentName() {
   fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs/selected`, {
     method: "GET",
@@ -60,8 +83,19 @@ function getDepartmentName() {
         console.log("getDepartmentName 완료");
 
         const departmentName = data.result.departmentName; //departmentName 가져오기
+        const clubName = data.result.clubName; // clubName 가져오기
+        const url = data.result.url; // url 가져오기
+
         localStorage.setItem("departmentName", departmentName);
-        console.log(departmentName);
+        localStorage.setItem("selectedClub", JSON.stringify({ clubName, url }));
+
+        // 헤더에 반영
+        const headerName = document.querySelector(".header-name");
+        const headerImg = document.querySelector(".header-img");
+        headerName.textContent = clubName;
+        headerImg.src = url;
+
+        console.log(departmentName, clubName, url);
       } else {
         throw new Error("부서 가져오기 실패");
       }
@@ -105,11 +139,143 @@ function getClubDetail() {
     .catch((error) => console.error("Error club detail:", error));
 }
 
+// 특정 동아리 세션에 저장
+async function selectClub(memberClubId) {
+  let accessToken = getCookie("accessToken");
+  console.log("선택한 동아리 ID:", memberClubId);
+
+  try {
+    const response = await fetch(
+      `${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${memberClubId}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    const data = await response.json();
+    if (data.isSuccess) {
+      console.log("동아리 선택 성공:", data);
+      const selectedClub = data.result; //선택한 동아리 정보 저장
+
+      // 헤더 업데이트
+      const headerName = document.querySelector(".header-name");
+      const headerImg = document.querySelector(".header-img");
+
+      headerName.textContent = selectedClub.clubName;
+      headerImg.src = selectedClub.url;
+
+      // 선택한 동아리 정보 로컬 스토리지에 저장 (필요시)
+      localStorage.setItem("selectedClub", JSON.stringify(selectedClub));
+    } else {
+      throw new Error("동아리 선택 실패");
+    }
+  } catch (error) {
+    console.error("Error selecting club:", error);
+  }
+}
+
+//modal item 생성 함수
+function createModalItem(image, clubName, memberClubId) {
+  const div = document.createElement("div");
+  const modalItem = document.createElement("div");
+
+  modalItem.classList.add("modal-items");
+  modalItem.dataset.memberClubId = memberClubId;
+
+  div.addEventListener("click", () => {
+    const selectedId = div.dataset.memberClubId;
+    selectClub(selectedId);
+    closeModal();
+    location.reload();
+  });
+
+  const img = document.createElement("img");
+  img.src = image;
+
+  const p = document.createElement("p");
+  p.textContent = clubName;
+
+  modalItem.appendChild(img);
+  modalItem.appendChild(p);
+
+  return modalItem;
+}
+
+async function addModalItems() {
+  const modalContent = document.getElementById("modal-content");
+  modalContent.innerHTML = ""; // 기존 내용 초기화
+
+  try {
+    const items = await changeModalData();
+    console.log("받은 데이터", items);
+
+    if (!items || items.length === 0) {
+      console.log("데이터 없음");
+      return;
+    }
+
+    items.forEach((item, index) => {
+      const modalItem = createModalItem(item.url, item.clubName, item.memberClubId);
+
+      modalItem.addEventListener("click", async () => {
+        try {
+          await selectClub(item.memberClubId); // 동아리 선택
+          closeModal();
+          location.reload(); //새로고침
+        } catch (error) {
+          console.error("동아리 선택 오류:", error);
+        }
+      });
+
+      modalContent.appendChild(modalItem);
+
+      if (index < items.length - 1) {
+        const hr = document.createElement("hr");
+        modalContent.appendChild(hr);
+      }
+    });
+  } catch (error) {
+    console.error("모달 데이터 추가 중 오류 발생:", error);
+  }
+}
+
+// 모달을 띄우는 함수
+function openModal() {
+  document.querySelector(".club-change-modal").style.display = "block";
+  addModalItems();
+}
+
+// 모달을 닫는 함수
+function closeModal() {
+  document.querySelector(".club-change-modal").style.display = "none";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
   console.log(accessToken);
 
   let allNotices = [];
+
+  const modal = document.querySelector(".club-change-modal");
+  const modalClick = document.querySelector(".inner-content");
+
+  //modal 열기
+  modalClick.addEventListener("click", () => {
+    modal.style.display = "block";
+    openModal();
+  });
+
+  //modal 닫기
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      const modalContent = document.querySelector(".ccm2");
+      modalContent.innerHTML = "";
+      modal.style.display = "none";
+    }
+  });
 
   getDepartmentName(); //departmentName 가져오기
 
