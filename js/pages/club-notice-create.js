@@ -43,6 +43,7 @@ function deleteCookie(name) {
 }
 
 function getClubId() {
+  let accessToken = getToken();
   fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs/selected`, {
     method: "GET",
     headers: {
@@ -71,6 +72,8 @@ function getClubId() {
 
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
+  console.log(accessToken);
+
   const storedClubId = localStorage.getItem("currentClubId");
   localStorage.setItem("storedClubId", storedClubId);
   localStorage.removeItem("storedclubId");
@@ -81,8 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     //localStorage.setItem("currentClubId", currentClubId);
     localStorage.setItem("selectedDepartments", JSON.stringify([]));
   }
-
-  const selectedDepartments = JSON.parse(localStorage.getItem("selectedDepartments")) || [];
 
   //캘린더 헤더 날짜
   const calHeader = document.querySelector(".cal-top-header h1");
@@ -217,28 +218,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //참여형 위젯 설정 > 출석 체크
   attendItem.addEventListener("click", () => {
-    window.location.href = "";
+    window.location.href = "club-notice-create-attend.html";
   });
 
   //참여형 위젯 설정 > 의견 수집
   voteItem.addEventListener("click", () => {
-    window.location.href = "";
+    window.location.href = "club-notice-create-vote.html";
   });
 
   //참여형 위젯 설정 > 회비 납부
   payItem.addEventListener("click", () => {
-    window.location.href = "";
-  });
-
-  //'취소' 버튼 클릭 > 이전 화면
-  prevScreen.addEventListener("click", () => {
-    window.history.back();
+    window.location.href = "club-notice-create-pay.html";
   });
 
   //-----------------------------------------------------------------------------------
   //전달 대상
   const targetType = document.querySelector(".target-type");
-  // const selectedDepartments = JSON.parse(localStorage.getItem("selectedDepartments")) || [];
+  const selectedDepartments = JSON.parse(localStorage.getItem("selectedDepartments")) || [];
+
+  localStorage.setItem("selectedDepartments", JSON.stringify([]));
 
   fetch(API_SERVER_DOMAIN + `/api/v1/department/getAll`, {
     method: "GET",
@@ -265,20 +263,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const circleImg = document.createElement("img");
 
+          // 체크 상태를 항상 '미선택'으로 설정
+          circleImg.src = "/assets/icons/empty-circle.svg";
+          circleImg.dataset.checked = "false";
+
           //저장된 선택 상태 가져오기
-          if (selectedDepartments.includes(department.name)) {
-            circleImg.src = "/assets/icons/checked-target.svg";
-            circleImg.dataset.checked = "true";
-          } else {
-            circleImg.src = "/assets/icons/empty-circle.svg";
-            circleImg.dataset.checked = "false";
-          }
+          // if (selectedDepartments.includes(department.name)) {
+          //   circleImg.src = "/assets/icons/checked-target.svg";
+          //   circleImg.dataset.checked = "true";
+          // } else {
+          //   circleImg.src = "/assets/icons/empty-circle.svg";
+          //   circleImg.dataset.checked = "false";
+          // }
 
           targetItemDiv.appendChild(circleImg);
-
-          // circleImg.src = "/assets/icons/empty-circle.svg";
-          // circleImg.dataset.checked = "false"; //체크 상태
-          // targetItemDiv.appendChild(circleImg);
 
           //부서 클릭했을 때
           targetItemDiv.addEventListener("click", () => {
@@ -335,4 +333,137 @@ document.addEventListener("DOMContentLoaded", () => {
     .catch((error) => {
       console.error("Error", error);
     });
+
+  //'취소' 버튼 클릭 > 이전 화면
+  prevScreen.addEventListener("click", () => {
+    window.history.back();
+  });
+
+  //참여형 위젯 '일반공지' 클릭 -> localStorage.noticeData 삭제
+  const widgetBasic = document.querySelector("#wi1");
+  widgetBasic.addEventListener("click", () => {
+    localStorage.removeItem("noticeData");
+  });
+
+  //'완료' 버튼 클릭
+  const completeBtn = document.querySelector(".complete-btn");
+  const inputTitle = document.querySelector(".input-title");
+  const inputExplain = document.querySelector(".input-explain");
+
+  //위젯에 '저장됨' 표시 -> 클릭한 위젯과 noticeData.type 비교?
+
+  //완료 버튼 클릭
+  completeBtn.addEventListener("click", () => {
+    //제목 입력 여부 확인 -> 없으면 alert
+    if (!inputTitle.value.trim()) {
+      alert("제목을 입력하세요.");
+    }
+
+    const selectedTargetString = localStorage.getItem("selectedDepartments");
+    const selectedTarget = selectedTargetString ? JSON.parse(selectedTargetString) : [];
+    const sDateString = localStorage.getItem("selectedDate");
+    console.log(sDateString);
+    const sDate = new Date(sDateString);
+    console.log(sDate);
+
+    //localStorage > noticeData 가져오기
+    const noticeDataString = localStorage.getItem("noticeData");
+    let noticeData = null;
+
+    // noticeData가 존재하는 경우만 파싱
+    if (noticeDataString) {
+      try {
+        noticeData = JSON.parse(noticeDataString);
+      } catch (error) {
+        console.error("파싱 오류:", error);
+        return;
+      }
+    }
+
+    let noticeInfo = {}; //API에 보낼 데이터
+    let apiPath = ""; //공지 타입별 API
+
+    if (!noticeData) {
+      apiPath = "/api/v1/notices/basic";
+      noticeInfo = {
+        title: inputTitle.value.trim(),
+        content: inputExplain.value.trim(),
+        targetDepartments: selectedTarget,
+        date: sDate,
+      };
+    } else {
+      const noticeType = noticeData.type; //공지 type
+      const noticeDate = noticeData.date; //날짜
+      const payData = noticeData.payData;
+      const attendData = noticeData.attendData;
+      const voteData = noticeData.voteData;
+
+      switch (noticeType) {
+        case "attendance":
+          apiPath = "/api/v1/notices/attendance";
+          noticeInfo = {
+            title: inputTitle.value.trim(),
+            content: inputExplain.value.trim(),
+            targetDepartments: selectedTarget,
+            date: attendData.time,
+          };
+          console.log(noticeData);
+
+          break;
+
+        case "pay":
+          apiPath = "/api/v1/notices/fees";
+          noticeInfo = {
+            title: inputTitle.value.trim(),
+            content: inputExplain.value.trim(),
+            amount: payData.amount,
+            bank: payData.bankName,
+            accountNumber: payData.accountNumber,
+            deadLine: sDate,
+            participantCount: payData.participantCount,
+            targetDepartments: selectedTarget,
+          };
+          console.log(noticeData);
+          break;
+
+        case "vote":
+          apiPath = "/api/v1/notices/votes";
+          noticeInfo = {
+            title: inputTitle.value.trim(),
+            description: inputExplain.value.trim(),
+            targetDepartments: selectedTarget,
+            date: sDate,
+            allowDuplicate: voteData.allowDuplicate,
+            anonymous: voteData.anonymous,
+            options: voteData.options,
+          };
+          console.log(noticeData);
+          break;
+      }
+    }
+
+    const apiUrl = `${API_SERVER_DOMAIN}${apiPath}`;
+
+    console.log(apiUrl);
+    console.log(noticeInfo);
+    console.log("📌 JSON.stringify(noticeInfo):", JSON.stringify(noticeInfo));
+
+    fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + accessToken,
+      },
+      body: JSON.stringify(noticeInfo),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        //console.log("공지 등록 성공:", data);
+        alert("공지 등록이 완료되었습니다!");
+      })
+      .catch((error) => {
+        console.error("공지 등록 실패:", error);
+        alert("공지 등록에 실패했습니다.");
+      });
+  });
 });

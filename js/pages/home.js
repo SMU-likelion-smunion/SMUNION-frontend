@@ -93,8 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
       let todoListDiv = document.createElement("div");
       todoListDiv.classList.add("todo-list");
 
-      console.log("96", noticesByDate);
-
       if (noticesByDate[dateStr]) {
         noticesByDate[dateStr].forEach((title) => {
           let pElement = document.createElement("p");
