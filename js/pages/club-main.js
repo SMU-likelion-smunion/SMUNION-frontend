@@ -118,11 +118,6 @@ function getClubDetail() {
     })
     .then((data) => {
       if (data.isSuccess) {
-        //
-        console.log(data.result.name)
-        const clubName=document.getElementById("clubName");
-        clubName.innerHTML=`${data.result.name}`
-        //임시로 연결 했습니다! -세빈
         console.log("동아리 전체 공지: ", data.result);
         const {
           basicNoticeDetailResponseList = [],

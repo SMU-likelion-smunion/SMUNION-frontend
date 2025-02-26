@@ -57,10 +57,11 @@ body {
 }
 
 #gallery-name-input {
-  width: 160px;
+  width: 165px;
   height: 20px;
   border-width: 0;
   text-align: center;
+  font-size: 14px;
 }
 
 #gallery-name-input::placeholder {
@@ -71,7 +72,19 @@ body {
   outline: none;
 }
 
-.gallery-item {
+.gallery-upload {
   width: 125px;
   height: 125px;
+  cursor: pointer;
+}
+
+.upload-item {
+  width: 125px;
+  height: 125px;
+}
+
+.upload-item img {
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
 }
