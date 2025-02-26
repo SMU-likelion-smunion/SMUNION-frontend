@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentCount = 1;
     let isAutoMemberCount = false;
     let isExcludeWriter = false;
+
+    
   
     // 초기 상태 설정
     const initFromLocalStorage = () => {

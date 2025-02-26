@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -13,9 +13,13 @@
       <div class="main-container">
         <header class="main-header">
           <div class="prev-screen"><img src="/assets/icons/left-sign.svg" /></div>
-          <div><img src="/assets/images/lion-face2.png" /></div>
-          <div>멋쟁이사자처럼</div>
-          <div><img src="/assets/icons/under-sign.svg" /></div>
+          <div class="center-content">
+            <div class="inner-content">
+              <div><img class="header-img" src="" /></div>
+              <div class="header-name" id="modal-click"></div>
+              <div><img id="modal-click" src="/assets/icons/under-sign.svg" /></div>
+            </div>
+          </div>
         </header>
         <div class="club-cal">
           <div class="club-cal-top">
@@ -109,7 +113,7 @@
               </div>
 
               <div class="view-notice">
-                <div class="view-notice-items">
+                <!-- <div class="view-notice-items">
                   <p>전체</p>
                   <img src="/assets/icons/rectangle1.svg" />
                   <p>회식비 1원 납부</p>
@@ -120,7 +124,7 @@
                   <img src="/assets/icons/rectangle1.svg" />
                   <p>기획/디자인 부서 스터디</p>
                   <img src="/assets/icons/Forth.svg" />
-                </div>
+                </div> -->
               </div>
             </div>
           </div>
@@ -170,6 +174,7 @@
         <div class="gallery">
           <div class="gallery-top">
             <div>갤러리</div>
+            <div class="gallery-create-btn">생성</div>
           </div>
           <div class="gallery-content">
             <!-- <div class="gallery-items">
@@ -217,6 +222,18 @@
           <span class="nav-text">마이페이지</span>
         </a>
       </nav>
+    </div>
+
+    <div class="club-change-modal">
+      <div class="ccm">
+        <div class="ccm2" id="modal-content">
+          <!-- <div class="modal-items">
+            <img src="/assets/images/gameImg.png" />
+            <p>Game</p>
+          </div>
+          <hr />-->
+        </div>
+      </div>
     </div>
 
     <!-- navbar js -->

@@ -81,12 +81,21 @@
 .next-month {
   border-top: 1px solid #d9d9d9;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.dates span,
+.prev-month span,
+.next-month span {
+  margin-top: 5px;
 }
 
 .cal-dates {
   display: grid;
   text-align: center;
   grid-template-columns: repeat(7, 1fr);
+  /* width: 327px; */
 }
 
 .cal-dates span {
