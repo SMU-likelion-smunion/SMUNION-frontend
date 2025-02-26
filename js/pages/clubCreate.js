@@ -1,38 +1,59 @@
+const API_SERVER_DOMAIN = "https://smunion.shop";
+let accessToken = getCookie("accessToken");
+ let refreshToken = getCookie("refreshToken");
+
+function getCookie(name) {
+  const nameEQ = name + "=";
+  const cookies = document.cookie.split(";");
+
+  for (let cookie of cookies) {
+    cookie = cookie.trim();
+    if (cookie.indexOf(nameEQ) === 0) {
+      return cookie.substring(nameEQ.length, cookie.length);
+    }
+  }
+  return null;
+}
+
+
+
 document.querySelector('.createBtn').addEventListener('click', function () {
   document.getElementById('fileInput').click();
 });
 document.getElementById('fileInput').addEventListener('change', function (event) {
-  const file = event.target.files[0]; // 업로드한 파일 가져오기
+  const file = event.target.files[0]; 
   if (file) {
-    const reader = new FileReader(); // 파일 읽기 객체 생성
-    reader.onload = function (e) {// 로드 되면 실행 
+    const reader = new FileReader(); 
+    reader.onload = function (e) {
       const preview = document.createElement('img'); 
-      preview.src = e.target.result; // 파일 데이터를 이미지로 설정
+      preview.src = e.target.result; 
       preview.className = 'preview'; 
       const uploadContainer = document.querySelector('.uploadPic');
       uploadContainer.innerHTML = '';
       uploadContainer.appendChild(preview);
     };
-    reader.readAsDataURL(file); // 파일을 읽어 데이터 URL로 변환
+    reader.readAsDataURL(file); 
   }
 });
 
-// 입력 필드 파일 업로드 필드
 const nameInput = document.querySelector('.content input:nth-of-type(1)');
 const explanationInput = document.querySelector('.content input:nth-of-type(2)');
 const fileInput = document.getElementById('fileInput');
-const BASE_URL = 'https://sumnion.shop/api/v1';
+const BASE_URL = 'https://smunion.shop/api/v1';
 const CLUB_URI = '/club';
+
 // 동아리 생성 데이터를 서버에 전송
-function sendClubData(jsonData) {
+function sendClubData(jsonData,token) {
   fetch(`${BASE_URL}${CLUB_URI}`, {
     method: 'POST', 
     headers: {
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json', 
     },
     body: JSON.stringify(jsonData), 
   })
     .then((response) => response.json())
+
     .then((data) => {
       if (data.isSuccess) {
         alert('동아리 생성에 성공했습니다!');
@@ -56,18 +77,19 @@ document.querySelector('.reviseBtn button:nth-of-type(2)').addEventListener('cli
     alert('이미지를 업로드해주세요.');
     return;
   }
+  
   // 파일을 읽어 Base64로 변환
   const reader = new FileReader();
   reader.onload = () => {
-    const clubImage = reader.result; // Base64로 인코딩된 이미지 데이터
-    // 서버에 전송할 JSON 데이터 생성
+    const clubImage = reader.result; 
     const clubData = {
-      name: nameInput.value.trim(), // 동아리명
-      explanation: explanationInput.value.trim(), // 동아리 설명
-      clubImage: clubImage, // Base64 이미지
+      name: nameInput.value.trim(), 
+      explanation: explanationInput.value.trim(), 
+      clubImage: clubImage, 
     };
-    // 데이터 전송
+
     sendClubData(clubData);
+    console.log(clubData)
   };
-  reader.readAsDataURL(fileInput.files[0]); // 파일 읽기
+  reader.readAsDataURL(fileInput.files[0]); 
 });
