@@ -46,8 +46,11 @@ body {
 
 .gallery-content {
   display: grid;
+  place-items: center;
   grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
   width: 100%;
+  /* padding-left: 2px; */
 }
 
 .edit-btn p {
@@ -71,6 +74,13 @@ body {
 }
 
 .image-item {
-  width: 125px;
-  height: 125px;
+  width: 123px;
+  height: 123px;
+  margin-bottom: 1px;
+}
+
+.image-item img {
+  width: 123px;
+  height: 123px;
+  object-fit: cover;
 }
