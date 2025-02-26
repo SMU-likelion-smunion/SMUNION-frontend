@@ -255,12 +255,6 @@ body {
   align-items: center;
 }
 
-.club_img {
-  width: 100%;
-  height: 100%;
-  border-radius: 15px; /* 부모 요소와 일치 */
-}
-
 .club {
   width: 150px;
   height: 150px;
@@ -269,27 +263,42 @@ body {
   border-radius: 15px;
   box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.05);
   margin: 5px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
+  overflow: hidden;
+  /* 클럽 이름 영역 35px을 위한 공간 확보 */
+  padding-bottom: 35px;
 }
 
+/* 이미지 영역: 클럽 이름 영역을 제외한 영역 중앙에 위치 */
+.club_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* 클럽 이름 영역을 제외한 높이 */
+  bottom: 35px;
+  margin: auto;
+  object-fit: cover;
+  width: 100%;
+  height: auto;
+}
+
+/* 클럽 이름은 카드 하단에 고정 */
 .club-name {
   position: absolute;
-  width: 100%; /* 부모 요소의 너비에 맞춤 */
-  height: 35px; /* 원하는 높이 설정 */
   bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 35px;
   background-color: rgb(243, 205, 159);
   color: #ffffff;
   font-weight: bolder;
   border-bottom-right-radius: 15px;
   border-bottom-left-radius: 15px;
   text-align: center;
-  line-height: 35px; /* 텍스트가 높이 중앙에 위치하도록 설정 */
-  margin: 0; /* 기본 margin 제거 */
-  padding: 0; /* 기본 padding 제거 */
+  line-height: 35px;
+  margin: 0;
+  padding: 0;
 }
 
 .club-item {
