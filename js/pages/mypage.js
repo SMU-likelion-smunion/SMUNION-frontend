@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
       clubItem.dataset.clubId = club.memberClubId;
 
       const clubImage = document.createElement("img");
-      // clubImage.src = club.imageUrl || "기본_이미지_URL";
+      clubImage.src = club.url || "기본_이미지_URL";
       clubImage.className = "club_img";
 
       const clubName = document.createElement("p");
