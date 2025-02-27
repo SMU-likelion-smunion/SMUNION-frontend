@@ -43,11 +43,229 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+let allNotices = [];
+let filteredAllNotices = [];
+
+async function fetchAllClubNotices() {
+  let accessToken = getCookie("accessToken");
+
+  try {
+    // 1️⃣ 모든 동아리의 memberClubId 가져오기
+    let clubsResponse = await fetch(API_SERVER_DOMAIN + "/api/v1/users/clubs", {
+      method: "GET",
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    let clubsData = await clubsResponse.json();
+    if (!clubsData.isSuccess) throw new Error("Failed to fetch clubs");
+
+    let clubList = clubsData.result;
+
+    // 2️⃣ 각 동아리 memberClubId를 순회하면서 공지 가져오기
+    for (let club of clubList) {
+      let memberClubId = club.memberClubId;
+      let department = club.departmentName; // 사용자 부서 정보 (API에서 제공된다면)
+
+      // 2-1. 특정 동아리 세션 선택 (POST 요청)
+      await fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${memberClubId}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      // 2-2. 해당 동아리의 공지사항 조회 (GET 요청)
+      let detailResponse = await fetch(`${API_SERVER_DOMAIN}/api/v1/club/detail`, {
+        method: "GET",
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      let detailData = await detailResponse.json();
+      if (!detailData.isSuccess) throw new Error("Failed to fetch club details");
+
+      let clubNotices = extractNotices(detailData.result, memberClubId, department);
+      allNotices.push(...clubNotices);
+    }
+
+    //console.log("모든 공지 데이터:", allNotices);
+    return allNotices;
+  } catch (error) {
+    console.error("Error fetching all notices:", error);
+  }
+}
+
+//공지 데이터 가공 함수
+function extractNotices(clubData, memberClubId, department) {
+  let notices = [];
+  let clubName = clubData.name;
+
+  // 공지 리스트를 처리하는 함수
+  function formatNotices(list, type) {
+    return list.map((notice) => {
+      let noticeId;
+
+      // 각 공지 유형에 맞는 ID 추출
+      switch (type) {
+        case "basic":
+          noticeId = notice.noticeId;
+          break;
+        case "attendance":
+          noticeId = notice.attendanceId;
+          break;
+        case "fee":
+          noticeId = notice.feeId;
+          break;
+        case "vote":
+          noticeId = notice.voteId;
+          break;
+        default:
+          noticeId = null;
+          break;
+      }
+
+      return {
+        id: noticeId, // 공지 ID 추가
+        date: type === "fee" ? notice.deadline : notice.date,
+        clubName,
+        memberClubId,
+        department,
+        type,
+        title: notice.title,
+        target: notice.target,
+      };
+    });
+  }
+  // 각 공지 리스트에 대해 ID를 설정하고 notices 배열에 추가
+  notices.push(...formatNotices(clubData.basicNoticeDetailResponseList, "basic"));
+  notices.push(...formatNotices(clubData.attendanceDetailResponseList, "attendance"));
+  notices.push(...formatNotices(clubData.feeNoticeResponseList, "fee"));
+  notices.push(...formatNotices(clubData.voteResponseList, "vote"));
+
+  return notices;
+}
+
+function formatNotices(list, type) {
+  return list.map((notice) => {
+    // 각 공지의 ID를 적절히 할당
+    let noticeId;
+    switch (type) {
+      case "basic":
+        noticeId = notice.noticeId;
+        break;
+      case "attendance":
+        noticeId = notice.attendanceId;
+        break;
+      case "fee":
+        noticeId = notice.feeId;
+        break;
+      case "vote":
+        noticeId = notice.voteId;
+        break;
+    }
+    //console.log("noticeId", noticeId);
+
+    return {
+      id: noticeId, // 공지 ID 추가
+      date: type === "fee" ? notice.deadline : notice.date, // fee는 deadline, 다른 공지는 date
+      clubName,
+      memberClubId,
+      department,
+      type,
+      title: notice.title,
+      target: notice,
+      target,
+    };
+  });
+}
+
+//allNotices -> target 필터링
+function filterNoticesByDepartment(allNotices) {
+  filteredAllNotices = allNotices.filter((notice) => {
+    if (notice.target === "전체") {
+      return true;
+    }
+
+    return notice.target.includes(notice.department);
+  });
+  //console.log("target 필터링된 공지", filteredAllNotices);
+}
+
+//체크리스트 공지
+function displayNoticesForDate(dateStr) {
+  //console.log("191", dateStr);
+
+  const checkListHeader = document.querySelector(".check-list-header");
+  checkListHeader.querySelectorAll(".items").forEach((item) => item.remove()); // 기존 공지 삭제
+
+  let noticesForDate = filteredAllNotices.filter((notice) => {
+    //console.log(notice);
+
+    return notice.date && notice.date.slice(0, 10) === dateStr;
+  });
+  //console.log("dateStr 비교", noticesForDate);
+
+  noticesForDate.forEach((notice) => {
+    const itemDiv = document.createElement("div");
+    itemDiv.classList.add("items");
+    itemDiv.setAttribute("data-club-id", notice.memberClubId);
+    itemDiv.setAttribute("data-notice-id", notice.id);
+    itemDiv.innerHTML = `
+      <div class="club-name">${notice.clubName}</div>
+      <div><img class="rec1" src="/assets/icons/rectangle1.svg" /></div>
+      <div>${notice.title}</div>
+      <div><img src="/assets/icons/Forth.svg" /></div>
+    `;
+
+    //공지 클릭 -> 상세 공지로 이동
+    itemDiv.addEventListener("click", () => {
+      const clubId = itemDiv.getAttribute("data-club-id");
+      const noticeId = itemDiv.getAttribute("data-notice-id");
+
+      let noticeUrl;
+      if (notice.type === "basic") {
+        noticeUrl = `notice-view-default.html?id=${noticeId}`;
+      } else if (notice.type === "fee") {
+        noticeUrl = `notice-view-fee.html?id=${noticeId}`;
+      } else if (notice.type === "attendance") {
+        noticeUrl = `notice-view-attendance.html?id=${noticeId}`;
+      } else if (notice.type === "vote") {
+        noticeUrl = noticeUrl = `notice-view-vote.html?id=${noticeId}`;
+      } else {
+        console.log("failed to create noticeUrl");
+      }
+
+      //특정 동아리 선택
+      fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${clubId}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+        .then(() => {
+          //상세공지 이동
+          window.location.href = noticeUrl;
+        })
+        .catch((error) => console.error("동아리 선택 API 호출 오류:", error));
+    });
+
+    checkListHeader.appendChild(itemDiv);
+  });
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
   if (!accessToken) {
     console.warn("AccessToken 없음. 로그인 페이지로 이동.");
     window.location.href = "/login.html";
     return;
+  }
+
+  console.log(accessToken);
+
+  // 모든 공지를 가져오는 함수 호출
+  try {
+    const allNotices = await fetchAllClubNotices(); // 모든 공지 데이터를 가져옴
+    //console.log("line 165:", allNotices); // 공지 데이터 확인용 로그 출력
+    filterNoticesByDepartment(allNotices);
+    //console.log("부서 필터링 된 데이터", filteredAllNotices);
+  } catch (error) {
+    console.error("공지 데이터를 가져오는 중 에러 발생:", error);
   }
 
   //캘린더 헤더 날짜
@@ -62,7 +280,6 @@ document.addEventListener("DOMContentLoaded", () => {
   localStorage.setItem("selectedDate", todayStr);
 
   renderCalendar();
-  getClubs();
 
   function renderCalendar() {
     calDates.innerHTML = ""; //날짜 초기화
@@ -82,6 +299,7 @@ document.addEventListener("DOMContentLoaded", () => {
       createDate.setDate(firstDay.getDate() + i);
 
       let dateStr = `${createDate.getFullYear()}-${String(createDate.getMonth() + 1).padStart(2, "0")}-${String(createDate.getDate()).padStart(2, "0")}`;
+      //console.log("dateStr", dateStr);
 
       let dateDiv = document.createElement("div");
       dateDiv.classList.add("dates");
@@ -93,13 +311,25 @@ document.addEventListener("DOMContentLoaded", () => {
       let todoListDiv = document.createElement("div");
       todoListDiv.classList.add("todo-list");
 
-      if (noticesByDate[dateStr]) {
-        noticesByDate[dateStr].forEach((title) => {
-          let pElement = document.createElement("p");
-          pElement.textContent = title;
-          todoListDiv.appendChild(pElement);
-        });
-      }
+      // 해당 날짜에 맞는 공지 필터링
+      let noticesForDate = filteredAllNotices.filter((notice) => {
+        let noticeDate = new Date(notice.date);
+        let formattedNoticeDate = `${noticeDate.getFullYear()}-${String(noticeDate.getMonth() + 1).padStart(2, "0")}-${String(noticeDate.getDate()).padStart(2, "0")}`;
+
+        return formattedNoticeDate === dateStr;
+      });
+
+      //console.log("날짜 필터링", noticesForDate);
+
+      // 최대 3개의 공지만 표시
+      let displayedNotices = noticesForDate.slice(0, 3);
+
+      displayedNotices.forEach((notice) => {
+        let pElement = document.createElement("p");
+        pElement.textContent = notice.title;
+        todoListDiv.appendChild(pElement);
+      });
+
       dateDiv.appendChild(spanElement);
       dateDiv.appendChild(todoListDiv);
       calDates.appendChild(dateDiv);
@@ -111,6 +341,7 @@ document.addEventListener("DOMContentLoaded", () => {
         createDate.getDate() === today.getDate()
       ) {
         dateDiv.classList.add("selected-date");
+        displayNoticesForDate(todayStr);
       }
 
       //날짜 클릭
@@ -119,7 +350,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const newSelectedDate = `${createDate.getFullYear()}-${String(createDate.getMonth() + 1).padStart(2, "0")}-${String(createDate.getDate()).padStart(2, "0")}`;
 
         if (prevSelectedDate === newSelectedDate) {
-          console.log("같은 날짜 클릭 - 공지 새로 불러오지 않음");
+          //console.log("같은 날짜 클릭");
           return;
         }
 
@@ -127,20 +358,25 @@ document.addEventListener("DOMContentLoaded", () => {
           item.classList.remove("selected-date");
         });
         dateDiv.classList.add("selected-date");
+
         calHeader.textContent = `${createDate.getFullYear()}년 ${createDate.getMonth() + 1}월 ${createDate.getDate()}일`;
 
         const selectedDate = `${createDate.getFullYear()}-${String(createDate.getMonth() + 1).padStart(2, "0")}-${String(createDate.getDate()).padStart(2, "0")}`;
         localStorage.setItem("selectedDate", selectedDate);
 
-        //체크리스트 공지 초기화
-        const checkListHeader = document.querySelector(".check-list-header");
-        checkListHeader.querySelectorAll(".items").forEach((item) => item.remove());
+        displayNoticesForDate(newSelectedDate);
 
-        getClubs();
+        //체크리스트 공지 초기화
+        // const checkListHeader = document.querySelector(".check-list-header");
+        // checkListHeader.querySelectorAll(".items").forEach((item) => item.remove());
+
+        //getClubs();
       });
     }
+    // if (dateStr === todayStr) {
+    //   displayNoticesForDate(todayStr);
+    // }
   }
-
   //캘린더 '<' 버튼 클릭
   prevBtn.addEventListener("click", () => {
     currentDate.setDate(currentDate.getDate() - 14);
@@ -155,255 +391,3 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderCalendar();
 });
-
-//-------------------------------------------------------------------------------------------
-//캘린더 공지
-
-//-------------------------------------------------------------------------------------------
-//체크리스트 공지
-
-function getClubs() {
-  let accessToken = getToken();
-  console.log(accessToken);
-
-  //사용자의 모든 동아리 목록 조회
-  fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log("data", data);
-
-      if (data.isSuccess) {
-        console.log("getClubs 완료");
-
-        const ClubId = data.result.map((club) => club.memberClubId); //memberClubId 가져오기
-        selectClubAndClubDetail(ClubId);
-      } else {
-        throw new Error("가입된 동아리 목록 조회 실패");
-      }
-    })
-    .catch((error) => {
-      console.error("Error", error);
-    });
-}
-
-//동아리 하나씩 선택 -> 동아리 상세 정보 조회
-function selectClubAndClubDetail(clubId, index = 0) {
-  if (index >= clubId.length) {
-    console.log("모든 동아리 정보 조회 완료");
-    return;
-  }
-
-  const memberClubId = clubId[index];
-  console.log(`동아리 선택 중: ${memberClubId}`);
-
-  selectClub(memberClubId)
-    .then(() => getClubDetail(memberClubId)) // 선택 후 상세 정보 가져오기
-    .then(() => {
-      // 다음 동아리 처리
-      selectClubAndClubDetail(clubId, index + 1);
-    })
-    .catch((error) => {
-      console.error(`동아리 ${memberClubId} 오류 발생:`, error);
-      selectClubAndClubDetail(clubId, index + 1);
-    });
-}
-
-//특정 동아리 세션에 저장
-function selectClub(memberClubId) {
-  let accessToken = getCookie("accessToken");
-  console.log(memberClubId);
-
-  return fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${memberClubId}`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.isSuccess) {
-        console.log("data", data);
-        console.log(memberClubId, "선택");
-
-        //departmentName -> localStorage에 저장
-        if (data.result && data.result.departmentName) {
-          localStorage.setItem("userDepartmentName", data.result.departmentName);
-          console.log("userDepartmentName:", data.result.departmentName);
-        } else {
-          console.error("No departmentName found in response");
-        }
-      } else {
-        throw new Error(memberClubId, "선택 실패");
-      }
-    })
-    .catch((error) => {
-      console.error("Error selecting club:", error);
-    });
-}
-
-const noticesByDate = {};
-
-//동아리 상세 정보 조회
-function getClubDetail(memberClubId) {
-  let accessToken = getCookie("accessToken");
-  //console.log("getClubDetail 부분: ", accessToken);
-
-  return fetch(API_SERVER_DOMAIN + `/api/v1/club/detail`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      if (data.isSuccess) {
-        console.log("동아리 전체 공지: ", data.result);
-
-        const userDepartment = localStorage.getItem("userDepartmentName"); //사용자 부서
-        const selectedDate = localStorage.getItem("selectedDate"); //선택된 날짜
-        console.log(userDepartment);
-        console.log(selectedDate);
-
-        //공지 필터링
-        const filteredNotices = filterNoticeByDepartmentAndDate(
-          data.result,
-          userDepartment,
-          selectedDate
-        );
-        console.log("filtered notices: ", filteredNotices);
-
-        filteredNotices.forEach((notice) => {
-          const noticeDate = notice.date; // 공지 날짜 (YYYY-MM-DD)
-          if (!noticesByDate[noticeDate]) {
-            noticesByDate[noticeDate] = [];
-          }
-          noticesByDate[noticeDate].push(notice.title);
-        });
-
-        console.log("날짜별 공지 데이터 ", noticesByDate);
-
-        //체크리스트에 추가
-        displayCheckList(filteredNotices, data.result.name, memberClubId);
-
-        return data;
-      } else {
-        throw new Error("failed");
-      }
-    })
-    .catch((error) => console.error("Error club detail:", error));
-}
-
-//상세공지로 이동
-function moveToNoticeDetail(notice, memberClubId) {
-  console.log("이동할 공지:", notice);
-  console.log("선택해야 할 동아리 memberClubId:", memberClubId);
-
-  selectClub(memberClubId)
-    .then(() => {
-      let url = "";
-      if ("noticeId" in notice) {
-        url = `notice-view-default.html?id=${notice.noticeId}`;
-      } else if ("attendanceId" in notice) {
-        url = `notice-view-attendance.html?id=${notice.attendanceId}`;
-      } else if ("feeId" in notice) {
-        url = `notice-view-fee.html?id=${notice.feeId}`;
-      } else if ("voteId" in notice) {
-        url = `notice-view-vote.html?id=${notice.voteId}`;
-      } else {
-        console.log("failed moveToNoticeDetail()");
-        return;
-      }
-
-      console.log("url", url);
-      window.location.href = url;
-    })
-    .catch((error) => {
-      console.error("동아리 선택 + 공지 이동 실패:", error);
-    });
-}
-
-function displayCheckList(notices, clubName, memberClubId) {
-  console.log("공지 업데이트 중 데이터", notices);
-
-  const checkListHeader = document.querySelector(".check-list-header");
-
-  notices.forEach((notice) => {
-    const itemDiv = document.createElement("div");
-    itemDiv.classList.add("items");
-    itemDiv.setAttribute("data-club-id", memberClubId);
-    itemDiv.innerHTML = `
-      <div class="club-name">${clubName}</div>
-      <div><img class="rec1" src="/assets/icons/rectangle1.svg" /></div>
-      <div>${notice.title}</div>
-      <div><img src="/assets/icons/Forth.svg" /></div>
-    `;
-
-    //공지 클릭 -> 상세 공지로 이동
-    itemDiv.addEventListener("click", () => {
-      moveToNoticeDetail(notice, memberClubId);
-    });
-
-    checkListHeader.appendChild(itemDiv);
-  });
-}
-
-//부서, 날짜 필터링
-function filterNoticeByDepartmentAndDate(clubNotice, departmentName, selectedDate) {
-  console.log("target: ", departmentName);
-  console.log("date: ", selectedDate);
-
-  const {
-    basicNoticeDetailResponseList = [],
-    attendanceDetailResponseList = [],
-    feeNoticeResponseList = [],
-    voteResponseList = [],
-  } = clubNotice;
-
-  //모든 공지 -> 배열
-  const allNotices = [
-    ...basicNoticeDetailResponseList,
-    ...attendanceDetailResponseList,
-    ...feeNoticeResponseList,
-    ...voteResponseList,
-  ];
-
-  return allNotices.filter((notice) => {
-    const targetDepartments = notice.target.split(",").map((dept) => dept.trim());
-    console.log("타겟부서: ", targetDepartments);
-
-    const checkDepartment =
-      targetDepartments.includes("전체") || targetDepartments.includes(departmentName);
-    console.log(
-      `부서 비교: ${notice.target} === ${targetDepartments}, 포함 여부: ${checkDepartment}`
-    );
-
-    const checkDate = selectedDate ? isSameDate(notice.date, selectedDate) : true;
-    console.log(`날짜 비교: ${notice.date} === ${selectedDate} -> ${checkDate}`);
-
-    console.log("최종 필터링", checkDepartment && checkDate);
-
-    return checkDepartment && checkDate;
-  });
-}
-
-//날짜 비교
-function isSameDate(noticeDate, selectedDate) {
-  const noticeDateItem = new Date(noticeDate);
-
-  const selectedDateItem = new Date(selectedDate);
-
-  const formattedNoticeDate = `${noticeDateItem.getFullYear()}-${String(noticeDateItem.getMonth() + 1).padStart(2, "0")}-${String(noticeDateItem.getDate()).padStart(2, "0")}`;
-  const formattedSelectedDate = selectedDate;
-
-  return formattedNoticeDate === formattedSelectedDate;
-}
