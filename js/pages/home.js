@@ -338,11 +338,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         createDate.getDate() === today.getDate()
       ) {
         dateDiv.classList.add("selected-date");
+        dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
+          p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
+        });
         displayNoticesForDate(todayStr);
       }
 
       //날짜 클릭
       dateDiv.addEventListener("click", () => {
+        document.querySelectorAll(".selected-date").forEach((item) => {
+          item.classList.remove("selected-date");
+          item.querySelectorAll(".todo-list p").forEach((p) => {
+            p.style.backgroundColor = "#0E207F";
+          });
+        });
+        dateDiv.classList.add("selected-date");
         const prevSelectedDate = localStorage.getItem("selectedDate");
         const newSelectedDate = `${createDate.getFullYear()}-${String(createDate.getMonth() + 1).padStart(2, "0")}-${String(createDate.getDate()).padStart(2, "0")}`;
 
@@ -355,6 +365,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           item.classList.remove("selected-date");
         });
         dateDiv.classList.add("selected-date");
+        dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
+          p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
+        });
 
         calHeader.textContent = `${createDate.getFullYear()}년 ${createDate.getMonth() + 1}월 ${createDate.getDate()}일`;
 
