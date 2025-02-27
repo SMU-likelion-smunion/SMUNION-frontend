@@ -50,7 +50,7 @@ async function fetchAllClubNotices() {
   let accessToken = getCookie("accessToken");
 
   try {
-    // 1️⃣ 모든 동아리의 memberClubId 가져오기
+    //모든 동아리의 memberClubId 가져오기
     let clubsResponse = await fetch(API_SERVER_DOMAIN + "/api/v1/users/clubs", {
       method: "GET",
       headers: { Authorization: `Bearer ${accessToken}` },
@@ -60,18 +60,18 @@ async function fetchAllClubNotices() {
 
     let clubList = clubsData.result;
 
-    // 2️⃣ 각 동아리 memberClubId를 순회하면서 공지 가져오기
+    //각 동아리 memberClubId를 순회하면서 공지 가져오기
     for (let club of clubList) {
       let memberClubId = club.memberClubId;
-      let department = club.departmentName; // 사용자 부서 정보 (API에서 제공된다면)
+      let department = club.departmentName;
 
-      // 2-1. 특정 동아리 세션 선택 (POST 요청)
+      //특정 동아리 세션 선택
       await fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${memberClubId}`, {
         method: "POST",
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-      // 2-2. 해당 동아리의 공지사항 조회 (GET 요청)
+      //해당 동아리의 상세 공지 조회
       let detailResponse = await fetch(`${API_SERVER_DOMAIN}/api/v1/club/detail`, {
         method: "GET",
         headers: { Authorization: `Bearer ${accessToken}` },
@@ -95,12 +95,12 @@ function extractNotices(clubData, memberClubId, department) {
   let notices = [];
   let clubName = clubData.name;
 
-  // 공지 리스트를 처리하는 함수
+  // 공지 리스트를 처리 함수
   function formatNotices(list, type) {
     return list.map((notice) => {
       let noticeId;
 
-      // 각 공지 유형에 맞는 ID 추출
+      // 각 공지 유형에 따른 noticeId 생성
       switch (type) {
         case "basic":
           noticeId = notice.noticeId;
@@ -120,7 +120,7 @@ function extractNotices(clubData, memberClubId, department) {
       }
 
       return {
-        id: noticeId, // 공지 ID 추가
+        id: noticeId,
         date: type === "fee" ? notice.deadline : notice.date,
         clubName,
         memberClubId,
@@ -131,7 +131,6 @@ function extractNotices(clubData, memberClubId, department) {
       };
     });
   }
-  // 각 공지 리스트에 대해 ID를 설정하고 notices 배열에 추가
   notices.push(...formatNotices(clubData.basicNoticeDetailResponseList, "basic"));
   notices.push(...formatNotices(clubData.attendanceDetailResponseList, "attendance"));
   notices.push(...formatNotices(clubData.feeNoticeResponseList, "fee"));
@@ -142,7 +141,6 @@ function extractNotices(clubData, memberClubId, department) {
 
 function formatNotices(list, type) {
   return list.map((notice) => {
-    // 각 공지의 ID를 적절히 할당
     let noticeId;
     switch (type) {
       case "basic":
@@ -161,8 +159,8 @@ function formatNotices(list, type) {
     //console.log("noticeId", noticeId);
 
     return {
-      id: noticeId, // 공지 ID 추가
-      date: type === "fee" ? notice.deadline : notice.date, // fee는 deadline, 다른 공지는 date
+      id: noticeId,
+      date: type === "fee" ? notice.deadline : notice.date,
       clubName,
       memberClubId,
       department,
@@ -258,10 +256,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   console.log(accessToken);
 
-  // 모든 공지를 가져오는 함수 호출
   try {
-    const allNotices = await fetchAllClubNotices(); // 모든 공지 데이터를 가져옴
-    //console.log("line 165:", allNotices); // 공지 데이터 확인용 로그 출력
+    const allNotices = await fetchAllClubNotices(); // 모든 공지 데이터
+    //console.log("line 165:", allNotices);
     filterNoticesByDepartment(allNotices);
     //console.log("부서 필터링 된 데이터", filteredAllNotices);
   } catch (error) {
@@ -321,7 +318,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       //console.log("날짜 필터링", noticesForDate);
 
-      // 최대 3개의 공지만 표시
+      // 최대 3개 공지
       let displayedNotices = noticesForDate.slice(0, 3);
 
       displayedNotices.forEach((notice) => {
@@ -365,17 +362,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         localStorage.setItem("selectedDate", selectedDate);
 
         displayNoticesForDate(newSelectedDate);
-
-        //체크리스트 공지 초기화
-        // const checkListHeader = document.querySelector(".check-list-header");
-        // checkListHeader.querySelectorAll(".items").forEach((item) => item.remove());
-
-        //getClubs();
       });
     }
-    // if (dateStr === todayStr) {
-    //   displayNoticesForDate(todayStr);
-    // }
   }
   //캘린더 '<' 버튼 클릭
   prevBtn.addEventListener("click", () => {

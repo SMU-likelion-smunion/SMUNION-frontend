@@ -1,0 +1,85 @@
+<!--
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>홈</title>
+    <link rel="stylesheet" href="/css/pages/home.css" />
+    <link rel="stylesheet" href="/css/components/navbar.css" />
+    <link rel="stylesheet" href="/css/components/calendar.css" />
+  </head>
+  <body>
+    <div class="home-screen">
+      <div class="home-container">
+        <div class="my-calendar">
+          <p class="my-cal-header">나의 캘린더</p>
+          <div class="home-cal">
+            <div class="date-set-cal">
+     
+              <div class="cal-top" id="home-cal-top">
+                <h1></h1>
+                <img src="/assets/icons/cal-left-btn.svg" />
+                <img src="/assets/icons/cal-right-btn.svg" />
+              </div>
+
+             
+              <div class="cal-days">
+                <div>일</div>
+                <div>월</div>
+                <div>화</div>
+                <div>수</div>
+                <div>목</div>
+                <div>금</div>
+                <div>토</div>
+              </div>
+
+              
+              <div class="cal-dates"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="check-list">
+          <p class="check-list-header">체크리스트</p>
+        </div>
+      </div>
+
+      <nav class="navbar">
+        
+        <a href="/html/pages/test-home.html" class="nav-item">
+          <img src="/assets/icons/home-icon-clicked.svg" alt="홈" class="nav-icon" />
+          <span class="nav-text">홈</span>
+        </a>
+ 
+        <a href="/html/pages/myClub.html" class="nav-item">
+          <img src="/assets/icons/club-icon.svg" alt="동아리" class="nav-icon" />
+          <span class="nav-text">동아리</span>
+        </a>
+
+        <a href="#" class="nav-item">
+          <img src="/assets/icons/smunion-icon.svg" alt="스뮤니온" class="nav-icon" />
+          <span class="nav-text">스뮤니온</span>
+        </a>
+
+        <a href="/html/pages/mypage.html" class="nav-item">
+          <img src="/assets/icons/mypage-icon.svg" alt="마이페이지" class="nav-icon" />
+          <span class="nav-text">마이페이지</span>
+        </a>
+      </nav>
+    </div>
+
+    <script>
+      const navItems = document.querySelectorAll(".nav-item");
+      navItems.forEach((item) => {
+        if (item.href === window.location.href) {
+          item.classList.add("active");
+        } else {
+          item.classList.remove("active");
+        }
+      });
+    </script>
+    <script src="/js/pages/test-home.js"></script>
+  </body>
+</html>
+-->
