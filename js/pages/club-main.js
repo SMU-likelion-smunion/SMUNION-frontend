@@ -117,7 +117,7 @@ function getClubDetail() {
     })
     .then((data) => {
       if (data.isSuccess) {
-        //console.log("동아리 전체 공지: ", data.result);
+        console.log("동아리 전체 공지: ", data.result);
         const {
           basicNoticeDetailResponseList = [],
           attendanceDetailResponseList = [],
@@ -209,7 +209,7 @@ async function addModalItems() {
 
   try {
     const items = await changeModalData();
-    //console.log("받은 데이터", items);
+    console.log("받은 데이터", items);
 
     if (!items || items.length === 0) {
       console.log("데이터 없음");
@@ -280,7 +280,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   getClubDetail().then((notices) => {
     allNotices = notices || [];
-    //console.log("line 150", allNotices);
+    console.log("line 150", allNotices);
     renderCalendar(allNotices);
 
     const today = new Date();
@@ -334,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const today = new Date(); //오늘 날짜
 
   function renderCalendar(allNotices) {
-    //console.log("가져온 allNotices", allNotices);
+    console.log("가져온 allNotices", allNotices);
     const today = new Date();
 
     const calHeader = document.querySelector(".cal-top-header h1");
@@ -431,7 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let noticesHTML = "";
         let count = 0;
-        //console.log("allNotices", allNotices);
+        console.log("allNotices", allNotices);
 
         for (let i = 0; i < allNotices.length; i++) {
           const notice = allNotices[i];
