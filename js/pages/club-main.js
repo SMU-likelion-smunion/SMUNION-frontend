@@ -13,7 +13,6 @@ function getToken() {
   return null;
 }
 
-/* 쿠키 관련 함수들 */
 function setCookie(name, value, days) {
   var expires = "";
   if (days) {
