@@ -250,7 +250,7 @@ function displayNoticesForDate(dateStr) {
 document.addEventListener("DOMContentLoaded", async () => {
   if (!accessToken) {
     console.warn("AccessToken 없음. 로그인 페이지로 이동.");
-    window.location.href = "/login.html";
+    window.location.href = "/html/pages/login.html";
     return;
   }
 

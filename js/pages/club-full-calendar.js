@@ -251,6 +251,66 @@ function closeModal() {
   document.querySelector(".club-change-modal").style.display = "none";
 }
 
+//캘린더 아래 공지 생성
+function updateViewNotice(allNotices, selectedDate) {
+  const userDepartment = localStorage.getItem("departmentName");
+  const viewNotice = document.querySelector(".view-notice");
+  viewNotice.innerHTML = ""; // 기존 공지 초기화
+
+  let noticesHTML = "";
+  let count = 0;
+
+  allNotices.forEach((notice) => {
+    const noticeDate = new Date(notice.date);
+    const noticeFormatted = `${noticeDate.getFullYear()}-${String(noticeDate.getMonth() + 1).padStart(2, "0")}-${String(noticeDate.getDate()).padStart(2, "0")}`;
+
+    const targetDepartments = notice.target.split(",").map((target) => target.trim());
+    const isTargetMatching =
+      targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
+
+    if (noticeFormatted === selectedDate && isTargetMatching && count < 2) {
+      noticesHTML += `
+        <div class="view-notice-items" data-id="${notice.noticeId || notice.feeId || notice.attendanceId || notice.voteId}" data-type="${notice.noticeId ? "basic" : notice.feeId ? "fee" : notice.attendanceId ? "attendance" : "vote"}">
+          <p>${notice.target}</p>
+          <img src="/assets/icons/rectangle1.svg" />
+          <p>${notice.title}</p>
+          <img src="/assets/icons/Forth.svg" />
+        </div>
+      `;
+      count++;
+    }
+    viewNotice.innerHTML = noticesHTML;
+
+    document.querySelectorAll(".view-notice-items").forEach((item) => {
+      item.addEventListener("click", () => {
+        const id = item.getAttribute("data-id");
+        const type = item.getAttribute("data-type");
+
+        let noticeUrl;
+        switch (type) {
+          case "basic":
+            noticeUrl = `notice-view-default.html?id=${id}`;
+            break;
+          case "fee":
+            noticeUrl = `notice-view-fee.html?id=${id}`;
+            break;
+          case "attendance":
+            noticeUrl = `notice-view-attendance.html?id=${id}`;
+            break;
+          case "vote":
+            noticeUrl = `notice-view-vote.html?id=${id}`;
+            break;
+          default:
+            console.log("failed to create noticeUrl");
+            return;
+        }
+
+        window.location.href = noticeUrl;
+      });
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
   console.log(accessToken);
@@ -286,62 +346,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     updateViewNotice(allNotices, todayFormatted);
   });
-
-  function updateViewNotice(allNotices, selectedDate) {
-    const userDepartment = localStorage.getItem("departmentName");
-    const viewNotice = document.querySelector(".view-notice");
-    viewNotice.innerHTML = ""; // 기존 공지 초기화
-
-    let noticesHTML = "";
-
-    allNotices.forEach((notice) => {
-      const noticeDate = new Date(notice.date);
-      const noticeFormatted = `${noticeDate.getFullYear()}-${String(noticeDate.getMonth() + 1).padStart(2, "0")}-${String(noticeDate.getDate()).padStart(2, "0")}`;
-
-      const targetDepartments = notice.target.split(",").map((target) => target.trim());
-      const isTargetMatching =
-        targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
-
-      if (noticeFormatted === selectedDate && isTargetMatching) {
-        noticesHTML += `
-          <div class="view-notice-items">
-            <p>${notice.target}</p>
-            <img src="/assets/icons/rectangle1.svg" />
-            <p>${notice.title}</p>
-            <img src="/assets/icons/Forth.svg" />
-          </div>
-        `;
-      }
-    });
-    viewNotice.innerHTML = noticesHTML;
-
-    // 공지 클릭 시 이동
-    const noticeItems = viewNotice.querySelectorAll(".view-notice-items");
-    noticeItems.forEach((noticeItem) => {
-      noticeItem.addEventListener("click", () => {
-        let noticeUrl = "";
-        const noticeType = noticeItem.dataset.noticeType;
-        const noticeId = noticeItem.dataset.noticeId;
-
-        // 공지 타입에 따른 URL 생성
-        if (noticeType === "default") {
-          noticeUrl = `notice-view-default.html?id=${noticeId}`;
-        } else if (noticeType === "attendance") {
-          noticeUrl = `notice-view-attendance.html?id=${noticeId}`;
-        } else if (noticeType === "fee") {
-          noticeUrl = `notice-view-fee.html?id=${noticeId}`;
-        } else if (noticeType === "vote") {
-          noticeUrl = `notice-view-vote.html?id=${noticeId}`;
-        }
-
-        if (noticeUrl) {
-          window.location.href = noticeUrl; // 해당 공지 페이지로 이동
-        }
-      });
-    });
-  }
-
-  //공지 클릭 -> 이동
 
   const prevScreen = document.querySelector(".prev-screen");
   //캘린더 헤더 날짜
@@ -475,6 +479,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateViewNotice(allNotices, todayFormatted);
       }
 
+      //날짜 클릭
       dateDiv.addEventListener("click", () => {
         document.querySelectorAll(".selected-date").forEach((item) => {
           item.classList.remove("selected-date");
@@ -491,81 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
         dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
           p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
         });
-
-        //캘린더 아래 공지 추가
-        const viewNotice = document.querySelector(".view-notice");
-        viewNotice.innerHTML = ""; // 기존 공지 초기화
-
-        console.log("allNotices", allNotices);
-
-        for (let i = 0; i < allNotices.length; i++) {
-          const notice = allNotices[i];
-          const noticeDate = new Date(notice.date);
-
-          const isSameDate =
-            createDate.getFullYear() === noticeDate.getFullYear() &&
-            createDate.getMonth() === noticeDate.getMonth() &&
-            createDate.getDate() === noticeDate.getDate();
-
-          const targetDepartments = notice.target.split(",").map((target) => target.trim());
-          const isTargetMatching =
-            targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
-
-          if (isSameDate && isTargetMatching) {
-            const noticeItem = document.createElement("div");
-            noticeItem.classList.add("view-notice-items");
-
-            //공지 id를 data 속성으로 저장
-            noticeItem.dataset.noticeId =
-              notice.noticeId || notice.attendanceId || notice.feeId || notice.voteId;
-            noticeItem.dataset.noticeType = notice.noticeId
-              ? "default"
-              : notice.attendanceId
-                ? "attendance"
-                : notice.feeId
-                  ? "fee"
-                  : "vote";
-
-            const targetP = document.createElement("p");
-            targetP.textContent = notice.target;
-            noticeItem.appendChild(targetP);
-
-            const img1 = document.createElement("img");
-            img1.src = "/assets/icons/rectangle1.svg";
-            noticeItem.appendChild(img1);
-
-            const titleP = document.createElement("p");
-            titleP.textContent = notice.title;
-            noticeItem.appendChild(titleP);
-
-            const img2 = document.createElement("img");
-            img2.src = "/assets/icons/Forth.svg";
-            noticeItem.appendChild(img2);
-
-            console.log("..", noticeItem);
-
-            //공지별 이동
-            noticeItem.addEventListener("click", () => {
-              let noticeUrl = "";
-
-              if (noticeItem.dataset.noticeType === "default") {
-                noticeUrl = `notice-view-default.html?id=${noticeItem.dataset.noticeId}`;
-              } else if (noticeItem.dataset.noticeType === "attendance") {
-                noticeUrl = `notice-view-attendance.html?id=${noticeItem.dataset.noticeId}`;
-              } else if (noticeItem.dataset.noticeType === "fee") {
-                noticeUrl = `notice-view-fee.html?id=${noticeItem.dataset.noticeId}`;
-              } else if (noticeItem.dataset.noticeType === "vote") {
-                noticeUrl = `notice-view-vote.html?id=${noticeItem.dataset.noticeId}`;
-              }
-
-              if (noticeUrl) {
-                window.location.href = noticeUrl;
-              }
-            });
-
-            viewNotice.appendChild(noticeItem);
-          }
-        }
+        updateViewNotice(allNotices, selectedDate);
       });
     }
 
