@@ -80,21 +80,24 @@ function getDepartmentName() {
 
       if (data.isSuccess) {
         console.log("getDepartmentName 완료");
+        console.log("getDptm", data.result);
+
+        const selectedClub = data.result;
 
         const departmentName = data.result.departmentName; //departmentName 가져오기
-        const clubName = data.result.clubName; // clubName 가져오기
-        const url = data.result.url; // url 가져오기
+        // const clubName = data.result.clubName; // clubName 가져오기
+        // const url = data.result.url; // url 가져오기
 
         localStorage.setItem("departmentName", departmentName);
-        localStorage.setItem("selectedClub", JSON.stringify({ clubName, url }));
+        // localStorage.setItem("selectedClub", JSON.stringify({ clubName, url }));
+
+        localStorage.setItem("selectedClub", JSON.stringify(selectedClub));
 
         // 헤더에 반영
         const headerName = document.querySelector(".header-name");
         const headerImg = document.querySelector(".header-img");
-        headerName.textContent = clubName;
-        headerImg.src = url;
-
-        console.log(departmentName, clubName, url);
+        headerName.textContent = selectedClub.clubName;
+        headerImg.src = selectedClub.url;
       } else {
         throw new Error("부서 가져오기 실패");
       }
@@ -166,7 +169,6 @@ async function selectClub(memberClubId) {
       headerName.textContent = selectedClub.clubName;
       headerImg.src = selectedClub.url;
 
-      // 선택한 동아리 정보 로컬 스토리지에 저장 (필요시)
       localStorage.setItem("selectedClub", JSON.stringify(selectedClub));
     } else {
       throw new Error("동아리 선택 실패");
@@ -252,6 +254,66 @@ function closeModal() {
   document.querySelector(".club-change-modal").style.display = "none";
 }
 
+//캘린더 아래 공지 생성
+function updateViewNotice(allNotices, selectedDate) {
+  const userDepartment = localStorage.getItem("departmentName");
+  const viewNotice = document.querySelector(".view-notice");
+  viewNotice.innerHTML = ""; // 기존 공지 초기화
+
+  let noticesHTML = "";
+  let count = 0;
+
+  allNotices.forEach((notice) => {
+    const noticeDate = new Date(notice.date);
+    const noticeFormatted = `${noticeDate.getFullYear()}-${String(noticeDate.getMonth() + 1).padStart(2, "0")}-${String(noticeDate.getDate()).padStart(2, "0")}`;
+
+    const targetDepartments = notice.target.split(",").map((target) => target.trim());
+    const isTargetMatching =
+      targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
+
+    if (noticeFormatted === selectedDate && isTargetMatching && count < 2) {
+      noticesHTML += `
+        <div class="view-notice-items" data-id="${notice.noticeId || notice.feeId || notice.attendanceId || notice.voteId}" data-type="${notice.noticeId ? "basic" : notice.feeId ? "fee" : notice.attendanceId ? "attendance" : "vote"}">
+          <p>${notice.target}</p>
+          <img src="/assets/icons/rectangle1.svg" />
+          <p>${notice.title}</p>
+          <img src="/assets/icons/Forth.svg" />
+        </div>
+      `;
+      count++;
+    }
+    viewNotice.innerHTML = noticesHTML;
+
+    document.querySelectorAll(".view-notice-items").forEach((item) => {
+      item.addEventListener("click", () => {
+        const id = item.getAttribute("data-id");
+        const type = item.getAttribute("data-type");
+
+        let noticeUrl;
+        switch (type) {
+          case "basic":
+            noticeUrl = `notice-view-default.html?id=${id}`;
+            break;
+          case "fee":
+            noticeUrl = `notice-view-fee.html?id=${id}`;
+            break;
+          case "attendance":
+            noticeUrl = `notice-view-attendance.html?id=${id}`;
+            break;
+          case "vote":
+            noticeUrl = `notice-view-vote.html?id=${id}`;
+            break;
+          default:
+            console.log("failed to create noticeUrl");
+            return;
+        }
+
+        window.location.href = noticeUrl;
+      });
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
   console.log(accessToken);
@@ -285,41 +347,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const today = new Date();
     const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-    //localStorage.setItem("selectedDate", todayFormatted);
 
     updateViewNotice(allNotices, todayFormatted);
   });
-
-  function updateViewNotice(allNotices, selectedDate) {
-    const userDepartment = localStorage.getItem("departmentName");
-    const viewNotice = document.querySelector(".view-notice");
-    viewNotice.innerHTML = ""; // 기존 공지 초기화
-
-    let noticesHTML = "";
-    let count = 0;
-
-    allNotices.forEach((notice) => {
-      const noticeDate = new Date(notice.date);
-      const noticeFormatted = `${noticeDate.getFullYear()}-${String(noticeDate.getMonth() + 1).padStart(2, "0")}-${String(noticeDate.getDate()).padStart(2, "0")}`;
-
-      const targetDepartments = notice.target.split(",").map((target) => target.trim());
-      const isTargetMatching =
-        targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
-
-      if (noticeFormatted === selectedDate && isTargetMatching && count < 2) {
-        noticesHTML += `
-          <div class="view-notice-items">
-            <p>${notice.target}</p>
-            <img src="/assets/icons/rectangle1.svg" />
-            <p>${notice.title}</p>
-            <img src="/assets/icons/Forth.svg" />
-          </div>
-        `;
-        count++;
-      }
-    });
-    viewNotice.innerHTML = noticesHTML;
-  }
 
   const prevScreen = document.querySelector(".prev-screen");
 
@@ -425,44 +455,9 @@ document.addEventListener("DOMContentLoaded", () => {
           p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
         });
 
-        //캘린더 아래 공지 추가
-        const viewNotice = document.querySelector(".view-notice");
-        viewNotice.innerHTML = ""; // 기존 공지 초기화
-
-        let noticesHTML = "";
-        let count = 0;
-        //console.log("allNotices", allNotices);
-
-        for (let i = 0; i < allNotices.length; i++) {
-          const notice = allNotices[i];
-          const noticeDate = new Date(notice.date);
-
-          const isSameDate =
-            createDate.getFullYear() === noticeDate.getFullYear() &&
-            createDate.getMonth() === noticeDate.getMonth() &&
-            createDate.getDate() === noticeDate.getDate();
-
-          const targetDepartments = notice.target.split(",").map((target) => target.trim());
-          const isTargetMatching =
-            targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
-
-          if (isSameDate && isTargetMatching && count < 2) {
-            noticesHTML += `
-                <div class="view-notice-items">
-                  <p>${notice.target}</p>
-                  <img src="/assets/icons/rectangle1.svg" />
-                  <p>${notice.title}</p>
-                  <img src="/assets/icons/Forth.svg" />
-                </div>
-              `;
-            count++;
-          }
-          if (count >= 2) break; // 최대 2개까지만 추가
-        }
-        viewNotice.innerHTML = noticesHTML;
+        //날짜 클릭 시 캘린더 아래 공지 업데이트
+        updateViewNotice(allNotices, selectedDate);
       });
-
-      //
 
       //기본값으로 오늘 날짜 선택됨
       if (

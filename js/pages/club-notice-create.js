@@ -357,6 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
     //제목 입력 여부 확인 -> 없으면 alert
     if (!inputTitle.value.trim()) {
       alert("제목을 입력하세요.");
+      return;
     }
 
     const selectedTargetString = localStorage.getItem("selectedDepartments");
