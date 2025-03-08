@@ -555,11 +555,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  //[관리자 권한] 갤러리 > '참여' 클릭
-  const galleryCreate = document.querySelector(".gallery-create-btn");
+  //[관리자 권한] 갤러리 > '더보기' 클릭
+  const galleryCreate = document.querySelector(".gallery-more");
   if (galleryCreate) {
     galleryCreate.addEventListener("click", () => {
-      location.href = "gallery-create.html";
+      location.href = "gallery-view-more.html";
     });
   }
 
