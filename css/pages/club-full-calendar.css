@@ -90,6 +90,7 @@ body {
   height: 100vh;
   background-color: #f2f2f7;
   overflow-y: auto;
+  padding-bottom: 90px;
 }
 
 .full-cal-container {

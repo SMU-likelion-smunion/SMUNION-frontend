@@ -20,14 +20,13 @@ body {
   height: 100vh;
   background-color: #ffffff;
   overflow-y: auto;
+  padding-bottom: 90px;
 }
 
 .notice-create-container {
   width: 100%;
   padding-top: 20px;
-  padding-bottom: 50px;
-  /* padding-left: 24px;
-  padding-right: 24px; */
+  /* padding-bottom: 50px; */
 }
 
 .notice-create-container header {
