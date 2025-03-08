@@ -42,6 +42,37 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
+function getDepartmentName() {
+  fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs/selected`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      console.log("data", data);
+
+      if (data.isSuccess) {
+        console.log("getDepartmentName 완료");
+
+        const departmentName = data.result.departmentName; //departmentName 가져오기
+        const clubName = data.result.clubName; // clubName 가져오기
+        const url = data.result.url; // url 가져오기
+
+        localStorage.setItem("departmentName", departmentName);
+        localStorage.setItem("selectedClub", JSON.stringify({ clubName, url }));
+      } else {
+        throw new Error("부서 가져오기 실패");
+      }
+    })
+    .catch((error) => {
+      console.error("Error", error);
+    });
+}
+
 function getClubId() {
   let accessToken = getToken();
   fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs/selected`, {
@@ -70,9 +101,54 @@ function getClubId() {
     });
 }
 
+//공지 가져오기
+function getClubDetail() {
+  return fetch(API_SERVER_DOMAIN + `/api/v1/club/detail`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => {
+      return response.json();
+    })
+    .then((data) => {
+      if (data.isSuccess) {
+        console.log("동아리 전체 공지: ", data.result);
+        const {
+          basicNoticeDetailResponseList = [],
+          attendanceDetailResponseList = [],
+          feeNoticeResponseList = [],
+          voteResponseList = [],
+        } = data.result;
+
+        return [
+          ...basicNoticeDetailResponseList,
+          ...attendanceDetailResponseList,
+          ...feeNoticeResponseList,
+          ...voteResponseList,
+        ];
+      } else {
+        throw new Error("failed");
+      }
+    })
+    .catch((error) => console.error("Error club detail:", error));
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
   console.log(accessToken);
+
+  let allNotices = [];
+
+  getDepartmentName();
+  getClubDetail().then((notices) => {
+    allNotices = notices || [];
+    renderCalendar(allNotices);
+
+    const today = new Date();
+    const todayFormatted = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  });
 
   const storedClubId = localStorage.getItem("currentClubId");
   localStorage.setItem("storedClubId", storedClubId);
@@ -107,7 +183,7 @@ document.addEventListener("DOMContentLoaded", () => {
     defaultDate = today;
   }
 
-  function renderCalendar() {
+  function renderCalendar(allNotices) {
     calDates.innerHTML = ""; //날짜 초기화
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -123,57 +199,184 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedMonth = defaultDate.getMonth();
     const savedDay = defaultDate.getDate();
 
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDate = today.getDate();
+
     //지난 달 날짜
     for (let i = 0; i < firstDay; i++) {
       let prevBlankDiv = document.createElement("div");
       prevBlankDiv.classList.add("prev-month");
+
       let prevBlankSpan = document.createElement("span");
-      prevBlankSpan.textContent = prevLastDate - (firstDay - 1) + i;
+      let prevDate = prevLastDate - (firstDay - 1) + i; // 이전 달의 날짜 계산
+      prevBlankSpan.textContent = prevDate;
       prevBlankDiv.appendChild(prevBlankSpan);
+
+      //공지 추가
+      const noticeList = document.createElement("div");
+      noticeList.classList.add("todo-list");
+
+      // 공지 데이터 순회
+      let count = 0; // 최대 3개까지 공지 표시
+      const userDepartment = localStorage.getItem("departmentName"); // 사용자 부서 정보 가져오기
+      const createDate = new Date(year, month - 1, prevDate); // 이전 달 날짜 생성
+
+      for (let i = 0; i < allNotices.length; i++) {
+        const notice = allNotices[i];
+
+        //날짜 & 부서 필터링
+        const noticeDate = new Date(notice.date);
+        const isSameDate =
+          createDate.getFullYear() === noticeDate.getFullYear() &&
+          createDate.getMonth() === noticeDate.getMonth() &&
+          createDate.getDate() === noticeDate.getDate();
+
+        const targetDepartments = notice.target.split(",").map((target) => target.trim());
+        const isTargetMatching =
+          targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
+
+        //필터링 후 공지 추가
+        if (isSameDate && isTargetMatching && count < 3) {
+          const todoItem = document.createElement("p");
+          todoItem.textContent = notice.title;
+          noticeList.appendChild(todoItem);
+          count++;
+        }
+
+        //공지 최대 3개
+        if (count >= 3) break;
+      }
+      prevBlankDiv.appendChild(noticeList);
       calDates.appendChild(prevBlankDiv);
     }
 
-    //이번 달 날짜 생성
+    //이번 달 날짜
     for (let i = 1; i <= lastDay; i++) {
       let dateDiv = document.createElement("div");
       dateDiv.classList.add("dates");
       let spanElement = document.createElement("span");
       spanElement.textContent = i;
 
-      //기본값으로 선택됨
-      if (i === savedDay && year === savedYear && month === savedMonth) {
-        dateDiv.classList.add("selected-date");
-        calHeader.textContent = `${savedYear}년 ${savedMonth + 1}월 ${savedDay}일`;
-      }
-
       dateDiv.appendChild(spanElement);
+
+      //공지 추가
+      const noticeList = document.createElement("div");
+      noticeList.classList.add("todo-list");
+
+      // 공지 데이터 순회
+      let count = 0; // 최대 3개까지 공지 표시
+      const userDepartment = localStorage.getItem("departmentName"); // 사용자 부서 정보 가져오기
+      const createDate = new Date(year, month, i);
+
+      for (let i = 0; i < allNotices.length; i++) {
+        const notice = allNotices[i];
+
+        //날짜 & 부서 필터링
+        const noticeDate = new Date(notice.date);
+        const isSameDate =
+          createDate.getFullYear() === noticeDate.getFullYear() &&
+          createDate.getMonth() === noticeDate.getMonth() &&
+          createDate.getDate() === noticeDate.getDate();
+
+        const targetDepartments = notice.target.split(",").map((target) => target.trim());
+        const isTargetMatching =
+          targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
+
+        //필터링 후 공지 추가
+        if (isSameDate && isTargetMatching && count < 3) {
+          const todoItem = document.createElement("p");
+          todoItem.textContent = notice.title;
+          noticeList.appendChild(todoItem);
+          count++;
+        }
+        //공지 최대 3개
+        if (count >= 3) break;
+      }
+      dateDiv.appendChild(noticeList);
       calDates.appendChild(dateDiv);
+
+      //기본값으로 오늘 날짜 선택됨
+      if (i === todayDate && year === todayYear && month === todayMonth) {
+        dateDiv.classList.add("selected-date");
+        dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
+          p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
+        });
+
+        const todayFormatted = `${todayYear}-${String(todayMonth + 1).padStart(2, "0")}-${String(todayDate).padStart(2, "0")}`;
+        localStorage.setItem("selectedDate", todayFormatted);
+      }
 
       //날짜 클릭
       dateDiv.addEventListener("click", () => {
         document.querySelectorAll(".selected-date").forEach((item) => {
           item.classList.remove("selected-date");
+          item.querySelectorAll(".todo-list p").forEach((p) => {
+            p.style.backgroundColor = "#0E207F";
+          });
         });
         dateDiv.classList.add("selected-date");
+        calHeader.textContent = `${createDate.getFullYear()}년 ${createDate.getMonth() + 1}월 ${createDate.getDate()}일`;
 
-        //선택한 날짜 -> localStorage 저장
-        const selectedDate = `${year}-${(month + 1).toString().padStart(2, "0")}-${i.toString().padStart(2, "0")}`;
+        const selectedDate = `${createDate.getFullYear()}-${String(createDate.getMonth() + 1).padStart(2, "0")}-${String(createDate.getDate()).padStart(2, "0")}`;
         localStorage.setItem("selectedDate", selectedDate);
 
-        calHeader.textContent = `${year}년 ${month + 1}월 ${i}일`;
+        dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
+          p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
+        });
+        updateViewNotice(allNotices, selectedDate);
       });
     }
 
     //다음 달 날짜
     const remainDays = 7 - ((firstDay + lastDay) % 7);
+
     if (remainDays < 7) {
       for (let i = 1; i <= remainDays; i++) {
         let nextBlankDiv = document.createElement("div");
         nextBlankDiv.classList.add("next-month");
         let nextBlankSpan = document.createElement("span");
         nextBlankSpan.textContent = i;
+
         nextBlankDiv.appendChild(nextBlankSpan);
+
+        //공지 추가
+        const noticeList = document.createElement("div");
+        noticeList.classList.add("todo-list");
+
+        // 공지 데이터 순회
+        let count = 0; // 최대 3개까지 공지 표시
+        const userDepartment = localStorage.getItem("departmentName"); // 사용자 부서 정보 가져오기
+        const createDate = new Date(year, month + 1, i); // 이전 달 날짜 생성
+
+        for (let i = 0; i < allNotices.length; i++) {
+          const notice = allNotices[i];
+
+          //날짜 & 부서 필터링
+          const noticeDate = new Date(notice.date);
+          const isSameDate =
+            createDate.getFullYear() === noticeDate.getFullYear() &&
+            createDate.getMonth() === noticeDate.getMonth() &&
+            createDate.getDate() === noticeDate.getDate();
+
+          const targetDepartments = notice.target.split(",").map((target) => target.trim());
+          const isTargetMatching =
+            targetDepartments.includes("전체") || targetDepartments.includes(userDepartment);
+
+          //필터링 후 공지 추가
+          if (isSameDate && isTargetMatching && count < 3) {
+            const todoItem = document.createElement("p");
+            todoItem.textContent = notice.title;
+            noticeList.appendChild(todoItem);
+            count++;
+          }
+
+          //공지 최대 3개
+          if (count >= 3) break;
+        }
+
         calDates.appendChild(nextBlankDiv);
+        nextBlankDiv.appendChild(noticeList);
       }
     }
   }
@@ -181,16 +384,16 @@ document.addEventListener("DOMContentLoaded", () => {
   //이전 달 클릭 > 이동
   prevBtn.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar();
+    renderCalendar(allNotices);
   });
 
   //다음 달 클릭 > 이동
   nextBtn.addEventListener("click", () => {
     currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar();
+    renderCalendar(allNotices);
   });
 
-  renderCalendar();
+  renderCalendar(allNotices);
 
   //-----------------------------------------------------------------------------------
   //참여형 위젯 설정

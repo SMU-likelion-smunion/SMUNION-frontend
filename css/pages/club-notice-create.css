@@ -91,7 +91,7 @@ body {
 /* 날짜 설정 */
 
 .date-set {
-  margin: 0px 24px 25px 24px;
+  margin: 0px 19px 25px 19px;
 }
 
 .date-set-cal {
@@ -169,11 +169,11 @@ body {
 
 .todo-list {
   height: 50px;
-  border-bottom: 1px solid #d9d9d9;
+  width: 40px;
   padding: 2px 2px 0px 2px;
 }
 
-.todo-list p {
+/* .todo-list p {
   font-size: 8px;
   font-weight: bold;
   background-color: #0e207f;
@@ -183,7 +183,7 @@ body {
   border: 0;
   padding-top: 3px;
   margin-bottom: 1px;
-}
+} */
 
 .selected-date {
   background-color: #0e207f;
@@ -194,7 +194,7 @@ body {
 
 .widget-set {
   margin-bottom: 25px;
-  margin: 10px 24px 10px 24px;
+  margin: 10px 19px 10px 19px;
 }
 
 .widget-type {
@@ -249,7 +249,7 @@ body {
 /* 전달 대상 */
 
 .send-target {
-  margin: 0px 24px 25px 24px;
+  margin: 0px 19px 25px 19px;
 }
 
 .send-target-select p:nth-child(3) {
