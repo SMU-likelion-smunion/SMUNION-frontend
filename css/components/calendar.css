@@ -95,7 +95,6 @@
   display: grid;
   text-align: center;
   grid-template-columns: repeat(7, 1fr);
-  /* width: 327px; */
 }
 
 .cal-dates span {
@@ -115,7 +114,6 @@
 }
 
 .todo-list {
-  /* padding: 2px 2px 0px 0px; */
   overflow: hidden;
   width: 42px;
   white-space: nowrap;
