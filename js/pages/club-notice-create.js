@@ -324,7 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
         dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
           p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
         });
-        updateViewNotice(allNotices, selectedDate);
       });
     }
 
@@ -469,15 +468,6 @@ document.addEventListener("DOMContentLoaded", () => {
           // 체크 상태를 항상 '미선택'으로 설정
           circleImg.src = "/assets/icons/empty-circle.svg";
           circleImg.dataset.checked = "false";
-
-          //저장된 선택 상태 가져오기
-          // if (selectedDepartments.includes(department.name)) {
-          //   circleImg.src = "/assets/icons/checked-target.svg";
-          //   circleImg.dataset.checked = "true";
-          // } else {
-          //   circleImg.src = "/assets/icons/empty-circle.svg";
-          //   circleImg.dataset.checked = "false";
-          // }
 
           targetItemDiv.appendChild(circleImg);
 
@@ -650,7 +640,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log(apiUrl);
     console.log(noticeInfo);
-    console.log("📌 JSON.stringify(noticeInfo):", JSON.stringify(noticeInfo));
+    console.log(JSON.stringify(noticeInfo));
 
     fetch(apiUrl, {
       method: "POST",
