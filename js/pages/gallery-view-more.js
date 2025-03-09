@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //'이전' 클릭 시
   prevBtn.addEventListener("click", function () {
-    window.history.back();
+    window.location.href = "/html/pages/club-main.html";
   });
 
   //'생성' 클릭 시
