@@ -121,6 +121,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //'편집' 클릭 시
   editBtn.addEventListener("click", function () {
-    window.location.href = "gallery-view-more-edit.html";
+    window.location.href = "/html/pages/gallery-view-more-edit.html";
   });
 });
