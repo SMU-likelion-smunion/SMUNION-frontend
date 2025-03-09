@@ -644,16 +644,16 @@ function renderCalendar(allNotices) {
   }
 }
 
-// 이전 달 클릭 이벤트 핸들러
-document.querySelector(".cal-left-btn").addEventListener("click", function () {
-  currentDate.setMonth(currentDate.getMonth() - 1);
-  renderCalendar(allNotices);
+// 이전 달 클릭 이벤트 핸들러 - 수정된 선택자 사용
+document.querySelector(".cal-top-header img:first-child").addEventListener("click", function () {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar(allNotices);
 });
-
-// 다음 달 클릭 이벤트 핸들러
-document.querySelector(".cal-right-btn").addEventListener("click", function () {
-  currentDate.setMonth(currentDate.getMonth() + 1);
-  renderCalendar(allNotices);
+  
+  // 다음 달 클릭 이벤트 핸들러 - 수정된 선택자 사용
+document.querySelector(".cal-top-header img:last-child").addEventListener("click", function () {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar(allNotices);
 });
 
 // 전체 공지 데이터 가져오기
@@ -681,38 +681,43 @@ async function fetchAllNotices() {
 
 // 페이지 로드 시 실행되는 초기화 함수
 window.onload = async function () {
-  // 접근 토큰 확인
-  accessToken = getToken();
-  if (!accessToken) {
-    alert("로그인이 필요합니다.");
-    window.location.href = "login.html";
-    return;
-  }
-  
-  // 부서 정보 가져오기
-  getDepartmentName();
-  
-  // URL에서 공지 ID와 타입 가져오기
-  const params = getNoticeParams();
-  noticeId = params.id;
-  noticeType = params.type;
-  
-  if (!noticeId || !noticeType) {
-    return; // getNoticeParams 내에서 오류 처리됨
-  }
-  
-  // 캘린더용 공지 데이터 로드
-  await fetchAllNotices();
-  
-  // 폼 저장 버튼 이벤트 리스너 등록
-  document.querySelector(".save-notice-btn").addEventListener("click", updateNotice);
-  
-  // 수정할 공지 데이터 로드
-  const noticeData = await loadNoticeData(noticeId, noticeType);
-  if (noticeData) {
-    fillFormWithNoticeData(noticeData, noticeType);
-  }
-};
+    // 접근 토큰 확인
+    accessToken = getToken();
+    if (!accessToken) {
+      alert("로그인이 필요합니다.");
+      window.location.href = "login.html";
+      return;
+    }
+    
+    // 부서 정보 가져오기
+    getDepartmentName();
+    
+    // URL에서 공지 ID와 타입 가져오기
+    const params = getNoticeParams();
+    noticeId = params.id;
+    noticeType = params.type;
+    
+    if (!noticeId || !noticeType) {
+      return; // getNoticeParams 내에서 오류 처리됨
+    }
+    
+    // 캘린더용 공지 데이터 로드
+    await fetchAllNotices();
+    
+    // 완료 버튼 이벤트 리스너 등록 (save-notice-btn -> complete-btn으로 변경)
+    document.querySelector(".complete-btn").addEventListener("click", updateNotice);
+    
+    // 취소 버튼 이벤트 리스너 등록
+    document.querySelector(".cancel-btn").addEventListener("click", function() {
+      window.history.back();
+    });
+    
+    // 수정할 공지 데이터 로드
+    const noticeData = await loadNoticeData(noticeId, noticeType);
+    if (noticeData) {
+      fillFormWithNoticeData(noticeData, noticeType);
+    }
+  };
 
 // 공지 타입 위젯 선택 처리
 document.querySelectorAll(".widget-items").forEach(widget => {
@@ -756,27 +761,27 @@ document.querySelectorAll(".target-type-items").forEach(item => {
   });
 });
 
-// 뒤로가기 버튼 이벤트 핸들러
-document.querySelector(".back-button").addEventListener("click", function() {
-  window.history.back();
-});
+// // 뒤로가기 버튼 이벤트 핸들러
+// document.querySelector(".back-button").addEventListener("click", function() {
+//   window.history.back();
+// });
 
-// 위젯 설정 버튼 이벤트 핸들러
-document.querySelector(".widget-setting-btn").addEventListener("click", function() {
-  // 현재 선택된 위젯 타입에 따라 적절한 설정 페이지로 이동
-  switch (noticeType) {
-    case "vote":
-      window.location.href = "notice-setting-vote.html?edit=true";
-      break;
-    case "fee":
-      window.location.href = "notice-setting-fee.html?edit=true";
-      break;
-    case "attendance":
-      window.location.href = "notice-setting-attendance.html?edit=true";
-      break;
-    default:
-      alert("이 공지 타입에는 추가 설정이 없습니다.");
-      break;
-  }
-});
+// // 위젯 설정 버튼 이벤트 핸들러
+// document.querySelector(".widget-setting-btn").addEventListener("click", function() {
+//   // 현재 선택된 위젯 타입에 따라 적절한 설정 페이지로 이동
+//   switch (noticeType) {
+//     case "vote":
+//       window.location.href = "notice-setting-vote.html?edit=true";
+//       break;
+//     case "fee":
+//       window.location.href = "notice-setting-fee.html?edit=true";
+//       break;
+//     case "attendance":
+//       window.location.href = "notice-setting-attendance.html?edit=true";
+//       break;
+//     default:
+//       alert("이 공지 타입에는 추가 설정이 없습니다.");
+//       break;
+//   }
+// });
           

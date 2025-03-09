@@ -208,6 +208,8 @@ async function loadVoteDetail() {
       return;
     }
 
+    await checkUserPermissions();
+
     const response = await fetch(`${BASE_URL}/api/v1/notices/votes/${voteId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -223,7 +225,7 @@ async function loadVoteDetail() {
     setupEventHandlers(data.result);
   } catch (error) {
     console.error("Error:", error);
-    alert("투표 공지를 불러오는데 실패했습니다.");
+    alert("투표 공지를 불러오는 데 실패했습니다.");
   }
 }
 
@@ -317,8 +319,102 @@ function setupEventHandlers(vote) {
       alert("투표 처리에 실패했습니다.");
     }
   });
+
+    // 편집 버튼 이벤트 핸들러 
+    document.querySelector(".edit-btn").addEventListener("click", () => {
+      window.location.href = `club-notice-edit.html?id=${vote.voteId}&type=vote`;
+    });
+    
+    // 삭제 버튼 이벤트 핸들러
+    document.querySelector(".delete-btn").addEventListener("click", async () => {
+      if (confirm("정말로 이 투표 공지를 삭제하시겠습니까?")) {
+        try {
+          const token = getToken();
+          const response = await fetch(
+            `${BASE_URL}/api/v1/notices/votes/${vote.voteId}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+  
+          const data = await response.json();
+          if (data.isSuccess) {
+            alert("투표 공지가 삭제되었습니다.");
+            window.location.href = "notice-all.html";
+          } else {
+            throw new Error(data.message || "투표 공지 삭제에 실패했습니다.");
+          }
+        } catch (error) {
+          console.error("투표 공지 삭제 중 오류 발생:", error);
+          alert(`투표 공지 삭제에 실패했습니다: ${error.message}`);
+        }
+      }
+    });
 }
 
+/**
+ * 사용자가 운영진인지 확인하고 버튼 표시 여부를 결정
+ */
+async function checkUserPermissions() {
+  try {
+    const token = getToken();
+    const response = await fetch(`${BASE_URL}/api/v1/users/clubs/selected`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (data.isSuccess) {
+      // 사용자가 운영진인 경우에만 편집 및 삭제 버튼 표시
+      const isAdmin = data.result.departmentName === "운영진";
+      
+      // 편집 버튼 표시 여부 설정
+      const editButton = document.querySelector(".edit-btn");
+      if (editButton) {
+        editButton.style.display = isAdmin ? "block" : "none";
+      }
+      // 현황 버튼 표시 여부 설정
+      const statusButton = document.querySelector(".status-btn");
+      if (statusButton) {
+        statusButton.style.display = isAdmin ? "block" : "none";
+      }
+      
+      // 삭제 버튼 표시 여부 설정
+      const deleteButton = document.querySelector(".delete-btn");
+      if (deleteButton) {
+        deleteButton.style.display = isAdmin ? "block" : "none";
+      }
+    } else {
+      console.error("동아리 정보 조회 실패:", data.message);
+      // 실패 시 버튼 숨기기
+      hideAdminButtons();
+    }
+  } catch (error) {
+    console.error("운영진 권한 확인 중 오류 발생:", error);
+    // 오류 발생 시 편집/삭제 버튼 숨기기
+    hideAdminButtons();
+  }
+}
+
+/**
+ * 관리자 버튼(편집, 삭제) 숨기기 함수
+ */
+function hideAdminButtons() {
+  const editButton = document.querySelector(".edit-btn");
+  const deleteButton = document.querySelector(".delete-btn");
+  const statusButton = document.querySelector(".status-btn");
+
+  if (statusButton) statusButton.style.display = "none";
+  if (editButton) editButton.style.display = "none";
+  if (deleteButton) deleteButton.style.display = "none";
+}
 
 
 // 페이지 로드 시 실행
