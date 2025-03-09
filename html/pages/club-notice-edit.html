@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>동아리/공지수정</title>
+    <link rel="stylesheet" href="/css/components/calendar.css" />
+    <link rel="stylesheet" href="/css/pages/club-notice-create.css" />
+    <link rel="stylesheet" href="/css/components/navbar.css" />
+  </head>
+  <body>
+    <div class="notice-create-screen">
+      <div class="notice-create-container">
+        <header>공지 수정</header>
+        <div class="input-form">
+          <input type="text" class="input-title" placeholder="제목" />
+          <hr />
+          <input type="text" class="input-explain" placeholder="설명" />
+        </div>
+        <div class="date-set">
+          <div class="date-set-select" id="select">
+            <img src="/assets/icons/full-check-circle.svg" />
+            <p class="notice-create-factor">날짜 설정</p>
+          </div>
+
+          <!-- 캘린더 헤더 -->
+          <div class="date-set-cal">
+            <div class="cal-top-header">
+              <img src="/assets/icons/cal-left-btn.svg" />
+              <h1></h1>
+              <img src="/assets/icons/cal-right-btn.svg" />
+            </div>
+
+            <!-- 캘린더 요일 -->
+            <div class="cal-days">
+              <div>일</div>
+              <div>월</div>
+              <div>화</div>
+              <div>수</div>
+              <div>목</div>
+              <div>금</div>
+              <div>토</div>
+            </div>
+
+            <!-- 캘린더 날짜 -->
+            <div class="cal-dates"></div>
+          </div>
+        </div>
+        <div class="widget-set">
+          <div class="widget-set-select" id="select">
+            <img src="/assets/icons/full-check-circle.svg" />
+            <p class="notice-create-factor">참여형 위젯 설정</p>
+          </div>
+          <div class="widget-type">
+            <div class="widget-items" id="wi1">
+              <div>
+                <p>Notice</p>
+                <p>일반 공지</p>
+              </div>
+            </div>
+            <div class="widget-items" id="wi2">
+              <div>
+                <p>Attend</p>
+                <p>출석 체크</p>
+              </div>
+            </div>
+          </div>
+          <div class="widget-type">
+            <div class="widget-items" id="wi3">
+              <div>
+                <p>Vote</p>
+                <p>의견 수집</p>
+              </div>
+            </div>
+            <div class="widget-items" id="wi4">
+              <div>
+                <p>Pay</p>
+                <p>회비 납부</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="send-target">
+          <div class="send-target-select" id="select">
+            <img src="/assets/icons/full-check-circle.svg" />
+            <p class="notice-create-factor">전달 대상</p>
+            <p class="all-select">모두 선택</p>
+          </div>
+          <div class="target-type"></div>
+        </div>
+        <div class="bottom-btn">
+          <button class="cancel-btn" type="button">취소</button>
+          <button class="complete-btn" type="button">완료</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/js/pages/club-notice-edit.js"></script>
+  </body>
+</html>

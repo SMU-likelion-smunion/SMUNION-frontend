@@ -251,5 +251,46 @@ function setupEventHandlers(attendance) {
   });
 }
 
+/**
+ * 사용자의 권한을 확인하고 버튼 표시 여부를 결정하는 함수
+ */
+async function checkUserPermissions() {
+  try {
+    const token = getToken();
+    const response = await fetch(`${BASE_URL}/api/v1/users/profile`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (data.isSuccess) {
+      // 사용자 역할이 관리자인 경우에만 편집 및 삭제 버튼 표시
+      const isAdmin = data.result.role === "ADMIN" || data.result.role === "CLUB_ADMIN";
+      
+      // 편집 버튼 표시 여부 설정
+      const editButton = document.querySelector(".edit-btn");
+      if (editButton) {
+        editButton.style.display = isAdmin ? "block" : "none";
+      }
+      
+      // 삭제 버튼 표시 여부 설정
+      const deleteButton = document.querySelector(".delete-btn");
+      if (deleteButton) {
+        deleteButton.style.display = isAdmin ? "block" : "none";
+      }
+    }
+  } catch (error) {
+    console.error("사용자 권한 확인 중 오류 발생:", error);
+    // 오류 발생 시 편집/삭제 버튼 숨기기
+    const editButton = document.querySelector(".edit-btn");
+    const deleteButton = document.querySelector(".delete-btn");
+    
+    if (editButton) editButton.style.display = "none";
+    if (deleteButton) deleteButton.style.display = "none";
+  }
+}
+
 // 페이지 로드 시 실행
 document.addEventListener("DOMContentLoaded", loadAttendanceDetail);
