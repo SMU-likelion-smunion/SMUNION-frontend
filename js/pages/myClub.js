@@ -1,6 +1,6 @@
 const API_SERVER_DOMAIN = "https://smunion.shop";
 let accessToken = getCookie("accessToken");
-// let refreshToken = getCookie("refreshToken");
+let refreshToken = getCookie("refreshToken");
 
 function getCookie(name) {
   const nameEQ = name + "=";
@@ -36,6 +36,29 @@ function getMyClub(token) {
     });
 }
 
+function sendMyClub(token) {
+  return fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.isSuccess) {
+        alert("동아리 생성에 성공했습니다!");
+        getMyClub(token);
+      } else {
+        alert(data.message || "동아리 생성에 실패했습니다.");
+      }
+    })
+    .catch((error) => {
+      console.error("에러 발생:", error);
+      alert("서버와의 통신 중 오류가 발생했습니다.");
+    });
+}
+
 function getClubDetail(token) {
   return fetch(`${API_SERVER_DOMAIN}/api/v1/club/detail`, {
     method: "GET",
@@ -60,35 +83,39 @@ function getClubDetail(token) {
 document.addEventListener("DOMContentLoaded", () => {
   console.log("Access Token:", accessToken);
 
-  const clubBox = document.getElementById("clubBox");  
+  const clubBox = document.getElementById("clubBox");
 
   getMyClub(accessToken).then((data) => {
-
     if (data && data.result) {
       console.log("target data", data);
       clubBox.innerHTML = "";
       data.result.forEach((club) => {
         const clubDiv = document.createElement("div");
-        clubDiv.classList.add("club"); 
-        clubDiv.id = `club-${club.memberClubId}`;  
+        clubDiv.classList.add("club");
+        clubDiv.id = `club-${club.memberClubId}`;
         clubDiv.setAttribute("data-club-name", club.clubName); // clubName 저장
         clubDiv.innerHTML = `
           <img src="${club.url}" class="club_img">
           <p class="club_title">${club.clubName}</p>
         `;
-        clubBox.appendChild(clubDiv);  
+        clubBox.appendChild(clubDiv);
       });
-      
     }
-
-
   });
 
   clubBox.addEventListener("click", (event) => {
-    const clickedClub = event.target.closest(".club"); // 클릭한 clubDiv 찾기
+    const clickedClub = event.target.closest(".club");
     if (!clickedClub) return;
 
-    const clickedClubName = clickedClub.getAttribute("data-club-name"); // 저장한 clubName 가져오기
+    const memberClubId = clickedClub.getAttribute("data-club-id");
+    if (!memberClubId) {
+      console.error("memberClubId를 찾을 수 없습니다.");
+      return;
+    }
+
+    console.log("선택한 클럽 ID:", memberClubId);
+
+    sendMyClub(accessToken, memberClubId);
 
     getClubDetail(accessToken).then((data) => {
       if (data && data.result) {
