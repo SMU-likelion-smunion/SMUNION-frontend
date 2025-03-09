@@ -64,6 +64,7 @@ async function fetchAllClubNotices() {
     for (let club of clubList) {
       let memberClubId = club.memberClubId;
       let department = club.departmentName;
+      console.log(memberClubId);
 
       //특정 동아리 세션 선택
       await fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${memberClubId}`, {

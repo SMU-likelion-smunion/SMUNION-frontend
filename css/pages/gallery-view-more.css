@@ -69,12 +69,14 @@ body {
   color: #0e207f;
   font-weight: 700;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .edit-btn p {
   color: #0e207f;
   font-weight: 700;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .gallery-view-content {
@@ -96,24 +98,16 @@ body {
 }
 
 .gallery-items img:nth-child(1) {
-  width: 14px;
-  height: 14px;
-  object-fit: cover;
-  margin-right: 11px;
-  display: none;
-}
-
-.gallery-items img:nth-child(2) {
   width: 52px;
   height: 52px;
   border-radius: 4px;
 }
 
-.gallery-items img:nth-child(3) {
+.gallery-items img:nth-child(2) {
   margin-left: 11px;
   margin-right: 11px;
 }
 
-.gallery-items img:nth-child(5) {
+.gallery-items img:nth-child(4) {
   margin-left: auto;
 }

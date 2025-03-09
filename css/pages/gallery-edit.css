@@ -92,9 +92,8 @@ body {
 .gallery-items img:nth-child(1) {
   width: 14px;
   height: 14px;
-  object-fit: cover;
+  object-fit: contain;
   margin-right: 11px;
-  display: none;
 }
 
 .gallery-items img:nth-child(2) {
@@ -110,4 +109,64 @@ body {
 
 .gallery-items img:nth-child(5) {
   margin-left: auto;
+}
+
+/* modal */
+.del-modal {
+  /* display: none; */
+  position: fixed;
+  width: 375px;
+  min-height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  justify-content: center;
+  display: none;
+}
+
+.del-modal-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.del-modal-container2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 202px;
+  height: 68px;
+  border-radius: 8px;
+  background-color: #dbdbdb;
+  padding-top: 13px;
+  font-size: 13px;
+}
+
+.del-comment {
+  height: 25px;
+  text-align: center;
+  align-items: center;
+  border-bottom: 1px solid #c7c7c7;
+}
+
+.modal-btns {
+  height: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.cancel-btn {
+  width: 100px;
+  line-height: 30px;
+  border-right: 1px solid #c7c7c7;
+  text-align: center;
+  cursor: pointer;
+}
+
+.remove-btn {
+  width: 100px;
+  line-height: 30px;
+  text-align: center;
+  color: #ff0000;
+  cursor: pointer;
 }
