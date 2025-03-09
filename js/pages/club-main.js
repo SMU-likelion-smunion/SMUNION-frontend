@@ -519,7 +519,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const voteBox = document.querySelector("#item2");
   if (voteBox) {
     voteBox.addEventListener("click", () => {
-      window.location.href = "/html/pages/notice-all.html";
+      window.location.href = "/html/pages/notice-all.html?tab=vote";
     });
   }
 
@@ -527,7 +527,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const feeCalBox = document.querySelector("#item3");
   if (feeCalBox) {
     feeCalBox.addEventListener("click", () => {
-      window.location.href = "/html/pages/notice-all.html";
+      window.location.href = "/html/pages/notice-all.html?tab=fee";
     });
   }
 
@@ -535,7 +535,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const attendBox = document.querySelector("#item4");
   if (attendBox) {
     attendBox.addEventListener("click", () => {
-      window.location.href = "/html/pages/notice-all.html";
+      window.location.href = "/html/pages/notice-all.html?tab=attendance";
     });
   }
 
