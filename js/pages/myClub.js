@@ -36,8 +36,8 @@ function getMyClub(token) {
     });
 }
 
-function sendMyClub(token) {
-  return fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select`, {
+function sendMyClub(token, memberClubId) {
+  return fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${memberClubId}`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -47,15 +47,15 @@ function sendMyClub(token) {
     .then((response) => response.json())
     .then((data) => {
       if (data.isSuccess) {
-        alert("동아리 생성에 성공했습니다!");
+        //alert("동아리 선택에 성공했습니다!");
         getMyClub(token);
       } else {
-        alert(data.message || "동아리 생성에 실패했습니다.");
+        //alert(data.message || "동아리 선택에 실패했습니다.");
       }
     })
     .catch((error) => {
       console.error("에러 발생:", error);
-      alert("서버와의 통신 중 오류가 발생했습니다.");
+      //alert("서버와의 통신 중 오류가 발생했습니다.");
     });
 }
 
@@ -92,7 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
       data.result.forEach((club) => {
         const clubDiv = document.createElement("div");
         clubDiv.classList.add("club");
-        clubDiv.id = `club-${club.memberClubId}`;
+        // clubDiv.id = club.memberClubId;
+        clubDiv.setAttribute("data-club-id", club.memberClubId);
         clubDiv.setAttribute("data-club-name", club.clubName); // clubName 저장
         clubDiv.innerHTML = `
           <img src="${club.url}" class="club_img">
@@ -119,14 +120,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     getClubDetail(accessToken).then((data) => {
       if (data && data.result) {
-        console.log("클릭한 클럽:", clickedClubName);
-        console.log("서버 클럽 이름:", data.result.name);
+        // console.log("클릭한 클럽:", clickedClubName);
+        // console.log("서버 클럽 이름:", data.result.name);
+        window.location.href = "/html/pages/club-main.html";
 
-        if (clickedClubName === data.result.name) {
-          window.location.href = "/html/pages/club-main.html"; // 이동
-        } else {
-          window.location.href = "/html/pages/club-full-calendar.html"; // 기본 이동
-        }
+        // if (clickedClubName === data.result.name) {
+        //   window.location.href = "/html/pages/club-main.html"; // 이동
+        // } else {
+        //   window.location.href = "/html/pages/club-full-calendar.html"; // 기본 이동
+        // }
       }
     });
   });
