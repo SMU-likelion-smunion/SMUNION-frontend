@@ -1,47 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>myClub</title>
-  <link rel="stylesheet" href="../../css/pages/myClub.css" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>myClub</title>
+    <link rel="stylesheet" href="../../css/pages/myClub.css" />
     <script defer src="../../js/pages/myClub.js"></script>
+  </head>
 
-</head>
-
-<body class="mobile-container">
-  <header class="header">
-    <p class="title">나의 동아리</p>
-    <div class="buttons">
-      <button onclick="window.location.href='clubSignUp.html'">가입</button>
-      <button onclick="window.location.href='clubCreate.html'">생성</button>
-    </div>
-  </header>
-  <main class="main">
-    <div class="clubs"id="clubBox">
-
-      <div class="club">
-        <img src="../../assets/images/lion-face.png" class="club_img">
-        <p class="club_title" id="clubName1">멋쟁이사자처럼</p>
+  <body class="mobile-container">
+    <header class="header">
+      <p class="title">나의 동아리</p>
+      <div class="buttons">
+        <button onclick="window.location.href='clubSignUp.html'">가입</button>
+        <button onclick="window.location.href='clubCreate.html'">생성</button>
       </div>
-
-    </div>
-    
-  </main>
-      <div id="navbar-container"></div> 
-  <script>
-    // 네비바를 동적으로 불러오기
-    fetch('../../html/components/navbar.html')
-      .then(response => response.text())
-      .then(data => {
-        document.getElementById('navbar-container').innerHTML = data;
-      })
-      .catch(error => {
-        console.error('Error loading navbar:', error);
-      });
-  </script>
-
-</body>
-
+    </header>
+    <main class="main">
+      <div class="clubs" id="clubBox">
+        <div class="club" onclick="window.location.href='home.html'">
+          <img src="../../assets/images/lion-face.png" class="club_img" />
+          <p class="club_title" id="clubName1">라미</p>
+        </div>
+      </div>
+    </main>
+    <div id="navbar-container"></div>
+    <script>
+      // 네비바를 동적으로 불러오기
+      fetch("../../html/components/navbar.html")
+        .then((response) => response.text())
+        .then((data) => {
+          document.getElementById("navbar-container").innerHTML = data;
+        })
+        .catch((error) => {
+          console.error("Error loading navbar:", error);
+        });
+    </script>
+  </body>
 </html>
