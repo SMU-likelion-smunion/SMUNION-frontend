@@ -68,7 +68,6 @@ function showGallery() {
 
           const galleryItem = `
 						<div class="gallery-items" data-gallery-id="${galleryId}">
-						  <img class="check-svg" src="/assets/icons/unchecked-circle.svg" />
 							<img src="${thumbnail}" />
 							<img src="/assets/icons/rectangle2.svg" />
 							<p>${name}</p>

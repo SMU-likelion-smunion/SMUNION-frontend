@@ -59,8 +59,6 @@ function showGallery() {
       //console.log("gallery data", data);
 
       if (data.isSuccess && data.result && data.result.galleryResDTOS) {
-        //console.log("gallery data 조회 성공");
-
         data.result.galleryResDTOS.forEach((item) => {
           const galleryId = item.galleryID;
           const name = item.name;
@@ -80,12 +78,15 @@ function showGallery() {
             .insertAdjacentHTML("beforeend", galleryItem);
         });
 
-        // 갤러리 클릭 시
+        //갤러리 클릭 시
         document.querySelectorAll(".gallery-items").forEach((item) => {
           item.addEventListener("click", function () {
-            const galleryId = this.dataset.galleryId;
-            localStorage.setItem("selectedGalleryId", galleryId);
-            window.location.href = `/html/pages/gallery.html?id=${galleryId}`;
+            const checkImg = this.querySelector(".check-svg");
+            if (checkImg.src.includes("unchecked-circle.svg")) {
+              checkImg.src = "/assets/icons/full-check-circle.svg";
+            } else {
+              checkImg.src = "/assets/icons/unchecked-circle.svg";
+            }
           });
         });
       } else {
@@ -97,18 +98,75 @@ function showGallery() {
     });
 }
 
+function deleteGallery(galleryId) {
+  fetch(API_SERVER_DOMAIN + `/api/v1/gallery/${galleryId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("갤러리 삭제 실패");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (data.isSuccess) {
+        window.location.href = "/html/pages/gallery-view-more.html";
+      } else {
+        throw new Error("갤러리 삭제 실패");
+      }
+    })
+    .catch((error) => {
+      console.error("Error deleting gallery:", error);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function () {
-  let accessToken = getToken();
+  getToken();
 
   //갤러리 목록
   showGallery();
 
   const prevBtn = document.querySelector(".prev-screen img");
-  const editBtn = document.querySelector(".edit-btn");
-  const createBtn = document.querySelector(".create-btn");
+  const delBtn = document.querySelector(".del-btn");
+  const delModal = document.querySelector(".del-modal");
+  const removeBtn = document.querySelector(".remove-btn");
+  const cancelBtn = document.querySelector(".cancel-btn");
 
   //'이전' 클릭 시
   prevBtn.addEventListener("click", function () {
     window.history.back();
+  });
+
+  // '삭제' 버튼 클릭 시
+  delBtn.addEventListener("click", function () {
+    const checkedItems = document.querySelectorAll(
+      ".gallery-items .check-svg[src='/assets/icons/full-check-circle.svg']"
+    );
+
+    if (checkedItems.length > 0) {
+      // 모달을 보이게 함
+      delModal.style.display = "block";
+
+      // '삭제' 버튼 클릭 시 선택된 항목들을 삭제
+      removeBtn.addEventListener("click", function () {
+        checkedItems.forEach((item) => {
+          const galleryId = item.closest(".gallery-items").dataset.galleryId;
+          deleteGallery(galleryId); // 해당 galleryId로 삭제 요청
+        });
+
+        delModal.style.display = "none";
+        alert("갤러리 삭제 성공");
+      });
+
+      // '취소' 버튼 클릭 시 모달 닫기
+      cancelBtn.addEventListener("click", function () {
+        delModal.style.display = "none"; // 모달 숨기기
+      });
+    } else {
+      alert("삭제할 갤러리를 선택하세요.");
+    }
   });
 });
