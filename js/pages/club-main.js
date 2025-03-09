@@ -52,7 +52,7 @@ async function changeModalData() {
     });
 
     const data = await response.json();
-    console.log("changeModalData", data);
+    //console.log("changeModalData", data);
 
     if (data.isSuccess) {
       return data.result;
@@ -76,11 +76,11 @@ function getDepartmentName() {
       return response.json();
     })
     .then((data) => {
-      console.log("data", data);
+      //console.log("data", data);
 
       if (data.isSuccess) {
-        console.log("getDepartmentName 완료");
-        console.log("getDptm", data.result);
+        //console.log("getDepartmentName 완료");
+        //console.log("getDptm", data.result);
 
         const selectedClub = data.result;
 
@@ -144,7 +144,7 @@ function getClubDetail() {
 // 특정 동아리 세션에 저장
 async function selectClub(memberClubId) {
   let accessToken = getCookie("accessToken");
-  console.log("선택한 동아리 ID:", memberClubId);
+  //console.log("선택한 동아리 ID:", memberClubId);
 
   try {
     const response = await fetch(
@@ -159,7 +159,7 @@ async function selectClub(memberClubId) {
     );
     const data = await response.json();
     if (data.isSuccess) {
-      console.log("동아리 선택 성공:", data);
+      //console.log("동아리 선택 성공:", data);
       const selectedClub = data.result; //선택한 동아리 정보 저장
 
       // 헤더 업데이트
@@ -316,7 +316,6 @@ function updateViewNotice(allNotices, selectedDate) {
 
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
-  console.log(accessToken);
 
   let allNotices = [];
 
@@ -574,10 +573,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json();
     })
     .then((data) => {
-      console.log("gallery data", data);
+      //console.log("gallery data", data);
 
       if (data.isSuccess && data.result && data.result.galleryResDTOS) {
-        console.log("gallery data 조회 성공");
+        //console.log("gallery data 조회 성공");
 
         data.result.galleryResDTOS.forEach((item) => {
           const galleryId = item.galleryID;

@@ -53,10 +53,10 @@ function getDepartmentName() {
       return response.json();
     })
     .then((data) => {
-      console.log("data", data);
+      //console.log("data", data);
 
       if (data.isSuccess) {
-        console.log("getDepartmentName 완료");
+        //console.log("getDepartmentName 완료");
 
         const departmentName = data.result.departmentName; //departmentName 가져오기
         const clubName = data.result.clubName; // clubName 가져오기
@@ -85,13 +85,13 @@ function getClubId() {
       return response.json();
     })
     .then((data) => {
-      console.log("data", data);
+      //console.log("data", data);
 
       if (data.isSuccess) {
-        console.log("get memberClubId 완료");
+        //console.log("get memberClubId 완료");
         const currentClubId = data.result.memberClubId;
         localStorage.setItem("currentClubId", currentClubId);
-        console.log(currentClubId);
+        //console.log(currentClubId);
       } else {
         throw new Error("memberClubId 가져오기 실패");
       }
@@ -114,7 +114,7 @@ function getClubDetail() {
     })
     .then((data) => {
       if (data.isSuccess) {
-        console.log("동아리 전체 공지: ", data.result);
+        //console.log("동아리 전체 공지: ", data.result);
         const {
           basicNoticeDetailResponseList = [],
           attendanceDetailResponseList = [],
@@ -137,7 +137,6 @@ function getClubDetail() {
 
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
-  console.log(accessToken);
 
   let allNotices = [];
 
@@ -450,7 +449,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json();
     })
     .then((data) => {
-      console.log("target data", data);
+      //console.log("target data", data);
 
       if (data.isSuccess) {
         const departments = data.result.departmentDTOS;
@@ -556,9 +555,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedTargetString = localStorage.getItem("selectedDepartments");
     const selectedTarget = selectedTargetString ? JSON.parse(selectedTargetString) : [];
     const sDateString = localStorage.getItem("selectedDate");
-    console.log(sDateString);
+    //console.log(sDateString);
     const sDate = new Date(sDateString);
-    console.log(sDate);
+    //console.log(sDate);
 
     //localStorage > noticeData 가져오기
     const noticeDataString = localStorage.getItem("noticeData");
@@ -601,7 +600,7 @@ document.addEventListener("DOMContentLoaded", () => {
             targetDepartments: selectedTarget,
             date: attendData.time,
           };
-          console.log(noticeData);
+          //console.log(noticeData);
 
           break;
 
@@ -617,7 +616,7 @@ document.addEventListener("DOMContentLoaded", () => {
             participantCount: payData.participantCount,
             targetDepartments: selectedTarget,
           };
-          console.log(noticeData);
+          //console.log(noticeData);
           break;
 
         case "vote":
@@ -631,16 +630,16 @@ document.addEventListener("DOMContentLoaded", () => {
             anonymous: voteData.anonymous,
             options: voteData.options,
           };
-          console.log(noticeData);
+          //console.log(noticeData);
           break;
       }
     }
 
     const apiUrl = `${API_SERVER_DOMAIN}${apiPath}`;
 
-    console.log(apiUrl);
-    console.log(noticeInfo);
-    console.log(JSON.stringify(noticeInfo));
+    //console.log(apiUrl);
+    //console.log(noticeInfo);
+    //console.log(JSON.stringify(noticeInfo));
 
     fetch(apiUrl, {
       method: "POST",

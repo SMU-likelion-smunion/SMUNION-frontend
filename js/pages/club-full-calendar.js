@@ -53,7 +53,7 @@ async function changeModalData() {
     });
 
     const data = await response.json();
-    console.log("changeModalData", data);
+    //console.log("changeModalData", data);
 
     if (data.isSuccess) {
       return data.result;
@@ -77,10 +77,10 @@ function getDepartmentName() {
       return response.json();
     })
     .then((data) => {
-      console.log("data", data);
+      //console.log("data", data);
 
       if (data.isSuccess) {
-        console.log("getDepartmentName 완료");
+        //console.log("getDepartmentName 완료");
 
         const departmentName = data.result.departmentName; //departmentName 가져오기
         const clubName = data.result.clubName; // clubName 가져오기
@@ -93,7 +93,7 @@ function getDepartmentName() {
         const headerImg = document.querySelector(".club-img");
         headerImg.src = url;
 
-        console.log(departmentName, clubName, url);
+        //console.log(departmentName, clubName, url);
       } else {
         throw new Error("부서 가져오기 실패");
       }
@@ -116,7 +116,7 @@ function getClubDetail() {
     })
     .then((data) => {
       if (data.isSuccess) {
-        console.log("동아리 전체 공지: ", data.result);
+        //console.log("동아리 전체 공지: ", data.result);
         const {
           basicNoticeDetailResponseList = [],
           attendanceDetailResponseList = [],
@@ -140,7 +140,7 @@ function getClubDetail() {
 // 특정 동아리 세션에 저장
 async function selectClub(memberClubId) {
   let accessToken = getCookie("accessToken");
-  console.log("선택한 동아리 ID:", memberClubId);
+  //console.log("선택한 동아리 ID:", memberClubId);
 
   try {
     const response = await fetch(
@@ -155,7 +155,7 @@ async function selectClub(memberClubId) {
     );
     const data = await response.json();
     if (data.isSuccess) {
-      console.log("동아리 선택 성공:", data);
+      //console.log("동아리 선택 성공:", data);
       const selectedClub = data.result; //선택한 동아리 정보 저장
 
       // 헤더 업데이트
@@ -208,7 +208,7 @@ async function addModalItems() {
 
   try {
     const items = await changeModalData();
-    console.log("받은 데이터", items);
+    //console.log("받은 데이터", items);
 
     if (!items || items.length === 0) {
       console.log("데이터 없음");
@@ -313,8 +313,6 @@ function updateViewNotice(allNotices, selectedDate) {
 
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
-  console.log(accessToken);
-
   let allNotices = [];
 
   const modal = document.querySelector(".club-change-modal");
@@ -358,7 +356,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const today = new Date(); //오늘 날짜
 
   function renderCalendar(allNotices) {
-    console.log("가져온 allNotices", allNotices);
+    //console.log("가져온 allNotices", allNotices);
     calDates.innerHTML = ""; //날짜 초기화
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
