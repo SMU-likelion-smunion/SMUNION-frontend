@@ -254,8 +254,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  console.log(accessToken);
-
   try {
     const allNotices = await fetchAllClubNotices(); // 모든 공지 데이터
     //console.log("line 165:", allNotices);

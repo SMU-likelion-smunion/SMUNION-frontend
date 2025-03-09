@@ -46,7 +46,6 @@ function deleteCookie(name) {
 
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
-  console.log(accessToken);
 
   const prevScreen = document.querySelector(".prev-screen");
   prevScreen.addEventListener("click", () => {
@@ -64,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        //console.log(data);
 
         if (data.isSuccess) {
           //갤러리 이름

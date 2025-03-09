@@ -56,10 +56,10 @@ function showGallery() {
       return response.json();
     })
     .then((data) => {
-      console.log("gallery data", data);
+      //console.log("gallery data", data);
 
       if (data.isSuccess && data.result && data.result.galleryResDTOS) {
-        console.log("gallery data 조회 성공");
+        //console.log("gallery data 조회 성공");
 
         data.result.galleryResDTOS.forEach((item) => {
           const galleryId = item.galleryID;
@@ -99,7 +99,6 @@ function showGallery() {
 
 document.addEventListener("DOMContentLoaded", function () {
   let accessToken = getToken();
-  console.log(accessToken);
 
   //갤러리 목록
   showGallery();
@@ -107,7 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const prevBtn = document.querySelector(".prev-screen img");
   const editBtn = document.querySelector(".edit-btn");
   const createBtn = document.querySelector(".create-btn");
-  const checkSvg = document.querySelectorAll(".gallery-items img:nth-child(1)");
 
   //갤러리 보여주기
 
@@ -121,15 +119,8 @@ document.addEventListener("DOMContentLoaded", function () {
     location.href = "gallery-create.html";
   });
 
-  let editStatus = false;
   //'편집' 클릭 시
   editBtn.addEventListener("click", function () {
-    editStatus = !editStatus; //편집 상태
-
-    if (editStatus) {
-      createBtn.style.display = "none"; //'생성' 숨김
-      editBtn.innerHTML = "<p>삭제</p>";
-      checkSvg.forEach((img) => (img.style.display = "block"));
-    }
+    window.location.href = "gallery-view-more-edit.html";
   });
 });

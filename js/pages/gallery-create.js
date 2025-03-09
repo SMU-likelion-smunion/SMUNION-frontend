@@ -57,13 +57,13 @@ function getClubId() {
       return response.json();
     })
     .then((data) => {
-      console.log("data", data);
+      //console.log("data", data);
 
       if (data.isSuccess) {
-        console.log("get memberClubId 완료");
+        //console.log("get memberClubId 완료");
         const currentClubId = data.result.memberClubId;
         localStorage.setItem("currentClubId", currentClubId);
-        console.log(currentClubId);
+        //console.log(currentClubId);
       } else {
         throw new Error("memberClubId 가져오기 실패");
       }
@@ -75,7 +75,6 @@ function getClubId() {
 
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
-  console.log(accessToken);
   getClubId();
 
   const prevScreen = document.querySelector(".prev-screen");
@@ -148,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     formData.append("name", nameInput.value);
 
-    console.log(uploadedImages);
+    //console.log(uploadedImages);
     if (uploadedImages.length > 0) {
       uploadedImages.forEach((file) => {
         formData.append("images", file, file.name);
@@ -157,7 +156,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       for (const x of formData.entries()) {
-        console.log(x);
+        //console.log(x);
       }
 
       const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/gallery/create`, {
@@ -172,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         alert("갤러리 생성이 완료되었습니다.");
-        console.log(data);
+        //console.log(data);
         window.history.back();
       } else {
         alert(`갤러리 생성 실패: ${data.message}`);
