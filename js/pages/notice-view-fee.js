@@ -211,5 +211,7 @@ function setupEventHandlers(fee) {
   });
 }
 
+
+
 // 페이지 로드 시 실행
 document.addEventListener("DOMContentLoaded", loadFeeDetail);
