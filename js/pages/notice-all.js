@@ -254,6 +254,30 @@ function initializeFloatingButton() {
   }
 }
 
+// URL에서 탭 파라미터를 읽어 해당 탭 활성화 (메인화면에서 이동하는 부분 !)
+function activateTabFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const tabParam = urlParams.get('tab');
+  
+  if (tabParam) {
+    const tabButtons = document.querySelectorAll(".tab-menu button");
+    const targetButton = Array.from(tabButtons).find(
+      button => button.dataset.category === tabParam
+    );
+    
+    if (targetButton) {
+      // 모든 탭에서 active 클래스 제거
+      tabButtons.forEach(btn => btn.classList.remove("active"));
+      
+      // 선택한 탭에 active 클래스 추가
+      targetButton.classList.add("active");
+      
+      // 해당 카테고리 필터링 적용
+      filterNoticesByCategory(tabParam);
+    }
+  }
+}
+
 // 공지사항 필터링
 function filterNoticesByCategory(category) {
   const allNotices = document.querySelectorAll(".notice-item");
@@ -281,14 +305,18 @@ function filterNoticesByCategory(category) {
   });
 }
 
+
+
 // 뒤로가기 버튼 이벤트 처리
 document.querySelector(".back-btn").addEventListener("click", () => {
   window.history.back();
 });
 
-// 초기화
 document.addEventListener("DOMContentLoaded", () => {
   initializeTabMenu();
-  fetchNotices();
+  fetchNotices().then(() => {
+    // 공지를 불러온 후 URL 파라미터에 따라 탭 활성화
+    activateTabFromURL();
+  });
   initializeFloatingButton();
 });
