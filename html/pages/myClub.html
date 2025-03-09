@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>myClub</title>
     <link rel="stylesheet" href="../../css/pages/myClub.css" />
+    <link rel="stylesheet" href="/css/components/navbar.css" />
     <script defer src="../../js/pages/myClub.js"></script>
   </head>
 
@@ -18,14 +19,49 @@
     </header>
     <main class="main">
       <div class="clubs" id="clubBox">
-        <div class="club" onclick="window.location.href='home.html'">
+        <!-- <div class="club" onclick="window.location.href='home.html'">
           <img src="../../assets/images/lion-face.png" class="club_img" />
           <p class="club_title" id="clubName1">라미</p>
-        </div>
+        </div> -->
       </div>
     </main>
-    <div id="navbar-container"></div>
+
+    <!-- 네비게이션 바 -->
+    <nav class="navbar">
+      <!-- 홈 -->
+      <a href="/html/pages/home.html" class="nav-item">
+        <img src="/assets/icons/home-icon.svg" alt="홈" class="nav-icon" />
+        <span class="nav-text">홈</span>
+      </a>
+      <!-- 동아리 -->
+      <a href="/html/pages/myClub.html" class="nav-item">
+        <img src="/assets/icons/club-icon-clicked.svg" alt="동아리" class="nav-icon" />
+        <span class="nav-text">동아리</span>
+      </a>
+      <!-- 스뮤니온 -->
+      <a href="/html/pages/community.html" class="nav-item">
+        <img src="/assets/icons/smunion-icon.svg" alt="스뮤니온" class="nav-icon" />
+        <span class="nav-text">스뮤니온</span>
+      </a>
+      <!-- 마이페이지 -->
+      <a href="/html/pages/mypage.html" class="nav-item">
+        <img src="/assets/icons/mypage-icon.svg" alt="마이페이지" class="nav-icon" />
+        <span class="nav-text">마이페이지</span>
+      </a>
+    </nav>
+
+    <!-- <div id="navbar-container"></div> -->
     <script>
+      const navItems = document.querySelectorAll(".nav-item");
+      navItems.forEach((item) => {
+        if (item.href === window.location.href) {
+          item.classList.add("active");
+        } else {
+          item.classList.remove("active");
+        }
+      });
+    </script>
+    <!-- <script>
       // 네비바를 동적으로 불러오기
       fetch("../../html/components/navbar.html")
         .then((response) => response.text())
@@ -35,6 +71,6 @@
         .catch((error) => {
           console.error("Error loading navbar:", error);
         });
-    </script>
+    </script> -->
   </body>
 </html>

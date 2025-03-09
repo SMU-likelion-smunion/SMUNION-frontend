@@ -207,7 +207,7 @@
           <span class="nav-text">홈</span>
         </a>
         <!-- 동아리 -->
-        <a href="/html/pages/club-main.html" class="nav-item">
+        <a href="/html/pages/myClub.html" class="nav-item" id="nav-item2">
           <img src="/assets/icons/club-icon-clicked.svg" alt="동아리" class="nav-icon" />
           <span class="nav-text">동아리</span>
         </a>
@@ -238,12 +238,11 @@
 
     <!-- navbar js -->
     <script>
-      const navItems = document.querySelectorAll(".nav-item");
-      navItems.forEach((item) => {
-        if (item.href === window.location.href) {
-          item.classList.add("active");
-        } else {
-          item.classList.remove("active");
+      document.addEventListener("DOMContentLoaded", function () {
+        const navItem2 = document.querySelector("#nav-item2");
+
+        if (navItem2) {
+          navItem2.classList.add("active");
         }
       });
     </script>
