@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (response.ok) {
         alert("갤러리 생성이 완료되었습니다.");
         //console.log(data);
-        window.history.back();
+        window.location.href = "/html/pages/gallery-view-more.html";
       } else {
         alert(`갤러리 생성 실패: ${data.message}`);
       }
