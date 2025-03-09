@@ -42,6 +42,37 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
+//관리자 권한 확인
+async function checkAdminPrivileges() {
+  try {
+    const response = await fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs/selected`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    const isAdmin = data.result.departmentName === "운영진";
+    console.log(isAdmin);
+
+    const createBtn = document.querySelector(".notice-create-btn");
+    const moreBtn = document.querySelector(".gallery-more");
+    createBtn.style.display = isAdmin ? "block" : "none";
+    moreBtn.style.display = isAdmin ? "block" : "none";
+
+    if (data.isSuccess) {
+      return data.result;
+    } else {
+      throw new Error("동아리 프로필 조회 실패");
+    }
+  } catch (error) {
+    console.error("Error", error);
+  }
+}
+
 async function changeModalData() {
   try {
     const response = await fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs`, {
@@ -318,6 +349,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
 
   let allNotices = [];
+
+  checkAdminPrivileges();
 
   const modal = document.querySelector(".club-change-modal");
   const modalClick = document.querySelector(".inner-content");
