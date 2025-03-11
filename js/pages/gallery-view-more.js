@@ -44,8 +44,39 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
+//운영진 여부 확인
+async function checkAdminPrivileges() {
+  try {
+    const response = await fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs/selected`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    const isAdmin = data.result.departmentName === "운영진";
+    console.log(isAdmin);
+
+    const createBtn = document.querySelector(".create-btn");
+    const editBtn = document.querySelector(".edit-btn");
+    createBtn.style.display = isAdmin ? "block" : "none";
+    editBtn.style.display = isAdmin ? "block" : "none";
+
+    if (data.isSuccess) {
+      return data.result;
+    } else {
+      throw new Error("동아리 프로필 조회 실패");
+    }
+  } catch (error) {
+    console.error("Error", error);
+  }
+}
+
+//갤러리 보여주기
 function showGallery() {
-  //갤러리 보여주기
   fetch(API_SERVER_DOMAIN + `/api/v1/gallery/getAll`, {
     method: "GET",
     headers: {
@@ -99,14 +130,13 @@ function showGallery() {
 document.addEventListener("DOMContentLoaded", function () {
   let accessToken = getToken();
 
-  //갤러리 목록
+  checkAdminPrivileges();
+
   showGallery();
 
   const prevBtn = document.querySelector(".prev-screen img");
   const editBtn = document.querySelector(".edit-btn");
   const createBtn = document.querySelector(".create-btn");
-
-  //갤러리 보여주기
 
   //'이전' 클릭 시
   prevBtn.addEventListener("click", function () {

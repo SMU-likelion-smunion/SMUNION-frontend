@@ -42,7 +42,7 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
-//관리자 권한 확인
+//운영진 여부 확인
 async function checkAdminPrivileges() {
   try {
     const response = await fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs/selected`, {
@@ -59,9 +59,7 @@ async function checkAdminPrivileges() {
     console.log(isAdmin);
 
     const createBtn = document.querySelector(".notice-create-btn");
-    const moreBtn = document.querySelector(".gallery-more");
     createBtn.style.display = isAdmin ? "block" : "none";
-    moreBtn.style.display = isAdmin ? "block" : "none";
 
     if (data.isSuccess) {
       return data.result;
