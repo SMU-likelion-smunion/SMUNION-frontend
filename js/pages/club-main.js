@@ -607,9 +607,10 @@ document.addEventListener("DOMContentLoaded", () => {
       //console.log("gallery data", data);
 
       if (data.isSuccess && data.result && data.result.galleryResDTOS) {
-        //console.log("gallery data 조회 성공");
+        //최근 갤러리 3개
+        const recentGalleries = data.result.galleryResDTOS.slice(-3).reverse();
 
-        data.result.galleryResDTOS.forEach((item) => {
+        recentGalleries.forEach((item) => {
           const galleryId = item.galleryID;
           const name = item.name;
           const thumbnail = item.thumbnailImages.length > 0 ? item.thumbnailImages[0] : null;
