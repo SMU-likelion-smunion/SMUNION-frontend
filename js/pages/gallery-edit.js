@@ -59,7 +59,7 @@ function showGallery() {
       //console.log("gallery data", data);
 
       if (data.isSuccess && data.result && data.result.galleryResDTOS) {
-        data.result.galleryResDTOS.forEach((item) => {
+        data.result.galleryResDTOS.reverse().forEach((item) => {
           const galleryId = item.galleryID;
           const name = item.name;
           const thumbnail = item.thumbnailImages.length > 0 ? item.thumbnailImages[0] : null;

@@ -75,18 +75,24 @@ body {
 }
 
 .gallery-upload {
-  width: 125px;
-  height: 125px;
+  width: 123px;
+  height: 123px;
   cursor: pointer;
 }
 
+.gallery-upload img {
+  width: 123px;
+  height: 123px;
+}
+
 .upload-item {
-  width: 125px;
-  height: 125px;
+  width: 123px;
+  height: 123px;
+  margin-bottom: 1px;
 }
 
 .upload-item img {
-  width: 125px;
-  height: 125px;
+  width: 123px;
+  height: 123px;
   object-fit: cover;
 }
