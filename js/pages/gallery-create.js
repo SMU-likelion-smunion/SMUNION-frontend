@@ -131,23 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    //const clubIdString = localStorage.getItem("currentClubId");
-    //clubId = JSON.parse(clubIdString);
-    // if (!clubId) {
-    //   console.log("clubId 오류");
-    //   return;
-    // }
-
     let formData = new FormData();
-    // const requestData = {
-    //   name: nameInput.value,
-    // };
-    // console.log(requestData);
-    // formData.append("request", JSON.stringify(requestData));
 
     formData.append("name", nameInput.value);
 
-    //console.log(uploadedImages);
     if (uploadedImages.length > 0) {
       uploadedImages.forEach((file) => {
         formData.append("images", file, file.name);
