@@ -54,46 +54,73 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 1px;
   width: 100%;
+
   /* padding-left: 2px; */
 }
 
 .prev-screen {
-  margin-right: 14px;
   cursor: pointer;
 }
 
-.edit-btn {
+.btns {
   display: flex;
   justify-content: flex-end;
   align-items: center;
 }
 
-.edit-btn p {
+.save-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-btn p {
   color: #0e207f;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
 }
 
-.gallery-name {
+#gallery-name {
   display: flex;
   justify-content: center;
   font-weight: 600;
   font-size: 17px;
   color: #6a6a70;
+  border-width: 0;
+  width: 100%;
+  max-width: 125px;
+  height: 23px;
+  font-size: 17px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: center;
+  border-radius: 3px;
+  background-color: transparent;
 }
 
-.image-item {
+#gallery-name:focus {
+  outline: none;
+  border: 1px solid #0e207f;
+  /* box-shadow: 0 0 4px #0e207f; */
+}
+
+.image-item,
+.upload-item {
   width: 123px;
   height: 123px;
   margin-bottom: 1px;
 }
 
-.image-item img {
+.image-item img,
+.upload-item img {
   width: 123px;
   height: 123px;
   object-fit: cover;
+}
+
+.gallery-upload {
+  width: 125px;
+  height: 125px;
+  cursor: pointer;
 }
