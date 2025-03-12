@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const prevScreen = document.querySelector(".prev-screen");
   prevScreen.addEventListener("click", () => {
-    window.location.href = "/html/pages/gallery-view-more.html";
+    window.history.back();
   });
 
   const galleryId = localStorage.getItem("selectedGalleryId");
