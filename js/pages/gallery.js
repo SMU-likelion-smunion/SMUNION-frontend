@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const prevScreen = document.querySelector(".prev-screen");
   prevScreen.addEventListener("click", () => {
-    window.history.back();
+    window.location.href = "/html/pages/gallery-view-more.html";
   });
 
   const galleryId = localStorage.getItem("selectedGalleryId");
@@ -93,4 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   //'편집' 클릭 시
+  const editBtn = document.querySelector(".edit-btn");
+  editBtn.addEventListener("click", () => {
+    window.location.href = "/html/pages/gallery-modify.html";
+  });
 });
