@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
@@ -9,6 +9,7 @@
       src="https://kit.fontawesome.com/9125fcc41c.js"
       crossorigin="anonymous"
     ></script>
+    <script src="../../js/fcm-init.js"></script>
   </head>
   <body>
     <div class="notice-create-screen">
@@ -23,14 +24,22 @@
           <div class="pay-input-container">
             <!-- 금액 입력 필드 -->
             <div class="pay-input-field">
-              <input type="number" id="amount-input" placeholder="금액을 입력해주세요." />
+              <input
+                type="number"
+                id="amount-input"
+                placeholder="금액을 입력해주세요."
+              />
             </div>
 
             <!-- 은행명 & 계좌번호 입력 필드 -->
             <div class="pay-input-field bank-info">
               <input type="text" id="bank-name-input" placeholder="은행명" />
               <div class="separator"></div>
-              <input type="text" id="account-number-input" placeholder="계좌번호를 입력해주세요." />
+              <input
+                type="text"
+                id="account-number-input"
+                placeholder="계좌번호를 입력해주세요."
+              />
             </div>
           </div>
 

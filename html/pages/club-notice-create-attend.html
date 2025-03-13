@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
   <head>
     <meta charset="UTF-8" />
@@ -9,6 +9,7 @@
       src="https://kit.fontawesome.com/9125fcc41c.js"
       crossorigin="anonymous"
     ></script>
+    <script src="../../js/fcm-init.js"></script>
   </head>
   <body>
     <div class="notice-create-screen">
@@ -23,16 +24,28 @@
           <div class="time-picker-container">
             <div class="time-picker">
               <div class="time-section hour-section">
-                <input type="number" id="hour-input" min="1" max="12" placeholder="00" />
+                <input
+                  type="number"
+                  id="hour-input"
+                  min="1"
+                  max="12"
+                  placeholder="00"
+                />
                 <span class="time-label">시</span>
               </div>
-              
+
               <div class="time-section minute-section">
-                <input type="number" id="minute-input" min="0" max="59" placeholder="00" />
+                <input
+                  type="number"
+                  id="minute-input"
+                  min="0"
+                  max="59"
+                  placeholder="00"
+                />
                 <span class="time-label">분</span>
               </div>
             </div>
-            
+
             <div class="am-pm-selector">
               <div class="am-pm-option" id="am-option">
                 <div class="am-pm-circle"></div>
