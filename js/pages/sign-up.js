@@ -58,15 +58,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 비밀번호 검증
-    const passwordRegex =
-      /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$/;
+    const passwordRegex = /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,}$/;
     if (!password) {
       passwordError.textContent = "비밀번호를 입력해주세요.";
       passwordError.style.display = "block";
       isValid = false;
     } else if (!passwordRegex.test(password)) {
-      passwordError.textContent =
-        "비밀번호는 8자 이상, 숫자와 특수문자를 포함해야 합니다.";
+      passwordError.textContent = "비밀번호는 8자 이상, 숫자와 특수문자를 포함해야 합니다.";
       passwordError.style.display = "block";
       isValid = false;
     } else if (password !== passwordCheck) {
@@ -129,6 +127,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var email = document.getElementById("email").value.trim();
     var emailError = document.querySelector(".email-error");
 
+    let isValid = true;
+
+    //console.log("입력된 이메일:", email); // 이메일 값 확인
+    //console.log("이메일 형식 검증:", email.endsWith("@sangmyung.kr")); // 이메일 도메인 확인
+
     // 이메일 검증
     if (!email) {
       emailError.textContent = "이메일을 입력해주세요.";
@@ -138,16 +141,17 @@ document.addEventListener("DOMContentLoaded", function () {
       emailError.textContent = "sangmyung.kr 이메일을 사용해주세요.";
       emailError.style.display = "block";
       isValid = false;
-      // } else if (!isEmailVerified) {
-      //   emailError.textContent = "이메일 인증이 필요합니다.";
-      //   emailError.style.display = "block";
-      //   isValid = false;
     } else {
       emailError.style.display = "none";
     }
 
+    if (!isValid) {
+      return;
+    }
+
     // 인증번호 전송 API 호출
     var data = JSON.stringify({ email: email });
+    console.log(data);
 
     var requestOptions = {
       method: "POST",
@@ -181,10 +185,10 @@ document.addEventListener("DOMContentLoaded", function () {
   function verifyCode(event) {
     event.preventDefault();
 
+    let isValid = true;
+
     var email = document.getElementById("email").value.trim();
-    var verificationCode = document
-      .getElementById("verification-code")
-      .value.trim();
+    var verificationCode = document.getElementById("verification-code").value.trim();
     var emailError = document.querySelector(".email-error");
 
     // 이메일 및 인증코드 확인
@@ -192,20 +196,19 @@ document.addEventListener("DOMContentLoaded", function () {
       emailError.textContent = "이메일을 입력해주세요.";
       emailError.style.display = "block";
       isValid = false;
+      return;
     } else if (!email.endsWith("@sangmyung.kr")) {
       emailError.textContent = "sangmyung.kr 이메일을 사용해주세요.";
       emailError.style.display = "block";
       isValid = false;
-    } else if (!isEmailVerified) {
-      emailError.textContent = "이메일 인증이 필요합니다.";
-      emailError.style.display = "block";
-      isValid = false;
+      return;
     } else {
       emailError.style.display = "none";
     }
 
     // 인증번호 검증 API 호출
     var data = JSON.stringify({ email: email, code: verificationCode });
+    console.log(data);
 
     var requestOptions = {
       method: "POST",
@@ -226,6 +229,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((result) => {
         console.log(result);
         if (result.isSuccess) {
+          isEmailVerified = true;
           alert("인증이 완료되었습니다.");
         } else {
           alert(`인증 실패: ${result.message}`);
@@ -244,14 +248,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // 회원가입 버튼에 이벤트 리스너 추가
-  document
-    .getElementById("submit-button")
-    .addEventListener("click", submitSignUpForm);
+  document.getElementById("submit-button").addEventListener("click", submitSignUpForm);
 
   // 인증번호 전송 버튼에 이벤트 리스너 추가
-  document
-    .querySelector(".send-code-btn")
-    .addEventListener("click", sendVerificationCode);
+  document.querySelector(".send-code-btn").addEventListener("click", sendVerificationCode);
 
   // 인증번호 확인 버튼에 이벤트 리스너 추가
   document.querySelector(".verify-btn").addEventListener("click", verifyCode);
