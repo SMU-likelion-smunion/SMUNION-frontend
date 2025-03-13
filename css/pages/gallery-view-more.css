@@ -111,3 +111,9 @@ body {
 .gallery-items img:nth-child(4) {
   margin-left: auto;
 }
+
+.gallery-items p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

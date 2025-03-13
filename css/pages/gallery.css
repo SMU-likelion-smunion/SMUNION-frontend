@@ -77,6 +77,10 @@ body {
 
 .gallery-name {
   display: block;
+  max-width: 100%;
+  width: fit-content;
+  text-align: center;
+  margin: 0 auto;
   justify-content: center;
   font-weight: 600;
   font-size: 15px;
@@ -84,6 +88,10 @@ body {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.gallery-header div:nth-child(2) {
+  width: 180px;
 }
 
 .image-item {
