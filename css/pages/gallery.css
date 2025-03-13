@@ -76,10 +76,10 @@ body {
 }
 
 .gallery-name {
-  display: flex;
+  display: block;
   justify-content: center;
   font-weight: 600;
-  font-size: 17px;
+  font-size: 15px;
   color: #6a6a70;
   overflow: hidden;
   text-overflow: ellipsis;
