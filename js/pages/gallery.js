@@ -95,6 +95,12 @@ document.addEventListener("DOMContentLoaded", () => {
   //'편집' 클릭 시
   const editBtn = document.querySelector(".edit-btn");
   editBtn.addEventListener("click", () => {
-    window.location.href = "/html/pages/gallery-modify.html";
+    const confirmEditMessage = confirm(
+      "편집을 시작하면 기존 이미지가 사라집니다. 진행하시겠습니까?"
+    );
+
+    if (confirmEditMessage) {
+      window.location.href = "/html/pages/gallery-modify.html";
+    }
   });
 });

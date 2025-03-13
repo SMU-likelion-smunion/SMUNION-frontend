@@ -333,6 +333,12 @@ body {
   cursor: pointer;
 }
 
+.gallery-items p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .gallery-items img:nth-child(1) {
   width: 52px;
   height: 52px;
