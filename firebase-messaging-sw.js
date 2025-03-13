@@ -31,7 +31,7 @@ messaging.onBackgroundMessage((payload) => {
     tag: "smunion-notification", // 알림 그룹화 (선택사항)
     // 클릭 시 열릴 URL
     data: {
-      url: "https://smunion.shop/html/pages/notice-all.html",
+      url: "https://smunion.store/html/pages/notice-all.html",
     },
   };
 
@@ -45,7 +45,7 @@ self.addEventListener("notificationclick", (event) => {
   // 알림 클릭 시 특정 페이지로 이동
   const urlToOpen =
     event.notification.data?.url ||
-    "https://smunion.shop/html/pages/notice-all.html";
+    "https://smunion.store/html/pages/notice-all.html";
 
   event.waitUntil(
     clients.matchAll({ type: "window" }).then((windowClients) => {
