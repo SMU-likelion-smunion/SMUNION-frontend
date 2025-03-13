@@ -96,12 +96,19 @@ document.addEventListener("DOMContentLoaded", function () {
         // alert(accessToken);
 
         window.location.replace("home.html");
-      })
-      .catch((error) => {
-        errorMessage.textContent = error.message;
-        errorMessage.style.display = "block";
-        console.error(error);
       });
+
+    // 중요: 서비스 워커 등록 (FCM을 위해)
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then(function (registration) {
+          console.log("서비스 워커 등록 성공:", registration.scope);
+        })
+        .catch(function (error) {
+          console.log("서비스 워커 등록 실패:", error);
+        });
+    }
   }
 
   // 초기 에러 메시지 숨기기
