@@ -1,49 +1,46 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>clubSignUp</title>
+    <link rel="stylesheet" href="../../css/pages/clubSignUp.css" />
+    <script src="../../js/pages/clubSignUp.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>clubSignUp</title>
-  <link rel="stylesheet" href="../../css/pages/clubSignUp.css" />
-<script src="../../js/pages/clubSignUp.js"></script>
-</head>
+  <body>
+    <div class="mobile-container">
+      <header class="header">
+        <p class="blank"></p>
+      </header>
+      <main class="main">
+        <div class="post">
+          <div class="reviseBtn">
+            <button onclick="window.location.href='myClub.html'">취소</button>
+            <p>동아리 가입</p>
+            <button id="saveButton">저장</button>
+          </div>
 
-<body>
-  <div class="mobile-container">
-    <header class="header">
-      <p class="blank"></p>
-    </header>
-    <main class="main">
-      <div class="post">
-        <div class="reviseBtn">
-          <button onclick="window.location.href='myClub.html'">취소</button>
-          <p>동아리 가입</p>
-          <button >저장</button>
-        </div>
-
-        <div class="uploadPic">
+          <!-- <div class="uploadPic">
           <img src="../../assets/images/lion-face.png" class="clubPic">
-        </div>
+        </div> -->
 
-        <div class="clubInfo">
+          <!-- <div class="clubInfo">
           <h3>멋쟁이사자처럼</h3>
           <p class="clubMemberNum">총 43명</p>
           <p>동아리의 자세한 설명 설명 설명</p>
+        </div> -->
+
+          <div class="codeAndNickname">
+            <div style="display: flex; justify-content: space-between; align-items: center">
+              <input id="joinCodeInput" type="text" placeholder="동아리 참여 코드를 입력해주세요" />
+            </div>
+
+            <hr />
+            <input id="nicknameInput" type="text" placeholder="동아리 내 별명을 입력해주세요" />
+          </div>
         </div>
-
-        <div class="codeAndNickname"> 
-          <div style="display: flex; justify-content: space-between;
-          align-items: center;"> <input type="text" placeholder="동아리 참여 코드를 입력해주세요"><img src="../../assets/icons/search.png"
-            class="search"></div>
-       
-            <hr>
-          <input type="text" placeholder="동아리 내 별명을 입력해주세요">
-        </div>
-
-      </div>
-    </main>
-  </div>
-</body>
-
+      </main>
+    </div>
+  </body>
 </html>
