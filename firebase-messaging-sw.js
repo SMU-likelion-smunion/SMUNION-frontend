@@ -8,13 +8,12 @@ importScripts(
 
 // Firebase 초기화
 firebase.initializeApp({
-  apiKey: "AIzaSyBoT57SvBZMj2Xa5DOT-vMfp4dRZyR2YfA",
-  authDomain: "smunion-5300c.firebaseapp.com",
-  projectId: "smunion-5300c",
-  storageBucket: "smunion-5300c.firebasestorage.app",
-  messagingSenderId: "613158624793",
-  appId: "1:613158624793:web:843f05069e401a0302d488",
-  measurementId: "G-XKKWN7H8B9",
+  apiKey: "AIzaSyDrg9Ac-uyhKJfB179YpdzTa5kBSTP9MMA",
+  authDomain: "smunion-780cf.firebaseapp.com",
+  projectId: "smunion-780cf",
+  storageBucket: "smunion-780cf.firebasestorage.app",
+  messagingSenderId: "1029607176614",
+  appId: "1:1029607176614:web:dd0731e7138e6893643767",
 });
 
 const messaging = firebase.messaging();
