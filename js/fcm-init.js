@@ -47,13 +47,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         
         // Firebase 구성
         const firebaseConfig = {
-          apiKey: "AIzaSyBoT57SvBZMj2Xa5DOT-vMfp4dRZyR2YfA",
-          authDomain: "smunion-5300c.firebaseapp.com",
-          projectId: "smunion-5300c",
-          storageBucket: "smunion-5300c.firebasestorage.app",
-          messagingSenderId: "613158624793",
-          appId: "1:613158624793:web:843f05069e401a0302d488",
-          measurementId: "G-XKKWN7H8B9"
+          apiKey: "AIzaSyDrg9Ac-uyhKJfB179YpdzTa5kBSTP9MMA",
+          authDomain: "smunion-780cf.firebaseapp.com",
+          projectId: "smunion-780cf",
+          storageBucket: "smunion-780cf.firebasestorage.app",
+          messagingSenderId: "1029607176614",
+          appId: "1:1029607176614:web:dd0731e7138e6893643767"
         };
         
         // Firebase 초기화
@@ -115,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       try {
         const currentToken = await window.firebaseMessaging.getToken({
           vapidKey:
-            "BKxLz-RRAExybC4CQdZqQ6GSt9B-yOZFh_XKxjelr-Rx9OSixDRv9qlqzTAoBjcEYcnc5rpRBQgzx1Lc7NbOi_E",
+            "BDMJByfKRH1dvWZ1RznzCkWVT-WXXzr1sbI2GQzDdlmC6FUtYXmcR7S6vx12iU7CkttcV0VxcFpfiEAJsqu0SKc",
           serviceWorkerRegistration: registration,
         });
 
@@ -132,6 +131,16 @@ document.addEventListener("DOMContentLoaded", async function () {
 
       // 포그라운드 메시지 수신 핸들러
       window.firebaseMessaging.onMessage((payload) => {
+        console.log("전체 페이로드:", payload);
+        console.log("데이터 페이로드:", payload.data);
+        console.log("알림 페이로드:", payload.notification);
+
+        // 중요 데이터 추출 및 로깅
+        console.log("공지 유형:", payload.data?.noticeType);
+        console.log("공지 ID:", payload.data?.noticeId);
+        console.log("알림 제목:", payload.notification?.title);
+        console.log("알림 본문:", payload.notification?.body);
+
         console.log("포그라운드 메시지 수신:", payload);
 
         // 포그라운드에서 알림 표시
@@ -203,14 +212,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   async function registerTokenToServer(token) {
     try {
-      // 이미 저장된 토큰과 동일한지 확인
-      const savedToken = localStorage.getItem("fcmToken");
-
-      // 토큰이 동일하면 다시 등록하지 않음
-      if (savedToken === token) {
-        console.log("이미 등록된 FCM 토큰을 재사용합니다.");
-        return;
-      }
+      console.log("FCM 토큰:", token);
+      console.log("Access Token:", accessToken);
 
       const response = await fetch(
         `${API_SERVER_DOMAIN}/api/v1/notices/token`,
@@ -220,27 +223,26 @@ document.addEventListener("DOMContentLoaded", async function () {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({
-            fcmToken: token,
-          }),
+          body: JSON.stringify({ fcmToken: token }),
         }
       );
 
-      const data = await response.json();
+      // 응답 상태 코드 로깅
+      console.log("응답 상태 코드:", response.status);
 
-      // 성공 또는 "이미 존재" 메시지는 둘 다 정상으로 처리
-      if (
-        data.isSuccess ||
-        data.message === "해당 유저의 FCM 토큰이 이미 존재합니다."
-      ) {
-        console.log("FCM 토큰 서버 등록 완료");
-        // 로컬 스토리지에 토큰 저장
-        localStorage.setItem("fcmToken", token);
-      } else {
-        console.error("FCM 토큰 서버 등록 실패:", data.message);
+      // 전체 응답 텍스트 로깅
+      const responseText = await response.text();
+      console.log("서버 응답 원본:", responseText);
+
+      // JSON 파싱 시도
+      try {
+        const data = JSON.parse(responseText);
+        console.log("파싱된 응답:", data);
+      } catch (parseError) {
+        console.error("JSON 파싱 에러:", parseError);
       }
     } catch (error) {
-      console.error("FCM 토큰 서버 등록 중 오류:", error);
+      console.error("전체 네트워크 에러:", error);
     }
   }
 });
