@@ -81,7 +81,7 @@ function getClubDetail(token) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("Access Token:", accessToken);
+  //console.log(accessToken);
 
   const clubBox = document.getElementById("clubBox");
 
