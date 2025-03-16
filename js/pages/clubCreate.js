@@ -45,7 +45,7 @@ function deleteCookie(name) {
 
 document.addEventListener("DOMContentLoaded", function () {
   getToken();
-  console.log(accessToken);
+  //console.log(accessToken);
 });
 
 document.querySelector(".createBtn").addEventListener("click", function () {
@@ -86,7 +86,7 @@ function sendClubData(formData) {
       console.log(data);
       if (data.isSuccess) {
         alert("동아리 생성에 성공했습니다!");
-        window.location.href = "clubWaitApproval.html";
+        window.location.href = "/html/pages/myClub.html";
       } else {
         alert(data.message || "동아리 생성에 실패했습니다.");
       }
