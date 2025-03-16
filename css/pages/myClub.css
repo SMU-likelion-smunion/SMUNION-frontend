@@ -39,15 +39,18 @@ button {
   color: rgb(0, 0, 143);
   font-weight: bolder;
 }
+
 button:hover {
   cursor: pointer;
 }
+
 .main {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin-top: 70px;
   gap: 10px;
+  margin-bottom: 80px;
 }
 
 .clubs {
@@ -72,6 +75,7 @@ button:hover {
   box-shadow: 4px 4px 5px rgba(0, 0, 0, 0.05);
   margin: 5px;
 }
+
 .club:hover {
   cursor: pointer;
 }
