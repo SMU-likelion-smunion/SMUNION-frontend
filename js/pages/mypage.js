@@ -16,8 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 쿠키 삭제 함수
   function deleteCookie(name) {
-    document.cookie =
-      name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
+    document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
   }
 
   const accessToken = getCookie("accessToken");
@@ -37,35 +36,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const changeClubBtn = document.querySelector(".club-change");
   const leaveClubBtn = document.querySelector(".leave-club-request");
   const leaveClubModal = document.querySelector(".leave-club-modal-container");
-  const leaveClubConfirmBtn = document.querySelector(
-    ".leave-club-modal-request"
-  );
+  const leaveClubConfirmBtn = document.querySelector(".leave-club-modal-request");
   const leaveClubCancelBtn = document.querySelector(".leave-club-modal-cancel");
 
   // 프로필 이미지 관련
   const profileImage = document.querySelector(".profile-img");
-  const editProfileModal = document.querySelector(
-    ".edit-profile-modal-container"
-  );
+  const editProfileModal = document.querySelector(".edit-profile-modal-container");
   const editProfileModalTriggers = document.querySelector(".edit-profile-btn");
-  const editProfileModalImageBtn = document.querySelector(
-    ".edit-profile-modal-image"
-  );
-  const editProfileModalDefaultBtn = document.querySelector(
-    ".edit-profile-modal-default"
-  );
+  const editProfileModalImageBtn = document.querySelector(".edit-profile-modal-image");
+  const editProfileModalDefaultBtn = document.querySelector(".edit-profile-modal-default");
 
   // 계정 탈퇴 모달 관련
-  const deleteAccountModal = document.querySelector(
-    ".delete-account-modal-container"
-  );
+  const deleteAccountModal = document.querySelector(".delete-account-modal-container");
   const deleteAccountModalTriggers = document.querySelector(".delete-account");
-  const deleteAccountModalCancelBtn = document.querySelector(
-    ".delete-account-modal-cancel"
-  );
-  const deleteAccountModalRequestBtn = document.querySelector(
-    ".delete-account-modal-request"
-  );
+  const deleteAccountModalCancelBtn = document.querySelector(".delete-account-modal-cancel");
+  const deleteAccountModalRequestBtn = document.querySelector(".delete-account-modal-request");
 
   // ========== 사용자 정보 ==========
 
@@ -100,8 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // 가입된 동아리가 없으면 clubNickname에 사용자 이름을 설정
           if (
             clubNickname &&
-            (!clubNickname.textContent ||
-              clubNickname.textContent === "Unknown")
+            (!clubNickname.textContent || clubNickname.textContent === "Unknown")
           ) {
             clubNickname.textContent = userData.name || "사용자";
           }
@@ -200,6 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         if (data.isSuccess && data.result) {
+          localStorage.setItem("selectedClub", JSON.stringify(data.result));
           // 선택된 동아리가 있을 때
           updateMyPageProfile(data.result);
         } else {
@@ -235,12 +220,10 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((data) => {
         if (data && data.isSuccess) {
           clubModal.style.display = "none";
+          localStorage.setItem("selectedClub", JSON.stringify(data.result));
           updateMyPageProfile(club);
         } else {
-          console.error(
-            "Failed to select club profile:",
-            data?.message || "No message"
-          );
+          console.error("Failed to select club profile:", data?.message || "No message");
         }
       })
       .catch((error) => console.error("Error selecting club profile:", error));
@@ -279,10 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (leaveClubBtn) {
     leaveClubBtn.addEventListener("click", function () {
       // 가입된 동아리가 없으면 모달 열지 않음
-      if (
-        !myClubCard ||
-        myClubCard.textContent === "가입된 동아리가 없습니다"
-      ) {
+      if (!myClubCard || myClubCard.textContent === "가입된 동아리가 없습니다") {
         return;
       }
       // 동아리가 있을 경우에만 탈퇴 모달 열기
@@ -291,15 +271,37 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // 동아리 탈퇴 모달 내부 버튼
+  // 탈퇴 요청 api -> 탈퇴 요청 승인 api
   if (leaveClubConfirmBtn) {
     leaveClubConfirmBtn.addEventListener("click", function () {
+      const selectedClub = localStorage.getItem("selectedClub");
+      const { memberClubId } = JSON.parse(selectedClub);
+
       fetch(`${API_SERVER_DOMAIN}/api/v1/club/withdrawal`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ memberClubId }),
       })
+        .then((response) => response.json())
+        .then((data) => {
+          if (!data.isSuccess) {
+            console.error("탈퇴 요청 실패:", data?.message || "No message");
+            alert("동아리 탈퇴 요청이 실패했습니다.");
+            return Promise.reject("탈퇴 요청 실패");
+          }
+
+          //동아리 탈퇴 요청 보냈을 때
+          return fetch(`${API_SERVER_DOMAIN}/api/v1/club/withdrawal/${memberClubId}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+        })
         .then((response) => {
           if (!response.ok) {
             console.error(`HTTP Error: ${response.status}`);
@@ -315,6 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
             alert("동아리 탈퇴가 완료되었습니다.");
             // 탈퇴 모달 닫기
             leaveClubModal.style.display = "none";
+            window.location.href = "/html/pages/mypage.html";
             fetchUserClubs();
           } else {
             console.error("탈퇴 실패:", data?.message || "No message");
@@ -490,9 +493,7 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
           }
           return response.text().then((errorData) => {
-            throw new Error(
-              `서버 로그아웃 요청 실패: ${response.status} - ${errorData}`
-            );
+            throw new Error(`서버 로그아웃 요청 실패: ${response.status} - ${errorData}`);
           });
         }
         return response.json();
@@ -556,13 +557,9 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then((result) => {
         console.log("회원 탈퇴 결과:", result);
-        alert(
-          result.message ||
-            "회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다."
-        );
+        alert(result.message || "회원 탈퇴가 완료되었습니다. 이용해 주셔서 감사합니다.");
         // 로그아웃 처리 (쿠키 삭제)
-        document.cookie =
-          "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         // 로그인 페이지로 리다이렉트
         window.location.href = "../../html/pages/login.html";
       })
@@ -570,12 +567,9 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error:", error);
         if (error.name === "SyntaxError") {
           // JSON 파싱 오류가 발생했지만, 실제로는 작업이 성공했을 수 있음
-          alert(
-            "회원 탈퇴가 처리되었을 수 있습니다. 로그아웃 후 다시 로그인을 시도해주세요."
-          );
+          alert("회원 탈퇴가 처리되었을 수 있습니다. 로그아웃 후 다시 로그인을 시도해주세요.");
           // 로그아웃 처리 (쿠키 삭제)
-          document.cookie =
-            "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+          document.cookie = "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
           // 로그인 페이지로 리다이렉트
           window.location.href = "../../html/pages/login.html";
         } else {

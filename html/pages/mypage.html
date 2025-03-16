@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,100 +7,87 @@
     <link rel="stylesheet" href="../../css/components/navbar.css" />
     <link rel="stylesheet" href="../../css/pages/mypage.css" />
     <link rel="stylesheet" href="../../css/pages/mypage-alert.css" />
-    <script
-      src="https://kit.fontawesome.com/c82201de71.js"
-      crossorigin="anonymous"
-    ></script>
-    <script src="../../js/fcm-init.js"></script>  </head>
+    <script src="https://kit.fontawesome.com/c82201de71.js" crossorigin="anonymous"></script>
+    <script src="../../js/fcm-init.js"></script>
+  </head>
   <!-- <header data-include-path="../../html/components/navbar.html"></header> -->
-
   <body>
-    <!-- 마이페이지 컨테이너 -->
-    <div class="mypage-container">
-      <div class="mypage-title">마이페이지</div>
-      <!-- 프로필 컨테이너 -->
-      <div class="profile-container">
-        <div class="profile-image">
-          <img
-            src="../../assets/images/default-profile-image.png"
-            alt="프로필 이미지"
-            class="profile-img"
-          />
-          <button class="edit-profile-btn">+</button>
+    <div>
+      <!-- 마이페이지 컨테이너 -->
+      <div class="mypage-container">
+        <div class="mypage-title">마이페이지</div>
+        <!-- 프로필 컨테이너 -->
+        <div class="profile-container">
+          <div class="profile-image">
+            <img
+              src="../../assets/images/default-profile-image.png"
+              alt="프로필 이미지"
+              class="profile-img"
+            />
+            <button class="edit-profile-btn">+</button>
+          </div>
+          <div class="profile-info">
+            <h1 class="profile-name">이름</h1>
+            <p class="profile-major">학부/전공</p>
+            <p class="profile-sno">학번</p>
+          </div>
         </div>
-        <div class="profile-info">
-          <h1 class="profile-name">이름</h1>
-          <p class="profile-major">학부/전공</p>
-          <p class="profile-sno">학번</p>
-        </div>
-      </div>
 
-      <!-- 나의 동아리 컨테이너 -->
-      <div class="myclub-container">
-        <div class="myclub-title">현재 나의 동아리</div>
-        <div class="myclub-list">
-          <div class="myclub-card">가입된 동아리가 없습니다</div>
+        <!-- 나의 동아리 컨테이너 -->
+        <div class="myclub-container">
+          <div class="myclub-title">현재 나의 동아리</div>
+          <div class="myclub-list">
+            <div class="myclub-card">가입된 동아리가 없습니다</div>
+          </div>
         </div>
-      </div>
-      <!-- 동아리 탈퇴 요청 -->
-      <div class="request-container">
-        <p class="club-nickname"></p>
-        <p class="club-change">동아리 프로필 변경</p>
-        <p class="leave-club-request">동아리 탈퇴 요청</p>
-      </div>
+        <!-- 동아리 탈퇴 요청 -->
+        <div class="request-container">
+          <p class="club-nickname"></p>
+          <p class="club-change">동아리 프로필 변경</p>
+          <p class="leave-club-request">동아리 탈퇴</p>
+        </div>
 
-      <!-- 설정 섹션 -->
-      <div class="settings-title">설정</div>
-      <div class="settings-container">
-        <div class="settings-list">
-          <div class="change-pw">
-            <a href="../../html/pages/change-pw.html">비밀번호 변경</a>
-          </div>
-          <div class="logout">
-            <a href="#">로그아웃</a>
-          </div>
-          <div class="delete-account">
-            <a href="#">계정 탈퇴</a>
+        <!-- 설정 섹션 -->
+        <div class="settings-title">설정</div>
+        <div class="settings-container">
+          <div class="settings-list">
+            <div class="change-pw">
+              <a href="../../html/pages/change-pw.html">비밀번호 변경</a>
+            </div>
+            <div class="logout">
+              <a href="#">로그아웃</a>
+            </div>
+            <div class="delete-account">
+              <a href="#">계정 탈퇴</a>
+            </div>
           </div>
         </div>
+
+        <!-- 네비게이션 바 -->
+        <nav class="navbar">
+          <!-- 홈 -->
+          <a href="/html/pages/home.html" class="nav-item">
+            <img src="/assets/icons/home-icon.svg" alt="홈" class="nav-icon" />
+            <span class="nav-text">홈</span>
+          </a>
+          <!-- 동아리 -->
+          <a href="/html/pages/club-main.html" class="nav-item">
+            <img src="/assets/icons/club-icon.svg" alt="동아리" class="nav-icon" />
+            <span class="nav-text">동아리</span>
+          </a>
+          <!-- 스뮤니온 -->
+          <a href="/html/pages/community.html" class="nav-item">
+            <img src="/assets/icons/smunion-icon.svg" alt="스뮤니온" class="nav-icon" />
+            <span class="nav-text">스뮤니온</span>
+          </a>
+          <!-- 마이페이지 -->
+          <a href="/html/pages/mypage.html" class="nav-item">
+            <img src="/assets/icons/mypage-icon.svg" alt="마이페이지" class="nav-icon" />
+            <span class="nav-text">마이페이지</span>
+          </a>
+        </nav>
       </div>
-      <!-- 네비게이션 바 -->
-      <nav class="navbar">
-        <!-- 홈 -->
-        <a href="/html/pages/home.html" class="nav-item">
-          <img src="/assets/icons/home-icon.svg" alt="홈" class="nav-icon" />
-          <span class="nav-text">홈</span>
-        </a>
-        <!-- 동아리 -->
-        <a href="/html/pages/club-main.html" class="nav-item">
-          <img
-            src="/assets/icons/club-icon.svg"
-            alt="동아리"
-            class="nav-icon"
-          />
-          <span class="nav-text">동아리</span>
-        </a>
-        <!-- 스뮤니온 -->
-        <a href="/html/pages/community.html" class="nav-item">
-          <img
-            src="/assets/icons/smunion-icon.svg"
-            alt="스뮤니온"
-            class="nav-icon"
-          />
-          <span class="nav-text">스뮤니온</span>
-        </a>
-        <!-- 마이페이지 -->
-        <a href="/html/pages/mypage.html" class="nav-item">
-          <img
-            src="/assets/icons/mypage-icon.svg"
-            alt="마이페이지"
-            class="nav-icon"
-          />
-          <span class="nav-text">마이페이지</span>
-        </a>
-      </nav>
-    </div>
-    <!--  프로필 사진 변경 모달 -->
+      <!--  프로필 사진 변경 모달 -->
       <div class="edit-profile-modal-container">
         <div class="edit-profile-modal-wrap">
           <div class="edit-profile-modal-msg">프로필 사진 설정</div>
@@ -108,50 +95,34 @@
             <button type="button" class="edit-profile-modal-image">
               &nbsp;&nbsp;사진 선택&nbsp;&nbsp;
             </button>
-            <button type="button" class="edit-profile-modal-default">
-              기본 이미지 적용
-            </button>
+            <button type="button" class="edit-profile-modal-default">기본 이미지 적용</button>
           </div>
         </div>
       </div>
-      
+
       <!-- 동아리 프로필 변경 모달 -->
-     <div class="club-change-container">
+      <div class="club-change-container">
         <div class="club-change-wrap">
           <!-- <div class="club">
-            <img src="../../assets/images/lion-face.png" class="club_img">
-            <p class="club-name">멋쟁이사자처럼</p>
-          </div>
-          <div class="club">
-            <img src="../../assets/images/lion-face.png" class="club_img">
-            <p class="club-name">멋쟁이사자처럼</p>
-          </div>
-          <div class="club">
-            <img src="../../assets/images/lion-face.png" class="club_img">
-             <p class="club-name">멋쟁이사자처럼</p>
-          </div>
-          <div class="club">
             <img src="../../assets/images/lion-face.png" class="club_img">
             <p class="club-name">멋쟁이사자처럼</p>
           </div> -->
         </div>
       </div>
-      
-    <!-- 동아리 탈퇴 모달 -->
-    <div class="leave-club-modal-container">
-      <div class="leave-club-modal-wrap">
+
+      <!-- 동아리 탈퇴 모달 -->
+      <div class="leave-club-modal-container">
+        <div class="leave-club-modal-wrap">
           <div class="leave-club-modal-msg">정말로 탈퇴하시겠습니까?</div>
           <div class="leave-club-modal-btn">
             <button type="button" class="leave-club-modal-cancel">
               &nbsp;&nbsp;취소&nbsp;&nbsp;
             </button>
-            <button type="button" class="leave-club-modal-request">
-              탈퇴 요청
-            </button>
+            <button type="button" class="leave-club-modal-request">탈퇴</button>
           </div>
         </div>
-        </div>
       </div>
+
       <!-- 계정 탈퇴 모달 -->
       <div class="delete-account-modal-container">
         <div class="delete-account-modal-wrap">
@@ -160,9 +131,7 @@
             <button type="button" class="delete-account-modal-cancel">
               &nbsp;&nbsp;취소&nbsp;&nbsp;
             </button>
-            <button type="button" class="delete-account-modal-request">
-              탈퇴 요청
-            </button>
+            <button type="button" class="delete-account-modal-request">탈퇴</button>
           </div>
         </div>
       </div>
