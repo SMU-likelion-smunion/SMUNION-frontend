@@ -1,68 +1,106 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>community</title>
+    <link rel="stylesheet" href="../../css/pages/community.css" />
+    <link rel="stylesheet" href="/css/components/navbar.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>community</title>
-  <link rel="stylesheet" href="../../css/pages/community.css" />
-  <script src=""defer></script>
-  
-
-</head>
-
-<body>
-  <div class="mobile-container">
-    <header class="header">
-      <p class="SMU">SMUNION</p>
-      <img src="../../assets/images/lion-face.png" class="clubImg">
-      <img src="../../assets/icons/vector.png" class="vector">
-    </header>
-    <main class="main">
-      <div class="post">
-        <div class="post_title">
-          <img src="../../assets/images/lion-face.png" class="clubImgInTitle">
-          <p>멋쟁이사자처럼</p> | <p>기획/디자인</p> |
-          <p>김준서</p>
-          <div class="dotbox"> <img src="../../assets/icons/dot-3.png" class="dot-3"></div>
-         
+  <body>
+    <div class="community-screen">
+      <div class="community-container">
+        <header class="community-header">
+          <div>SMUNION</div>
+          <div class="modal-click2">
+            <img class="club-img" src="../../assets/images/lion-face.png" />
+          </div>
+          <div><img src="/assets/icons/under-sign.svg" /></div>
+        </header>
+        <main class="community-main">
+          <!-- <div class="post">
+            <div class="post-title">
+              <img src="../../assets/images/lion-face.png" class="clubImgInTitle" />
+              <p>멋쟁이사자처럼</p>
+              |
+              <p>기획/디자인</p>
+              |
+              <p>김준서</p>
+              <div class="dotbox"><img src="../../assets/icons/dot-3.png" class="dot-3" /></div>
+            </div>
+            <img class="runningImg" src="../../assets/images/running.png" />
+            <div class="dots">
+              <img src="../../assets/icons/dot.png" class="dot" />
+              <img src="../../assets/icons/dot.png" class="dot" />
+              <img src="../../assets/icons/dot.png" class="dot" />
+              <img src="../../assets/icons/dot.png" class="dot" />
+            </div>
+            <hr />
+            <div class="reactbar">
+              <img src="../../assets/icons/heart.png" class="heart" />
+              <p class="heartNum">44</p>
+              <img src="../../assets/icons/comment.png" class="comment" />
+              <p class="commentNum">2</p>
+            </div>
+            <hr />
+            <p class="contentTitle">런닝 협업</p>
+            <p class="content">런닝을 통해 친해지기!</p>
+            <hr />
+          </div> -->
+        </main>
+        <!-- Add post -->
+        <div class="add-post-btn">
+          <img src="/assets/icons/add-post.svg" alt="Add Post" />
         </div>
-        <img class="runningImg" src="../../assets/images/running.png">
-        <div class="dots">
-          <img src="../../assets/icons/dot.png" class="dot">
-          <img src="../../assets/icons/dot.png" class="dot">
-          <img src="../../assets/icons/dot.png" class="dot">
-          <img src="../../assets/icons/dot.png" class="dot">
-        </div>
-        <hr>
-        <div class="reactbar">
-          <img src="../../assets/icons/heart.png"class="heart">
-          <p class="heartNum">44</p>
-          <img src="../../assets/icons/comment.png"class="comment">
-          <p class="commentNum">2</p>
-        </div>
-        <hr>
-        <p class="contentTitle">런닝 협업</p>
-        <p class="content">런닝을 통해 친해지기!</p>
-        <hr>
       </div>
-    </main>
 
-    <div id="navbar-container"></div>
+      <nav class="navbar">
+        <!-- 홈 -->
+        <a href="/html/pages/home.html" class="nav-item">
+          <img src="/assets/icons/home-icon.svg" alt="홈" class="nav-icon" />
+          <span class="nav-text">홈</span>
+        </a>
+        <!-- 동아리 -->
+        <a href="/html/pages/myClub.html" class="nav-item">
+          <img src="/assets/icons/club-icon.svg" alt="동아리" class="nav-icon" />
+          <span class="nav-text">동아리</span>
+        </a>
+        <!-- 스뮤니온 -->
+        <a href="/html/pages/community.html" class="nav-item">
+          <img src="/assets/icons/smno.svg" alt="스뮤니온" class="nav-icon" />
+          <span class="nav-text">스뮤니온</span>
+        </a>
+        <!-- 마이페이지 -->
+        <a href="/html/pages/mypage.html" class="nav-item">
+          <img src="/assets/icons/mypage-icon.svg" alt="마이페이지" class="nav-icon" />
+          <span class="nav-text">마이페이지</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="club-change-modal">
+      <div class="ccm">
+        <div class="ccm2" id="modal-content">
+          <!-- <div class="modal-items">
+            <img src="/assets/images/gameImg.png" />
+            <p>Game</p>
+          </div>
+          <hr />-->
+        </div>
+      </div>
+    </div>
+
     <script>
-      // 네비바를 동적으로 불러오기
-      fetch('../../html/components/navbar.html')
-        .then(response => response.text())
-        .then(data => {
-          document.getElementById('navbar-container').innerHTML = data;
-        })
-        .catch(error => {
-          console.error('Error loading navbar:', error);
-        });
+      const navItems = document.querySelectorAll(".nav-item");
+      navItems.forEach((item) => {
+        if (item.href === window.location.href) {
+          item.classList.add("active");
+        } else {
+          item.classList.remove("active");
+        }
+      });
     </script>
-
-
-  </div>
-</body>
-
+    <script src="/js/pages/community.js"></script>
+  </body>
 </html>
