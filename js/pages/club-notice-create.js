@@ -202,6 +202,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const todayMonth = today.getMonth();
     const todayDate = today.getDate();
 
+    const selectedDate = localStorage.getItem("selectedDate");
+
     //지난 달 날짜
     for (let i = 0; i < firstDay; i++) {
       let prevBlankDiv = document.createElement("div");
@@ -267,6 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let count = 0; // 최대 3개까지 공지 표시
       const userDepartment = localStorage.getItem("departmentName"); // 사용자 부서 정보 가져오기
       const createDate = new Date(year, month, i);
+      const formattedDate = `${year}-${String(month + 1).padStart(2, "0")}-${String(i).padStart(2, "0")}`;
 
       for (let i = 0; i < allNotices.length; i++) {
         const notice = allNotices[i];
@@ -295,16 +298,23 @@ document.addEventListener("DOMContentLoaded", () => {
       dateDiv.appendChild(noticeList);
       calDates.appendChild(dateDiv);
 
-      //기본값으로 오늘 날짜 선택됨
-      if (i === todayDate && year === todayYear && month === todayMonth) {
+      if (selectedDate === formattedDate) {
         dateDiv.classList.add("selected-date");
         dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
           p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
         });
-
-        const todayFormatted = `${todayYear}-${String(todayMonth + 1).padStart(2, "0")}-${String(todayDate).padStart(2, "0")}`;
-        localStorage.setItem("selectedDate", todayFormatted);
       }
+
+      //기본값으로 오늘 날짜 선택됨
+      // if (i === todayDate && year === todayYear && month === todayMonth) {
+      //   //dateDiv.classList.add("selected-date");
+      //   dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
+      //     p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
+      //   });
+
+      //   const todayFormatted = `${todayYear}-${String(todayMonth + 1).padStart(2, "0")}-${String(todayDate).padStart(2, "0")}`;
+      //   //localStorage.setItem("selectedDate", todayFormatted);
+      // }
 
       //날짜 클릭
       dateDiv.addEventListener("click", () => {
