@@ -203,6 +203,13 @@ body {
   cursor: pointer;
 }
 
+.view-notice-items p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
 .view-notice-items img:nth-child(2) {
   margin-left: 10px;
   margin-right: 10px;
@@ -214,6 +221,11 @@ body {
 
 .view-notice-items p:nth-child(1) {
   color: #6a6a70;
+  max-width: 150px;
+}
+
+.view-notice-items p:nth-child(3) {
+  max-width: 220px;
 }
 
 .view-notice div:last-child {
