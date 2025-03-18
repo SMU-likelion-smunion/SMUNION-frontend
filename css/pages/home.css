@@ -91,6 +91,19 @@ body {
 
 .club-name {
   color: #6a6a70;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 150px;
+}
+
+.items div:nth-child(3) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 220px;
 }
 
 .items div:last-child {
