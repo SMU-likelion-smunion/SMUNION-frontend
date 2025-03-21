@@ -217,16 +217,32 @@ function renderPosts(posts) {
       imageUrl = `<img class="postImg" src="${post.images[0]}" alt="post image" />`;
     }
 
-    postElement.innerHTML = `
+    //작성자 정보 공개 범위
+    const clubNameTag = post.clubName !== "비공개" ? `<p>${post.clubName}</p>` : "";
+    const departmentNameTag =
+      post.departmentName !== "비공개" ? `<p>${post.departmentName}</p>` : "";
+    const nicknameTag = post.nickname !== "비공개" ? `<p>${post.nickname}</p>` : "";
+
+    //구분선
+    const showDivider1 = clubNameTag && departmentNameTag;
+    const showDivider2 = (clubNameTag || departmentNameTag) && nicknameTag;
+
+    // 조건부 렌더링 후 제목 영역
+    const postTitle = `
       <div class="post-title">
         <img src="../../assets/images/lion-face.png" class="clubImgInTitle" />
-        <p>${post.clubName}</p>
-        |
-        <p>${post.departmentName}</p>
-        |
-        <p>${post.nickname}</p>
+        ${clubNameTag}
+        ${showDivider1 ? "|" : ""}
+        ${departmentNameTag}
+        ${showDivider2 ? "|" : ""}
+        ${nicknameTag}
         <div class="dotbox"><img src="../../assets/icons/dot-3.png" class="dot-3" /></div>
       </div>
+    `;
+
+    // 게시물 전체 구성
+    postElement.innerHTML = `
+      ${postTitle}
       ${imageUrl}
       <hr />
       <div class="reactbar">
@@ -243,6 +259,33 @@ function renderPosts(posts) {
 
     mainContainer.appendChild(postElement);
   });
+
+  //   postElement.innerHTML = `
+  //     <div class="post-title">
+  //       <img src="../../assets/images/lion-face.png" class="clubImgInTitle" />
+  //       <p>${post.clubName}</p>
+  //       |
+  //       <p>${post.departmentName}</p>
+  //       |
+  //       <p>${post.nickname}</p>
+  //       <div class="dotbox"><img src="../../assets/icons/dot-3.png" class="dot-3" /></div>
+  //     </div>
+  //     ${imageUrl}
+  //     <hr />
+  //     <div class="reactbar">
+  //       <img src="../../assets/icons/heart.png" class="heart" />
+  //       <p class="heartNum">${post.likeNum}</p>
+  //       <img src="../../assets/icons/comment.png" class="comment" />
+  //       <p class="commentNum">0</p>
+  //     </div>
+  //     <hr />
+  //     <p class="contentTitle">${post.title}</p>
+  //     <p class="content">${post.content}</p>
+  //     <hr />
+  //   `;
+
+  //   mainContainer.appendChild(postElement);
+  // });
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -270,5 +313,5 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.querySelector(".add-post-btn").addEventListener("click", () => {
-  window.location.href = "/html/pages/communityUpload.html";
+  window.location.href = "/html/pages/community-upload.html";
 });

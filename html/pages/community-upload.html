@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Community/Upload</title>
+    <link rel="stylesheet" href="../../css/pages/community-upload.css" />
+  </head>
+
+  <body>
+    <div class="mobile-container">
+      <header class="header">
+        <p class="blank"></p>
+      </header>
+      <main class="main">
+        <div class="post">
+          <div class="reviseBtn">
+            <button class="cancel">취소</button>
+            <p>게시물</p>
+            <button class="upload">업로드</button>
+          </div>
+
+          <div class="content">
+            <input class="post-title" type="text" placeholder="제목" />
+            <hr />
+            <input class="post-content" type="text" placeholder="내용" />
+            <hr />
+          </div>
+
+          <div class="image-preview"></div>
+
+          <div class="upload-btn">
+            <input id="fileInput" type="file" accept="image/*" style="display: none" />
+            <div class="select-img">
+              <p>선택</p>
+            </div>
+            <div class="delete-img">
+              <p>삭제</p>
+            </div>
+          </div>
+
+          <p class="display-info">작성자 정보 표시</p>
+          <table border="0">
+            <tbody>
+              <tr>
+                <td class="text">동아리 | 부서 | 닉네임</td>
+                <td class="icon">
+                  <img src="../../assets/icons/checked_circle.png" class="selected" />
+                </td>
+              </tr>
+              <tr>
+                <td class="text">동아리 | 부서</td>
+                <td class="icon">
+                  <img src="../../assets/icons/circle.png" />
+                </td>
+              </tr>
+              <tr>
+                <td class="text">동아리</td>
+                <td class="icon"><img src="../../assets/icons/circle.png" /></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+    <script src="/js/pages/community-upload.js"></script>
+  </body>
+</html>
