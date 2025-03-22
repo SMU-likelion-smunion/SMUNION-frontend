@@ -17,6 +17,7 @@ body {
   position: relative;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
+
 header {
   background-color: rgb(235, 235, 235);
   display: flex;
@@ -24,12 +25,14 @@ header {
   width: 375px;
   justify-content: center;
 }
+
 .blank {
   color: rgb(53, 62, 72);
   height: 20px;
   margin: 0%;
   padding: 16px;
 }
+
 .reviseBtn {
   display: flex;
   justify-content: space-between;
@@ -40,106 +43,144 @@ header {
   font-weight: bold;
   font-size: small;
 }
+
 button {
   background-color: transparent;
   border: none;
   color: rgb(19, 19, 162);
   font-weight: bold;
 }
+
 .uploadPic {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 170px;
   height: 170px;
-  background-color:transparent;
+  background-color: transparent;
   border-radius: 20px;
   margin: 0 auto; /* 수평 중앙 정렬 */
   margin-top: 50px;
   position: relative; /* 자식 요소의 절대 위치를 위한 relative */
 }
+
 .addBtn {
   position: absolute; /* 절대 위치 */
   top: 50%; /* 세로 중앙 */
   left: 50%; /* 가로 중앙 */
   transform: translate(-50%, -50%); /* 정확히 중앙에 위치시키기 위한 보정 */
   z-index: 10; /* add-btn이 clubPic 위로 보이게 */
-  width: 80px; height: 80px; 
+  width: 80px;
+  height: 80px;
   display: none;
 }
-.modal-overlay{
-position: absolute; /* 절대 위치 */
-top: 46%; /* 세로 중앙 */
-left: 50%; /* 가로 중앙 */
-transform: translate(-50%, -50%); /* 정확히 중앙에 위치시키기 위한 보정 */
-z-index: 10; /* add-btn이 clubPic 위로 보이게 */
-width: 200px; height: 90px; 
-background-color:#f7f7f7;
-box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-border-radius: 10px;
-display: flex;
-flex-direction: column;
-align-items: center;
-padding-top: 13px;
+
+.modal-overlay {
+  position: absolute; /* 절대 위치 */
+  top: 46%; /* 세로 중앙 */
+  left: 50%; /* 가로 중앙 */
+  transform: translate(-50%, -50%); /* 정확히 중앙에 위치시키기 위한 보정 */
+  z-index: 10; /* add-btn이 clubPic 위로 보이게 */
+  width: 200px;
+  height: 90px;
+  background-color: #f7f7f7;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 13px;
 }
+
 .modal p {
-  margin: 0 ;
-text-align: center;
-color: black;
+  margin: 0;
+  text-align: center;
+  color: black;
 }
-.modalBtn{
-display: flex;
-justify-content: space-between;
-padding-top: 15px;
+
+.modalBtn {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 15px;
 }
-.cancel-delete{
+
+.cancel-delete {
   color: black;
   font-weight: 100;
   padding-right: 30px;
 }
-.confirm-delete{
-color: red;
-font-weight: 100;
-padding-left: 50px;
+
+.confirm-delete {
+  color: red;
+  font-weight: 100;
+  padding-left: 50px;
 }
+
 button {
   margin-right: 10px;
 }
+
 .clubInfo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 30px;
 }
+
 .clubMemberNum,
 p {
   font-size: 13px;
   color: rgb(94, 94, 94);
 }
+
 p {
   margin: 8px;
 }
+
 .detail {
   margin-bottom: 100px;
   margin-right: 160px;
 }
+
 hr {
   border: none; /* 기존 테두리 제거 */
   height: 1px; /* 높이 설정 */
   background-color: #e7e7e7;
 }
+
+.hierarchy-main {
+  border-top: 1px solid #d9d9d9;
+}
+
 .clubDept {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  border-bottom: 1px solid #d9d9d9;
 }
+
+.club-dept-item {
+  border-bottom: 1px solid #d9d9d9;
+}
+
 .clubinnerDept {
   display: flex;
   align-items: center;
   margin-left: 5px;
 }
-.vector ,.starBtn,.checked_starBtn{
+
+.clubinnerDept p {
+  font-size: 12px;
+}
+
+.vector,
+.starBtn,
+.checked_starBtn {
   margin: 5px 10px;
+}
+
+.vector {
+  width: 15px;
 }
 
 img:not(.clubPic):hover,
@@ -147,21 +188,31 @@ button,
 .backBtn {
   cursor: pointer;
 }
+
 .memberInfo:not(.bottom) {
   margin-left: 30px;
 }
+
 hr.bottom {
   margin-left: 0; /* hr 요소에 따로 스타일 설정 */
 }
+
 .memberInfo img {
   width: 30px;
   height: 30px;
   margin: 5px;
 }
+
 .userBox {
   align-items: center; /* 세로 중앙 정렬 */
   display: flex;
+  border-top: 1px solid #d9d9d9;
 }
+
+.userBox p {
+  color: black;
+}
+
 .deptAdd {
   background-color: #0e207f;
   color: white;
