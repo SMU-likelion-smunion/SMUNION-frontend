@@ -1,7 +1,6 @@
 const API_SERVER_DOMAIN = "https://smunion.shop";
 
 let accessToken = getCookie("accessToken");
-// const uploadedImages = []; //저장된 이미지 배열
 
 function getToken() {
   const cookies = document.cookie.split(";");
@@ -63,8 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        //console.log(data);
-
         if (data.isSuccess) {
           //갤러리 이름
           const galleryName = data.result.name;

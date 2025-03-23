@@ -52,7 +52,6 @@ async function changeModalData() {
     });
 
     const data = await response.json();
-    //console.log("changeModalData", data);
 
     if (data.isSuccess) {
       return data.result;
@@ -98,7 +97,6 @@ async function addModalItems() {
 
   try {
     const items = await changeModalData();
-    //console.log("받은 데이터", items);
 
     if (!items || items.length === 0) {
       console.log("데이터 없음");
@@ -143,7 +141,6 @@ function closeModal() {
 
 async function selectClub(memberClubId) {
   let accessToken = getCookie("accessToken");
-  //console.log("선택한 동아리 ID:", memberClubId);
 
   try {
     const response = await fetch(
@@ -192,7 +189,6 @@ function getPosts() {
     })
     .then((data) => {
       if (data.isSuccess && Array.isArray(data.result)) {
-        console.log("Fetched Posts:", data.result);
         renderPosts(data.result);
       } else {
         console.error("Invalid response format:", data);
@@ -259,33 +255,6 @@ function renderPosts(posts) {
 
     mainContainer.appendChild(postElement);
   });
-
-  //   postElement.innerHTML = `
-  //     <div class="post-title">
-  //       <img src="../../assets/images/lion-face.png" class="clubImgInTitle" />
-  //       <p>${post.clubName}</p>
-  //       |
-  //       <p>${post.departmentName}</p>
-  //       |
-  //       <p>${post.nickname}</p>
-  //       <div class="dotbox"><img src="../../assets/icons/dot-3.png" class="dot-3" /></div>
-  //     </div>
-  //     ${imageUrl}
-  //     <hr />
-  //     <div class="reactbar">
-  //       <img src="../../assets/icons/heart.png" class="heart" />
-  //       <p class="heartNum">${post.likeNum}</p>
-  //       <img src="../../assets/icons/comment.png" class="comment" />
-  //       <p class="commentNum">0</p>
-  //     </div>
-  //     <hr />
-  //     <p class="contentTitle">${post.title}</p>
-  //     <p class="content">${post.content}</p>
-  //     <hr />
-  //   `;
-
-  //   mainContainer.appendChild(postElement);
-  // });
 }
 
 document.addEventListener("DOMContentLoaded", () => {

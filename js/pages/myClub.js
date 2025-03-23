@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   getMyClub(accessToken).then((data) => {
     if (data && data.result) {
-      console.log("target data", data);
+      //console.log("target data", data);
       clubBox.innerHTML = "";
       data.result.forEach((club) => {
         const clubDiv = document.createElement("div");

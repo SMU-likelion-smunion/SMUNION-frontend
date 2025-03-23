@@ -56,8 +56,6 @@ function getDepartmentName() {
       //console.log("data", data);
 
       if (data.isSuccess) {
-        //console.log("getDepartmentName 완료");
-
         const departmentName = data.result.departmentName; //departmentName 가져오기
         const clubName = data.result.clubName; // clubName 가져오기
         const url = data.result.url; // url 가져오기
@@ -85,13 +83,9 @@ function getClubId() {
       return response.json();
     })
     .then((data) => {
-      //console.log("data", data);
-
       if (data.isSuccess) {
-        //console.log("get memberClubId 완료");
         const currentClubId = data.result.memberClubId;
         localStorage.setItem("currentClubId", currentClubId);
-        //console.log(currentClubId);
       } else {
         throw new Error("memberClubId 가져오기 실패");
       }
@@ -114,7 +108,6 @@ function getClubDetail() {
     })
     .then((data) => {
       if (data.isSuccess) {
-        //console.log("동아리 전체 공지: ", data.result);
         const {
           basicNoticeDetailResponseList = [],
           attendanceDetailResponseList = [],
@@ -156,7 +149,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const currentClubId = localStorage.getItem("currentClubId");
 
   if (currentClubId !== storedClubId) {
-    //localStorage.setItem("currentClubId", currentClubId);
     localStorage.setItem("selectedDepartments", JSON.stringify([]));
   }
 
@@ -305,17 +297,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      //기본값으로 오늘 날짜 선택됨
-      // if (i === todayDate && year === todayYear && month === todayMonth) {
-      //   //dateDiv.classList.add("selected-date");
-      //   dateDiv.querySelectorAll(".todo-list p").forEach((p) => {
-      //     p.style.backgroundColor = "rgba(256, 256, 256, 0.3)";
-      //   });
-
-      //   const todayFormatted = `${todayYear}-${String(todayMonth + 1).padStart(2, "0")}-${String(todayDate).padStart(2, "0")}`;
-      //   //localStorage.setItem("selectedDate", todayFormatted);
-      // }
-
       //날짜 클릭
       dateDiv.addEventListener("click", () => {
         document.querySelectorAll(".selected-date").forEach((item) => {
@@ -403,7 +384,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   renderCalendar(allNotices);
 
-  //-----------------------------------------------------------------------------------
   //참여형 위젯 설정
 
   const noticeItem = document.getElementById("wi1"); //일반 공지
@@ -442,7 +422,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "club-notice-create-pay.html";
   });
 
-  //-----------------------------------------------------------------------------------
   //전달 대상
   const targetType = document.querySelector(".target-type");
   const selectedDepartments = JSON.parse(localStorage.getItem("selectedDepartments")) || [];
@@ -459,8 +438,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return response.json();
     })
     .then((data) => {
-      //console.log("target data", data);
-
       if (data.isSuccess) {
         const departments = data.result.departmentDTOS;
 
@@ -565,9 +542,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedTargetString = localStorage.getItem("selectedDepartments");
     const selectedTarget = selectedTargetString ? JSON.parse(selectedTargetString) : [];
     const sDateString = localStorage.getItem("selectedDate");
-    //console.log(sDateString);
     const sDate = new Date(sDateString);
-    //console.log(sDate);
 
     //localStorage > noticeData 가져오기
     const noticeDataString = localStorage.getItem("noticeData");
@@ -640,16 +615,11 @@ document.addEventListener("DOMContentLoaded", () => {
             anonymous: voteData.anonymous,
             options: voteData.options,
           };
-          //console.log(noticeData);
           break;
       }
     }
 
     const apiUrl = `${API_SERVER_DOMAIN}${apiPath}`;
-
-    //console.log(apiUrl);
-    //console.log(noticeInfo);
-    //console.log(JSON.stringify(noticeInfo));
 
     fetch(apiUrl, {
       method: "POST",
@@ -661,7 +631,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
       .then((response) => response.json())
       .then((data) => {
-        //console.log("공지 등록 성공:", data);
         alert("공지 등록이 완료되었습니다!");
         window.history.back();
       })

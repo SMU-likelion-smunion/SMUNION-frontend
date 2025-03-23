@@ -171,18 +171,15 @@ async function createDeptTable() {
         // 클릭 이벤트 추가
         iconImg.addEventListener("click", function () {
           if (selectedIcon) {
-            // 이전 선택된 아이콘을 circle로 변경
             selectedIcon.classList.remove("checked_circle");
             selectedIcon.classList.add("circle");
             selectedIcon.src = "../../assets/icons/circle.png";
           }
 
-          // 현재 클릭된 아이콘을 checked_circle로 변경
           this.classList.remove("circle");
           this.classList.add("checked_circle");
           this.src = "../../assets/icons/checked_circle.png";
 
-          // 선택된 아이콘 업데이트
           selectedIcon = this;
         });
 

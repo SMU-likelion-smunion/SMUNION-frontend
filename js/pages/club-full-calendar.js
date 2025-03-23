@@ -89,7 +89,7 @@ function getDepartmentName() {
         localStorage.setItem("departmentName", departmentName);
         localStorage.setItem("selectedClub", JSON.stringify({ clubName, url }));
 
-        // 헤더에 반영
+        //헤더에 반영
         const headerImg = document.querySelector(".club-img");
         headerImg.src = url;
 
