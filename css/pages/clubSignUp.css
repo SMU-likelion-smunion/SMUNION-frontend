@@ -17,6 +17,7 @@ body {
   position: relative;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
+
 header {
   background-color: rgb(235, 235, 235);
   display: flex;
@@ -24,31 +25,41 @@ header {
   width: 375px;
   justify-content: center;
 }
+
 .blank {
   color: rgb(53, 62, 72);
   height: 20px;
   margin: 0%;
   padding: 16px;
 }
+
 .reviseBtn {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: white;
   width: 375px;
-  padding: 5px;
+  padding: 5px 15px;
   font-weight: bold;
   font-size: small;
 }
+
+.reviseBtn p {
+  font-size: 14px;
+  font-weight: 700;
+}
+
 button {
   background-color: transparent;
   border: none;
   color: rgb(19, 19, 162);
   font-weight: bold;
 }
-button:hover{
+
+button:hover {
   cursor: pointer;
 }
+
 .uploadPic {
   display: flex;
   justify-content: center;
@@ -60,17 +71,20 @@ button:hover{
   margin: 0 auto; /* 수평 중앙 정렬 */
   margin-top: 50px;
 }
+
 .clubInfo {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 30px;
 }
+
 .clubMemberNum,
 p {
   font-size: 13px;
   color: rgb(94, 94, 94);
 }
+
 p {
   margin: 8px;
 }
@@ -81,6 +95,7 @@ input {
   outline: none;
   width: 300px;
 }
+
 input::placeholder {
   font-size: 13px; /* 원하는 글자 크기 */
   color: rgb(215, 215, 215); /* 텍스트 색상 */
@@ -92,15 +107,16 @@ input::placeholder {
   border-radius: 10px;
   width: 330px;
   font-size: 14px;
-  margin-top: 100px;
+  margin-top: 80px;
 }
+
 .search {
   width: 22px;
   margin-right: 10px;
 }
+
 hr {
   border: none; /* 기존 테두리 제거 */
   height: 1px; /* 높이 설정 */
   background-color: #e7e7e7;
 }
-
