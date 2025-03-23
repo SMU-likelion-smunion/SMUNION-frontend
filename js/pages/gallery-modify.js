@@ -1,7 +1,6 @@
 const API_SERVER_DOMAIN = "https://smunion.shop";
 
 let accessToken = getCookie("accessToken");
-// const uploadedImages = []; //저장된 이미지 배열
 
 function getToken() {
   const cookies = document.cookie.split(";");
@@ -70,19 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
         //console.log(data);
         if (data.isSuccess) {
           galleryNameInput.value = data.result.name;
-
-          //이미지 추가
-          //const galleryImages = data.result.thumbnailImages;
-          // galleryImages.forEach((imageUrl) => {
-          //   const imageItemDiv = document.createElement("div");
-          //   imageItemDiv.classList.add("image-item");
-
-          //   const imageElement = document.createElement("img");
-          //   imageElement.src = imageUrl;
-
-          //   imageItemDiv.appendChild(imageElement);
-          //   galleryContent.appendChild(imageItemDiv);
-          // });
 
           //이미지 업로드 div
           const uploadDiv = document.createElement("div");

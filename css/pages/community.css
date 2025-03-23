@@ -246,6 +246,7 @@ hr {
 .comment {
   width: 24px;
   margin: 7px;
+  cursor: pointer;
 }
 
 .contentTitle {

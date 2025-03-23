@@ -194,4 +194,5 @@ tr:first-child td {
   margin-left: 10px;
   padding: 10px 16px;
   border-radius: 8px;
+  cursor: pointer;
 }

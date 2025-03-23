@@ -53,10 +53,8 @@ async function checkAdminPrivileges() {
     });
 
     const data = await response.json();
-    console.log(data);
 
     const isAdmin = data.result.departmentName === "운영진";
-    console.log(isAdmin);
 
     const createBtn = document.querySelector(".notice-create-btn");
     createBtn.style.display = isAdmin ? "block" : "none";
@@ -108,17 +106,10 @@ function getDepartmentName() {
       //console.log("data", data);
 
       if (data.isSuccess) {
-        //console.log("getDepartmentName 완료");
-        //console.log("getDptm", data.result);
-
         const selectedClub = data.result;
-
         const departmentName = data.result.departmentName; //departmentName 가져오기
-        // const clubName = data.result.clubName; // clubName 가져오기
-        // const url = data.result.url; // url 가져오기
 
         localStorage.setItem("departmentName", departmentName);
-        // localStorage.setItem("selectedClub", JSON.stringify({ clubName, url }));
 
         localStorage.setItem("selectedClub", JSON.stringify(selectedClub));
 
@@ -188,7 +179,6 @@ async function selectClub(memberClubId) {
     );
     const data = await response.json();
     if (data.isSuccess) {
-      //console.log("동아리 선택 성공:", data);
       const selectedClub = data.result; //선택한 동아리 정보 저장
 
       // 헤더 업데이트
@@ -385,10 +375,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   //캘린더
   //캘린더 헤더 날짜
-  //const calHeader = document.querySelector(".cal-top-header h1");
   const prevBtn = document.querySelector("#cal-top-header2 img:nth-of-type(1)");
   const nextBtn = document.querySelector("#cal-top-header2 img:nth-of-type(2)");
-  //const calDates = document.querySelector(".cal-dates");
 
   let currentDate = new Date(); //현재 화면의 날짜
   const today = new Date(); //오늘 날짜

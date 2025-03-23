@@ -55,10 +55,9 @@ async function checkAdminPrivileges() {
     });
 
     const data = await response.json();
-    console.log(data);
+    //console.log(data);
 
     const isAdmin = data.result.departmentName === "운영진";
-    console.log(isAdmin);
 
     const createBtn = document.querySelector(".create-btn");
     const editBtn = document.querySelector(".edit-btn");
@@ -87,11 +86,7 @@ function showGallery() {
       return response.json();
     })
     .then((data) => {
-      //console.log("gallery data", data);
-
       if (data.isSuccess && data.result && data.result.galleryResDTOS) {
-        //console.log("gallery data 조회 성공");
-
         data.result.galleryResDTOS.reverse().forEach((item) => {
           const galleryId = item.galleryID;
           const name = item.name;

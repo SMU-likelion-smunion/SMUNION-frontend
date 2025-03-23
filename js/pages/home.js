@@ -64,7 +64,7 @@ async function fetchAllClubNotices() {
     for (let club of clubList) {
       let memberClubId = club.memberClubId;
       let department = club.departmentName;
-      console.log(memberClubId);
+      //console.log(memberClubId);
 
       //특정 동아리 세션 선택
       await fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/select?memberClubId=${memberClubId}`, {
@@ -157,7 +157,6 @@ function formatNotices(list, type) {
         noticeId = notice.voteId;
         break;
     }
-    //console.log("noticeId", noticeId);
 
     return {
       id: noticeId,
@@ -182,22 +181,16 @@ function filterNoticesByDepartment(allNotices) {
 
     return notice.target.includes(notice.department);
   });
-  //console.log("target 필터링된 공지", filteredAllNotices);
 }
 
 //체크리스트 공지
 function displayNoticesForDate(dateStr) {
-  //console.log("191", dateStr);
-
   const checkListHeader = document.querySelector(".check-list-header");
   checkListHeader.querySelectorAll(".items").forEach((item) => item.remove()); // 기존 공지 삭제
 
   let noticesForDate = filteredAllNotices.filter((notice) => {
-    //console.log(notice);
-
     return notice.date && notice.date.slice(0, 10) === dateStr;
   });
-  //console.log("dateStr 비교", noticesForDate);
 
   noticesForDate.forEach((notice) => {
     const itemDiv = document.createElement("div");
@@ -257,9 +250,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     const allNotices = await fetchAllClubNotices(); // 모든 공지 데이터
-    //console.log("line 165:", allNotices);
     filterNoticesByDepartment(allNotices);
-    //console.log("부서 필터링 된 데이터", filteredAllNotices);
   } catch (error) {
     console.error("공지 데이터를 가져오는 중 에러 발생:", error);
   }
@@ -314,8 +305,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         return formattedNoticeDate === dateStr;
       });
-
-      //console.log("날짜 필터링", noticesForDate);
 
       // 최대 3개 공지
       let displayedNotices = noticesForDate.slice(0, 3);
