@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  font-family: "Pretendard";
 }
 
 body {
@@ -55,8 +55,8 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 170px;
-  height: 170px;
+  width: 100%;
+  height: 200px;
   background-color: transparent;
   border-radius: 20px;
   margin: 0 auto; /* 수평 중앙 정렬 */
@@ -124,7 +124,8 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 30px;
+  margin-top: 20px;
+  margin-bottom: 50px;
 }
 
 .clubMemberNum,
@@ -135,11 +136,6 @@ p {
 
 p {
   margin: 8px;
-}
-
-.detail {
-  margin-bottom: 100px;
-  margin-right: 160px;
 }
 
 hr {
@@ -187,6 +183,14 @@ img:not(.clubPic):hover,
 button,
 .backBtn {
   cursor: pointer;
+}
+
+.clubPic {
+  width: 200px;
+  height: 200px;
+  object-fit: fill;
+  box-shadow: 0px 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
 }
 
 .memberInfo:not(.bottom) {

@@ -63,25 +63,55 @@ function getClubDpt() {
     });
 }
 
-function getClubDetail(token) {
-  return fetch(`${API_SERVER_DOMAIN}/api/v1/club/detail`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      if (response.status === 401) {
-        console.warn("Access Token 만료됨. 새 토큰 요청 중...");
-        return refreshAccessToken().then((newToken) => getMyClub(newToken));
-      }
-      if (!response.ok) throw new Error("User info request failed");
-      return response.json();
-    })
-    .catch((error) => {
-      console.error("API 요청 오류:", error);
+async function getClubDetail() {
+  try {
+    const response = await fetch(API_SERVER_DOMAIN + `/api/v1/club/detail`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     });
+
+    const data = await response.json();
+    if (data.isSuccess) {
+      return {
+        clubInfo_img: data.result.thumbnailUrl,
+        clubInfo_name: data.result.name,
+        clubInfo_desc: data.result.description,
+      };
+    } else {
+      throw new Error("Failed to fetch club details");
+    }
+  } catch (error) {
+    console.error("Error fetching club details:", error);
+    return null;
+  }
+}
+
+//동아리 부원 수 계산
+async function getClubMemberCount() {
+  try {
+    const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/club`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+
+    if (data && data.result && data.result.memberClubResponseList) {
+      const memberCount = data.result.memberClubResponseList.length;
+      return memberCount;
+    } else {
+      console.warn("No member data found.");
+      return 0;
+    }
+  } catch (error) {
+    console.error("Error fetching member data:", error);
+    return 0;
+  }
 }
 
 //부서 열고 닫을수 있게
@@ -99,9 +129,33 @@ function deptMemSee(imgElement) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   getToken();
   //console.log("Access Token:", accessToken);
+
+  const clubPic = document.querySelector(".clubPic");
+  const clubName = document.querySelector(".clubName");
+  const detail = document.querySelector(".detail");
+
+  const clubDetails = await getClubDetail();
+
+  if (clubDetails) {
+    const { clubInfo_img, clubInfo_name, clubInfo_desc } = clubDetails;
+
+    if (clubPic) clubPic.src = clubInfo_img;
+    if (clubName) clubName.textContent = clubInfo_name || "Unknown Club Name";
+    if (detail) detail.textContent = clubInfo_desc || "No description available.";
+  } else {
+    console.warn("Failed to load club details.");
+  }
+
+  const memberCount = await getClubMemberCount();
+  const memberCountElement = document.querySelector(".clubMemberNum");
+  if (memberCountElement) {
+    memberCountElement.textContent = `총 ${memberCount}명`;
+  } else {
+    console.warn(".memberCount element not found.");
+  }
 
   const hierarchyMain = document.querySelector(".hierarchy-main");
   hierarchyMain.innerHTML = "";
@@ -301,4 +355,14 @@ deleteButtons.forEach((button) => {
       });
     };
   };
+});
+
+const backBtn = document.querySelector(".backBtn");
+backBtn.addEventListener("click", () => {
+  window.history.back();
+});
+
+const invite = document.querySelector(".invite");
+invite.addEventListener("click", () => {
+  window.location.href = "/html/pages/clubInvite.html";
 });
