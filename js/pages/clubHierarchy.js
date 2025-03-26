@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   userBox.classList.add("userBox");
                   userBox.innerHTML = `
                     <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
-                    <img src="${member.url || "../../assets/images/default.png"}">
+                    <img src="${member.url}">
                     <p>${member.nickname || "Unknown"}</p>
                   `;
                   memberInfoDiv.appendChild(userBox);
@@ -244,6 +244,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 //편집버튼 눌었을시 부서추가 버튼 보이게 + deleteBtn보이게
 document.getElementById("reviseBtn").onclick = function () {
+  const inviteBtn = document.querySelector(".invite");
+  inviteBtn.style.display = "none";
+
+  const reviseBtn = document.querySelector("#reviseBtn");
+  reviseBtn.className = "completeBtn";
+  reviseBtn.textContent = "완료";
+
+  reviseBtn.addEventListener("click", function completeHandler() {
+    inviteBtn.style.display = "flex";
+    reviseBtn.id = "reviseBtn";
+    reviseBtn.textContent = "편집";
+  });
+
   var deleteBtns = document.querySelectorAll(".deleteBtn");
   deleteBtns.forEach(function (btn) {
     btn.style.display = "inline"; // deleteBtn 보이게
@@ -263,21 +276,52 @@ document.getElementById("reviseBtn").onclick = function () {
     var newSrc = parts.join("/");
     btn.src = newSrc;
   });
+
+  //완료버튼 클릭
+  document.querySelector(".completeBtn").addEventListener("click", () => {
+    const newDeptInput = document.querySelector("#dept-input");
+    const newDeptName = newDeptInput.value.trim();
+
+    if (newDeptName) {
+      console.log(newDeptName);
+      fetch(`${API_SERVER_DOMAIN}/api/v1/department/create`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: newDeptName,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          alert("부서가 생성되었습니다.");
+          location.reload();
+        })
+        .catch((error) => {
+          console.error("부서 생성 실패:", error);
+          alert("부서 생성에 실패했습니다.");
+        });
+    } else {
+      alert("부서 이름을 입력해주세요!");
+    }
+  });
 };
 
-// 부서 추가 기능 및 삭제 기능
 document.getElementById("deptAdd").onclick = function () {
   // 새로운 부서 항목을 템플릿 리터럴로 작성
   var newDeptHTML = `
   <hr>
     <div class="clubDept">
      <div class="clubinnerDept">
-        <img style="width: 15px; height: 15px;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
-          <p>부서명을 입력해주세요</p>
+        <img class="deleteBtn" src="../../assets/icons/deleteBtn.png">
+          <input type="text" id="dept-input" placeholder="부서명을 입력해주세요" />
       </div>
       <img class="starBtn" src="../../assets/icons/starBtn.png">
           </div>
           `;
+
   document.querySelector(".NewDept").innerHTML += newDeptHTML; //추가
 };
 
@@ -346,6 +390,7 @@ deleteButtons.forEach((button) => {
         element.style.filter = ``;
       });
     };
+
     // 취소버튼클릭
     modal.querySelector(".cancel-delete").onclick = function () {
       modal.remove(); // 모달 제거
