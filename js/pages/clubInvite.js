@@ -202,6 +202,7 @@ function createCode() {
   const selectedDepartment = document.querySelector(".checked_circle");
   if (!selectedDepartment) {
     alert("부서를 선택해주세요!");
+    return Promise.resolve(false);
     return;
   }
 
@@ -233,6 +234,7 @@ function createCode() {
         }
 
         alert("코드가 생성되었습니다!");
+        return true;
       } else {
         throw new Error("코드 생성 결과를 불러오지 못했습니다.");
       }
@@ -243,10 +245,17 @@ function createCode() {
     });
 }
 
+let timerInterval = null;
 //타이머
 function startTimer(duration, display) {
   let timer = duration;
-  const interval = setInterval(() => {
+
+  if (timerInterval) {
+    clearInterval(timerInterval);
+    timerInterval = null;
+  }
+
+  timerInterval = setInterval(() => {
     const minutes = Math.floor(timer / 60);
     const seconds = timer % 60;
 
@@ -257,6 +266,8 @@ function startTimer(duration, display) {
 
     if (timer <= 0) {
       clearInterval(interval);
+      timerInterval = null;
+      display.textContent = "만료됨";
     }
 
     timer--;
@@ -317,14 +328,38 @@ copyBtn.addEventListener("click", () => {
 });
 
 //코드 생성
-document.querySelector(".codeCreateBtn").addEventListener("click", () => {
-  createCode()
-    .then(() => {
+document.querySelector(".codeCreateBtn").addEventListener("click", async () => {
+  try {
+    const result = await createCode();
+    console.log(result);
+
+    if (result) {
       const timerDisplay = document.querySelector(".timer");
       const fiveMinutes = 5 * 60;
+
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
       startTimer(fiveMinutes, timerDisplay);
-    })
-    .catch((error) => {
-      console.error("Error starting timer after code creation:", error);
-    });
+    } else {
+      const timerDisplay = document.querySelector(".timer");
+
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      if (timerDisplay) {
+        timerDisplay.textContent = "남은 시간: 05분 00초";
+      }
+    }
+  } catch (error) {
+    console.error("Error during code creation process:", error);
+    const timerDisplay = document.querySelector(".timer");
+
+    if (timerInterval) {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+  }
 });
