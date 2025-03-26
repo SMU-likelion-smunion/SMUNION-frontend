@@ -153,6 +153,7 @@ hr {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #d9d9d9;
+  height: 32px;
 }
 
 .club-dept-item {
@@ -175,7 +176,8 @@ hr {
   margin: 5px 10px;
 }
 
-.vector {
+.vector,
+.starBtn {
   width: 15px;
 }
 
@@ -224,4 +226,19 @@ hr.bottom {
   margin: 10px;
   border-radius: 20px;
   display: none;
+}
+
+#dept-input {
+  border: 0;
+  margin-left: 8px;
+  font-size: 12px;
+  max-width: 200px;
+}
+
+#dept-input:focus {
+  outline: none;
+}
+
+.header-btns {
+  display: flex;
 }
