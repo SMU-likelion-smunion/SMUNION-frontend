@@ -128,6 +128,38 @@ async function addModalItems() {
   }
 }
 
+function renderComments(comments) {
+  const modalContent = document.querySelector(".content1");
+  modalContent.innerHTML = "";
+
+  if (!Array.isArray(comments) || comments.length === 0) {
+    modalContent.innerHTML = `
+      <div class="comment-items"><p class="no-comment">아직 댓글이 없습니다.</p></div>
+    `;
+
+    return;
+  }
+
+  //댓글
+  comments.forEach((comment) => {
+    const commentItem = document.createElement("div");
+    commentItem.classList.add("comment-items");
+
+    commentItem.innerHTML = `
+      <div class="user-info">
+        <p>${comment.departmentName} | ${comment.clubName} | ${comment.nickname}</p>
+      </div>
+      <div class="comment-content">
+        <p>${comment.body}</p>
+      </div>
+    `;
+    modalContent.appendChild(commentItem);
+
+    const hr = document.createElement("hr");
+    modalContent.appendChild(hr);
+  });
+}
+
 // 모달을 띄우는 함수
 function openModal() {
   document.querySelector(".club-change-modal").style.display = "block";
@@ -190,6 +222,7 @@ function getPosts() {
     .then((data) => {
       if (data.isSuccess && Array.isArray(data.result)) {
         renderPosts(data.result);
+        addCommentClickListener();
       } else {
         console.error("Invalid response format:", data);
       }
@@ -244,8 +277,8 @@ function renderPosts(posts) {
       <div class="reactbar">
         <img src="../../assets/icons/heart.png" class="heart" />
         <p class="heartNum">${post.likeNum}</p>
-        <img src="../../assets/icons/comment.png" class="comment" />
-        <p class="commentNum">0</p>
+        <img src="../../assets/icons/comment.png" class="comment" id=${post.id} />
+        <p class="commentNum"></p>
       </div>
       <hr />
       <p class="contentTitle">${post.title}</p>
@@ -257,15 +290,134 @@ function renderPosts(posts) {
   });
 }
 
+function addCommentClickListener() {
+  document.querySelectorAll(".comment").forEach((commentIcon) => {
+    commentIcon.addEventListener("click", async () => {
+      const commentModal = document.querySelector(".comment-modal");
+      const modalContent = document.querySelector(".cm2");
+      const articleId = commentIcon.id;
+
+      modalContent.innerHTML = `
+        <div class="content1">
+        </div>
+        <div class="content2">
+          <div class="input-bar">
+            <input class="comment-input" type="text" placeholder="댓글 달기.." />
+            <img class="send-btn" src="/assets/icons/send-btn.svg" />
+          </div>
+        </div>
+      `;
+
+      const content1 = modalContent.querySelector(".content1");
+
+      //댓글 데이터
+      try {
+        const articleId = commentIcon.id;
+        const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/community/${articleId}/replies`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.isSuccess) {
+          renderComments(data.result);
+        } else {
+          content1.innerHTML = `
+            <div class="no-comments">
+              <p>댓글을 가져올 수 없습니다. 다시 시도해주세요.</p>
+            </div>
+          `;
+        }
+      } catch (error) {
+        console.error("댓글 데이터를 가져오는 중 오류 발생:", error);
+        content1.innerHTML = "<p>댓글 데이터를 가져오는 중 오류가 발생했습니다.</p>";
+      }
+
+      commentModal.style.display = "flex";
+
+      addComment(articleId);
+    });
+  });
+}
+
+function addComment(articleId) {
+  const sendBtn = document.querySelector(".send-btn");
+  const commentInput = document.querySelector(".comment-input");
+
+  sendBtn.addEventListener("click", async () => {
+    const commentContent = commentInput.value.trim();
+
+    if (!commentContent) {
+      alert("댓글 내용을 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/community/${articleId}/replies`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({ body: commentContent }),
+      });
+
+      const data = await response.json();
+
+      if (data.isSuccess) {
+        alert("댓글이 작성되었습니다.");
+        commentInput.value = "";
+
+        const updatedCommentsResponse = await fetch(
+          `${API_SERVER_DOMAIN}/api/v1/community/${articleId}/replies`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        const updatedCommentsData = await updatedCommentsResponse.json();
+
+        if (updatedCommentsData.isSuccess) {
+          renderComments(updatedCommentsData.result);
+        } else {
+          console.error("댓글 목록 갱신 실패:", updatedCommentsData.message);
+        }
+      } else {
+        throw new Error(data.message || "댓글 작성 실패");
+      }
+    } catch (error) {
+      console.error("댓글 작성 중 오류 발생:", error);
+      alert("댓글 작성 중 오류가 발생했습니다.");
+    }
+  });
+}
+
+function addModalCloseListener() {
+  const modal = document.querySelector(".comment-modal");
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) {
+      const modalContent = document.querySelector(".cm2");
+      modalContent.innerHTML = "";
+      modal.style.display = "none";
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
+  console.log(accessToken);
 
   const modal = document.querySelector(".club-change-modal");
   const modalClick = document.querySelector(".modal-click2");
+  const commentModal = document.querySelector(".comment-modal");
 
   //modal 열기
   modalClick.addEventListener("click", () => {
-    modal.style.display = "block";
     openModal();
   });
 
@@ -275,6 +427,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const modalContent = document.querySelector(".ccm2");
       modalContent.innerHTML = "";
       modal.style.display = "none";
+    }
+  });
+
+  commentModal.addEventListener("click", (event) => {
+    if (event.target === commentModal) {
+      const commentModalContent = document.querySelector(".cm2");
+      commentModalContent.innerHTML = "";
+      commentModal.style.display = "none";
     }
   });
 
