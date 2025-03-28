@@ -240,6 +240,72 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
   });
+
+  // 부서 삭제
+  document.querySelector(".hierarchy-main").addEventListener("click", async function(e) {
+    // 부서의 삭제 버튼 클릭 시
+    if (e.target.classList.contains("deleteBtn") && e.target.closest(".clubinnerDept")) {
+      const clubDeptItem = e.target.closest(".club-dept-item");
+      if (clubDeptItem) {
+        const departmentId = clubDeptItem.id;
+        
+        // 모달
+        const modalHTML = `
+          <div class="modal-overlay">
+            <div class="modal" style="padding: 5px;">
+              <p>부서를 삭제하시겠습니까?\n</p>
+              <div class='modalBtn' style="margin-top: 12px;"> 
+                <button class="cancel-delete" style="font-weight: 500;">취소</button>
+                <button class="confirm-delete" style="font-weight: 800;">삭제</button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+       
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+        
+        // 배경 블러
+        const bodyElements = document.querySelectorAll(
+          "body *:not(.modal):not(.modal-overlay):not(.modal *)"
+        );
+        bodyElements.forEach((element) => {
+          element.style.filter = `blur(1px)`;
+        });
+        
+        // 확인 버튼 클릭
+        const modal = document.querySelector(".modal-overlay");
+        modal.querySelector(".confirm-delete").onclick = async function() {
+          try {
+            const result = await deleteDepartment(departmentId);
+            if (result.isSuccess) {
+              clubDeptItem.remove();
+              alert("부서가 삭제되었습니다.");
+            } else {
+              alert(`부서 삭제 실패: ${result.message}`);
+            }
+          } catch (error) {
+            alert("부서 삭제 중 오류가 발생했습니다.");
+          } finally {
+            // 모달 제거,블러 해제
+            modal.remove();
+            bodyElements.forEach((element) => {
+              element.style.filter = ``;
+            });
+          }
+        };
+        
+        // 취소 버튼 클릭하면..
+        modal.querySelector(".cancel-delete").onclick = function() {
+          // 모달 제거, 블러 해제
+          modal.remove();
+          bodyElements.forEach((element) => {
+            element.style.filter = ``;
+          });
+        };
+      }
+    }
+  });
 });
 
 //편집버튼 눌었을시 부서추가 버튼 보이게 + deleteBtn보이게
@@ -411,3 +477,23 @@ const invite = document.querySelector(".invite");
 invite.addEventListener("click", () => {
   window.location.href = "/html/pages/clubInvite.html";
 });
+
+
+// 부서 삭제
+async function deleteDepartment(departmentId) {
+  try {
+    const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/department/${departmentId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("부서 삭제 실패:", error);
+    throw error;
+  }
+}
