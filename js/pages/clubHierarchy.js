@@ -385,12 +385,9 @@ document.getElementById("reviseBtn").onclick = function () {
   const reviseBtn = document.querySelector("#reviseBtn");
   reviseBtn.className = "completeBtn";
   reviseBtn.textContent = "완료";
-
-  reviseBtn.addEventListener("click", function completeHandler() {
-    inviteBtn.style.display = "flex";
-    reviseBtn.id = "reviseBtn";
-    reviseBtn.textContent = "편집";
-  });
+  
+  // 기존 이벤트 핸들러 제거
+  reviseBtn.onclick = null;
 
   var deleteBtns = document.querySelectorAll(".deleteBtn");
   deleteBtns.forEach(function (btn) {
@@ -411,37 +408,150 @@ document.getElementById("reviseBtn").onclick = function () {
     var newSrc = parts.join("/");
     btn.src = newSrc;
   });
+  
+  // 동아리 정보 수정을 위한 UI 표시
+  // 동아리 이름 수정 가능하도록
+const clubName = document.querySelector(".clubName");
+const originalClubName = clubName.textContent;
+const clubNameEdit = document.createElement("div");
+clubNameEdit.classList.add("edit-container");
+clubNameEdit.innerHTML = `
+  <input type="text" id="club-name-input" value="${originalClubName}" class="edit-input">
+  <i class="fa-solid fa-pen edit-icon"></i>
+`;
+clubName.innerHTML = "";
+clubName.appendChild(clubNameEdit);
 
-  //완료버튼 클릭
-  document.querySelector(".completeBtn").addEventListener("click", () => {
-    const newDeptInput = document.querySelector("#dept-input");
-    const newDeptName = newDeptInput.value.trim();
+// 동아리 설명 수정 가능하도록
+const detail = document.querySelector(".detail");
+const originalDetail = detail.textContent;
+const detailEdit = document.createElement("div");
+detailEdit.classList.add("edit-container");
+detailEdit.innerHTML = `
+  <textarea id="club-detail-input" class="edit-input">${originalDetail}</textarea>
+  <i class="fa-solid fa-pen edit-icon"></i>
+`;
+detail.innerHTML = "";
+detail.appendChild(detailEdit);
 
-    if (newDeptName) {
-      console.log(newDeptName);
-      fetch(`${API_SERVER_DOMAIN}/api/v1/department/create`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: newDeptName,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          alert("부서가 생성되었습니다.");
-          location.reload();
-        })
-        .catch((error) => {
-          console.error("부서 생성 실패:", error);
-          alert("부서 생성에 실패했습니다.");
-        });
-    } else {
-      alert("부서 이름을 입력해주세요!");
+// textarea 자동 높이 조정 함수 추가
+const textarea = document.getElementById("club-detail-input");
+if (textarea) {
+  // 초기 높이 설정
+  textarea.style.height = 'auto';
+  textarea.style.height = (textarea.scrollHeight) + 'px';
+  
+  // 입력 시 높이 자동 조절
+  textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+  });
+}
+  
+  // 이미지 선택 input 추가
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.id = "club-image-input";
+  fileInput.accept = "image/*";
+  fileInput.style.display = "none";
+  document.body.appendChild(fileInput);
+  
+  // 이미지 클릭 시 파일 선택 창 열기
+  addBtn.addEventListener("click", function() {
+    fileInput.click();
+  });
+  
+  // 이미지 선택 시 미리보기 표시
+  fileInput.addEventListener("change", function(e) {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        clubPic.src = event.target.result;
+        clubPic.style.opacity = "1";
+        clubPic.style.filter = "blur(0)";
+      };
+      reader.readAsDataURL(e.target.files[0]);
     }
   });
+
+  // 완료 버튼에 새 이벤트 핸들러 설정
+  reviseBtn.onclick = async function() {
+    // 기존 UI 복원
+    inviteBtn.style.display = "flex";
+    reviseBtn.className = "";
+    reviseBtn.id = "reviseBtn";
+    reviseBtn.textContent = "편집";
+    
+    // 동아리 정보 수정
+    const nameInput = document.getElementById("club-name-input");
+    const detailInput = document.getElementById("club-detail-input");
+    const imageInput = document.getElementById("club-image-input");
+    
+    // 새 부서 추가 처리
+    const newDeptInput = document.querySelector("#dept-input");
+    
+    // 정보 수정 로직 실행
+    if (nameInput && detailInput) {
+      console.log("동아리 정보 수정 시작");
+      const formData = new FormData();
+      formData.append("name", nameInput.value);
+      formData.append("description", detailInput.value);
+      
+      if (imageInput && imageInput.files && imageInput.files[0]) {
+        console.log("이미지 파일 추가");
+        formData.append("image", imageInput.files[0]);
+      }
+      
+      try {
+        console.log("API 호출");
+        const result = await updateClub(formData);
+        console.log("API 응답:", result);
+        
+        if (result.isSuccess) {
+          alert("동아리 정보가 수정되었습니다.");
+        } else {
+          alert(`동아리 수정 실패: ${result.message}`);
+        }
+      } catch (error) {
+        console.error("동아리 수정 오류:", error);
+        alert("동아리 수정 중 오류가 발생했습니다.");
+      }
+    }
+    
+    // 부서 추가 처리
+    if (newDeptInput && newDeptInput.value.trim()) {
+      console.log("부서 추가 시작");
+      const newDeptName = newDeptInput.value.trim();
+      try {
+        const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/department/create`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: newDeptName,
+          }),
+        });
+        
+        const data = await response.json();
+        if (data.isSuccess) {
+          alert("부서가 생성되었습니다.");
+        } else {
+          alert(`부서 생성 실패: ${data.message}`);
+        }
+      } catch (error) {
+        console.error("부서 생성 오류:", error);
+        alert("부서 생성에 실패했습니다.");
+      }
+    }
+    
+    // 페이지 새로고침
+    location.reload();
+    
+    // 이벤트 핸들러 재설정
+    document.getElementById("reviseBtn").onclick = arguments.callee.caller;
+  };
 };
 
 document.getElementById("deptAdd").onclick = function () {
@@ -583,6 +693,25 @@ async function withdrawMember(memberId) {
     return data;
   } catch (error) {
     console.error("부원 탈퇴 처리 실패:", error);
+    throw error;
+  }
+}
+
+// 동아리 수정
+async function updateClub(formData) {
+  try {
+    const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/club/modify`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: formData
+    });
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("동아리 수정 실패:", error);
     throw error;
   }
 }
