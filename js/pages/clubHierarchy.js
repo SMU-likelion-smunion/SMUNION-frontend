@@ -216,6 +216,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (memberInfoDiv) {
                   const userBox = document.createElement("div");
                   userBox.classList.add("userBox");
+                  // 멤버 ID를 데이터 속성에 저장
+                  userBox.dataset.memberId = member.memberId;
                   userBox.innerHTML = `
                     <img style="display: none;" class="deleteBtn" src="../../assets/icons/deleteBtn.png">
                     <img src="${member.url}">
@@ -241,7 +243,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
-  // 부서 삭제
+  // 부서 삭제 및 부원 탈퇴 이벤트 리스너
   document.querySelector(".hierarchy-main").addEventListener("click", async function(e) {
     // 부서의 삭제 버튼 클릭 시
     if (e.target.classList.contains("deleteBtn") && e.target.closest(".clubinnerDept")) {
@@ -262,7 +264,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         `;
         
-       
         document.body.insertAdjacentHTML("beforeend", modalHTML);
         
         // 배경 블러
@@ -298,6 +299,74 @@ document.addEventListener("DOMContentLoaded", async () => {
         // 취소 버튼 클릭하면..
         modal.querySelector(".cancel-delete").onclick = function() {
           // 모달 제거, 블러 해제
+          modal.remove();
+          bodyElements.forEach((element) => {
+            element.style.filter = ``;
+          });
+        };
+      }
+    }
+    
+    // 부원의 삭제 버튼 클릭 시: 해당 부원이 먼저 탈퇴 요청 해야 함!
+    if (e.target.classList.contains("deleteBtn") && e.target.closest(".userBox")) {
+      const userBox = e.target.closest(".userBox");
+      if (userBox) {
+        const memberId = userBox.dataset.memberId;
+        if (!memberId) {
+          alert("부원 정보를 찾을 수 없습니다.");
+          return;
+        }
+        
+        // 모달
+        const modalHTML = `
+          <div class="modal-overlay">
+            <div class="modal" style="padding: 5px;">
+              <p>해당 부원을 탈퇴시키겠습니까?</p>
+              <div class='modalBtn' style="margin-top: 12px;"> 
+                <button class="cancel-delete" style="font-weight: 500;">취소</button>
+                <button class="confirm-delete" style="font-weight: 800;">탈퇴</button>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        document.body.insertAdjacentHTML("beforeend", modalHTML);
+        
+        // 배경 블러
+        const bodyElements = document.querySelectorAll(
+          "body *:not(.modal):not(.modal-overlay):not(.modal *)"
+        );
+        bodyElements.forEach((element) => {
+          element.style.filter = `blur(1px)`;
+        });
+        
+        // 확인
+        const modal = document.querySelector(".modal-overlay");
+        modal.querySelector(".confirm-delete").onclick = async function() {
+          try {
+            const result = await withdrawMember(memberId);
+            if (result.isSuccess) {
+              userBox.remove();
+              alert("부원이 탈퇴되었습니다.");
+            } else { // 탈퇴 요ㅕ청 안 한 부원일 경우
+              if (result.message.includes("탈퇴 요청을 하지 않았습니다")) {
+                alert("해당 부원이 먼저 탈퇴 요청을 해야 탈퇴 처리가 가능합니다.");
+              } else {
+                alert(`부원 탈퇴 실패: ${result.message}`);
+              }
+            }
+          } catch (error) {
+            alert("부원 탈퇴 처리 중 오류가 발생했습니다.");
+          } finally {
+            modal.remove();
+            bodyElements.forEach((element) => {
+              element.style.filter = ``;
+            });
+          }
+        };
+        
+        // 취소
+        modal.querySelector(".cancel-delete").onclick = function() {
           modal.remove();
           bodyElements.forEach((element) => {
             element.style.filter = ``;
@@ -494,6 +563,26 @@ async function deleteDepartment(departmentId) {
     return data;
   } catch (error) {
     console.error("부서 삭제 실패:", error);
+    throw error;
+  }
+}
+
+// 부원 탈퇴 시키기 (관리자가 임의대로)
+
+async function withdrawMember(memberId) {
+  try {
+    const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/club/withdrawal/${memberId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("부원 탈퇴 처리 실패:", error);
     throw error;
   }
 }
