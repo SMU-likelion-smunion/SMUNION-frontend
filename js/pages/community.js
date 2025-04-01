@@ -108,9 +108,9 @@ async function addModalItems() {
 
       modalItem.addEventListener("click", async () => {
         try {
-          await selectClub(item.memberClubId); // 동아리 선택
+          await selectClub(item.memberClubId);
           closeModal();
-          location.reload(); //새로고침
+          location.reload();
         } catch (error) {
           console.error("동아리 선택 오류:", error);
         }
@@ -275,7 +275,7 @@ function renderPosts(posts) {
       ${imageUrl}
       <hr />
       <div class="reactbar">
-        <img src="../../assets/icons/heart.png" class="heart" />
+        <img src="../../assets/icons/empty-heart.svg" class="heart" data-post-id=${post.id} />
         <p class="heartNum">${post.likeNum}</p>
         <img src="../../assets/icons/comment.png" class="comment" id=${post.id} />
         <p class="commentNum"></p>
@@ -287,7 +287,106 @@ function renderPosts(posts) {
     `;
 
     mainContainer.appendChild(postElement);
+
+    getHeartStatus(post.id);
   });
+  heartClick();
+}
+
+function getHeartStatus(postId) {
+  let accessToken = getToken();
+
+  fetch(`${API_SERVER_DOMAIN}/api/v1/community/${postId}/likes`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      //console.log(data);
+      //console.log(data.result);
+
+      const heartIcon = document.querySelector(`.heart[data-post-id="${postId}"]`);
+      if (!heartIcon) return;
+
+      heartIcon.src = data.result
+        ? "../../assets/icons/full-heart.svg"
+        : "../../assets/icons/empty-heart.svg";
+    })
+    .catch((error) => {
+      console.error("Error fetching JHeart status:", error);
+    });
+}
+
+function heartClick() {
+  document.querySelectorAll(".heart").forEach((heartIcon) => {
+    heartIcon.addEventListener("click", async (event) => {
+      const heart = event.target;
+      const postId = heart.dataset.postId;
+      const currentSrc = heart.src;
+      //console.log(postId);
+
+      if (currentSrc.includes("empty-heart.svg")) {
+        heart.src = "../../assets/icons/full-heart.svg";
+        await updateHeart(postId);
+      } else {
+        heart.src = "../../assets/icons/empty-heart.svg";
+        await updateHeart(postId);
+      }
+
+      applyLikeNum(postId);
+    });
+  });
+}
+
+async function applyLikeNum(postId) {
+  try {
+    const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/community/${postId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    if (data.isSuccess) {
+      const heartNumElement = document.querySelector(
+        `.heart[data-post-id="${postId}"]`
+      ).nextElementSibling;
+      if (heartNumElement) {
+        heartNumElement.textContent = data.result.likeNum;
+      }
+    }
+  } catch (error) {
+    console.error("좋아요 개수 가져오기 실패:", error);
+  }
+}
+
+async function updateHeart(postId) {
+  try {
+    const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/community/${postId}/likes`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const data = await response.json();
+
+    if (!data.isSuccess) {
+      console.error("좋아요 상태 업데이트 실패");
+    }
+  } catch (error) {
+    console.error("좋아요 상태 업데이트 중 오류 발생:", error);
+  }
 }
 
 function addCommentClickListener() {
