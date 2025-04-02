@@ -323,8 +323,10 @@ p {
 
 .postImg {
   width: 375px;
+  height: 375px;
   margin: 0;
   display: block;
+  object-fit: contain;
 }
 
 .dots {
