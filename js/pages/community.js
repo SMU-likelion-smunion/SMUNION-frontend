@@ -277,7 +277,7 @@ function renderPosts(posts) {
       <div class="reactbar">
         <img src="../../assets/icons/empty-heart.svg" class="heart" data-post-id=${post.id} />
         <p class="heartNum">${post.likeNum}</p>
-        <img src="../../assets/icons/comment.png" class="comment" id=${post.id} />
+        <img src="../../assets/icons/comment.png" class="comment" data-id=${post.id} />
         <p class="commentNum"></p>
       </div>
       <hr />
@@ -289,6 +289,7 @@ function renderPosts(posts) {
     mainContainer.appendChild(postElement);
 
     getHeartStatus(post.id);
+    getCommentNum(post.id);
   });
   heartClick();
 }
@@ -389,12 +390,46 @@ async function updateHeart(postId) {
   }
 }
 
+function getCommentNum(postId) {
+  fetch(`${API_SERVER_DOMAIN}/api/v1/community/${postId}/replies`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      //console.log(data.result);
+
+      const commentCount = data.result.length;
+      const commentNumElement = document.querySelector(
+        `.comment[data-id="${postId}"] + .commentNum`
+      );
+
+      if (commentNumElement) {
+        commentNumElement.textContent = commentCount;
+      } else {
+        console.error(`댓글 수를 표시할 요소를 찾을 수 없음 (postId: ${postId})`);
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching JHeart status:", error);
+    });
+}
+
 function addCommentClickListener() {
   document.querySelectorAll(".comment").forEach((commentIcon) => {
     commentIcon.addEventListener("click", async () => {
       const commentModal = document.querySelector(".comment-modal");
       const modalContent = document.querySelector(".cm2");
-      const articleId = commentIcon.id;
+      const articleId = commentIcon.dataset.id;
+      console.log(articleId);
 
       modalContent.innerHTML = `
         <div class="content1">
@@ -411,7 +446,6 @@ function addCommentClickListener() {
 
       //댓글 데이터
       try {
-        const articleId = commentIcon.id;
         const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/community/${articleId}/replies`, {
           method: "GET",
           headers: {
@@ -469,6 +503,8 @@ function addComment(articleId) {
       if (data.isSuccess) {
         alert("댓글이 작성되었습니다.");
         commentInput.value = "";
+
+        getCommentNum(articleId);
 
         const updatedCommentsResponse = await fetch(
           `${API_SERVER_DOMAIN}/api/v1/community/${articleId}/replies`,
