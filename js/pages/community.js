@@ -42,6 +42,34 @@ function deleteCookie(name) {
   document.cookie = name + "=; Expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/;";
 }
 
+async function getClubImg() {
+  try {
+    const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/users/clubs/selected`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (data.isSuccess) {
+      const clubImgUrl = data.result.url;
+      const clubImg = document.querySelector(".club-img");
+
+      if (clubImg && clubImgUrl) {
+        clubImg.src = clubImgUrl;
+      } else {
+        console.error("이미지 가져오기 실패");
+      }
+    } else {
+      console.error(data.message);
+    }
+  } catch (error) {
+    console.error("동아리 프로필 가져오는 중 오류 발생:", error);
+  }
+}
+
 async function changeModalData() {
   try {
     const response = await fetch(API_SERVER_DOMAIN + `/api/v1/users/clubs`, {
@@ -265,7 +293,7 @@ function renderPosts(posts) {
         ${departmentNameTag}
         ${showDivider2 ? "|" : ""}
         ${nicknameTag}
-        <div class="dotbox"><img src="../../assets/icons/dot-3.png" class="dot-3" /></div>
+        <div class="dotbox"><img src="../../assets/icons/dot-3.png" class="dot-3" data-id="${post.id}"/></div>
       </div>
     `;
 
@@ -429,7 +457,6 @@ function addCommentClickListener() {
       const commentModal = document.querySelector(".comment-modal");
       const modalContent = document.querySelector(".cm2");
       const articleId = commentIcon.dataset.id;
-      console.log(articleId);
 
       modalContent.innerHTML = `
         <div class="content1">
@@ -543,9 +570,42 @@ function addModalCloseListener() {
   });
 }
 
+async function deletePost(articleId) {
+  const delMessage = confirm("게시글을 삭제하시겠습니까?");
+  if (!delMessage) return;
+
+  try {
+    const response = await fetch(`${API_SERVER_DOMAIN}/api/v1/community/${articleId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (response.status === 403) {
+      alert("게시글을 삭제할 권한이 없습니다.");
+      return;
+    }
+
+    const data = await response.json();
+
+    if (data.isSuccess) {
+      alert("게시글이 삭제되었습니다.");
+      location.reload();
+    } else {
+      throw new Error(data.message || "게시글 삭제 실패");
+    }
+  } catch (error) {
+    console.error("게시글 삭제 중 오류 발생:", error);
+    //alert("게시글 삭제 중 오류가 발생했습니다.");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   let accessToken = getToken();
-  console.log(accessToken);
+  //console.log(accessToken);
+
+  getClubImg();
 
   const modal = document.querySelector(".club-change-modal");
   const modalClick = document.querySelector(".modal-click2");
@@ -578,4 +638,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 document.querySelector(".add-post-btn").addEventListener("click", () => {
   window.location.href = "/html/pages/community-upload.html";
+});
+
+document.addEventListener("click", async (event) => {
+  if (event.target.classList.contains("dot-3")) {
+    const articleId = event.target.dataset.id;
+    deletePost(articleId);
+  }
 });
