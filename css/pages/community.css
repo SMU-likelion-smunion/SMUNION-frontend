@@ -324,6 +324,7 @@ p {
 .postImg {
   width: 375px;
   margin: 0;
+  display: block;
 }
 
 .dots {
