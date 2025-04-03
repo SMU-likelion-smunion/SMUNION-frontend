@@ -271,7 +271,7 @@ function renderPosts(posts) {
     // 이미지가 있을 경우 추가
     let imageUrl = "";
     if (post.images.length > 0) {
-      imageUrl = `<img class="postImg" src="${post.images[0]}" alt="post image" />`;
+      imageUrl = `<img class="postImg" src="${post.images[0]}" />`;
     }
 
     //작성자 정보 공개 범위
@@ -287,7 +287,7 @@ function renderPosts(posts) {
     // 조건부 렌더링 후 제목 영역
     const postTitle = `
       <div class="post-title">
-        <img src="../../assets/images/lion-face.png" class="clubImgInTitle" />
+        <img src=${post.clubImageUrl} class="clubImgInTitle" />
         ${clubNameTag}
         ${showDivider1 ? "|" : ""}
         ${departmentNameTag}
