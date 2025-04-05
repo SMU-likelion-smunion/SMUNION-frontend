@@ -98,6 +98,7 @@ body {
   width: 123px;
   height: 123px;
   margin-bottom: 1px;
+  object-fit: cover;
 }
 
 .image-item img {
