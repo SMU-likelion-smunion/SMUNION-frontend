@@ -303,3 +303,9 @@ body {
   font-size: 14px;
   padding-top: 1px;
 }
+
+
+.nav-item.active {
+  color: #0e207f;
+  font-weight: bold;
+}
