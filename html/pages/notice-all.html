@@ -97,7 +97,7 @@
 
       <nav class="navbar">
         <!-- 홈 -->
-        <a href="#" class="nav-item">
+        <a href="home.html" class="nav-item">
           <img
             src="../../assets/icons/home-icon.svg"
             alt="홈"
@@ -106,16 +106,16 @@
           <span class="nav-text">홈</span>
         </a>
         <!-- 동아리 -->
-        <a href="#" class="nav-item">
+        <a href="myClub.html" class="nav-item active" >
           <img
-            src="../../assets/icons/club-icon.svg"
+            src="../../assets/icons/club-icon-clicked.svg"
             alt="동아리"
             class="nav-icon"
           />
-          <span class="nav-text">동아리</span>
+          <span class="nav-text" >동아리</span>
         </a>
         <!-- 스뮤니온 -->
-        <a href="#" class="nav-item">
+        <a href="community.html" class="nav-item">
           <img
             src="../../assets/icons/smunion-icon.svg"
             alt="스뮤니온"
@@ -142,13 +142,17 @@
       </div>
 
       <script>
-        const navItems = document.querySelectorAll(".nav-item");
-        navItems.forEach((item) => {
-          if (item.href === window.location.href) {
-            item.classList.add("active");
-          } else {
+        document.addEventListener("DOMContentLoaded", function() {
+          const navItems = document.querySelectorAll(".nav-item");
+          navItems.forEach((item) => {
             item.classList.remove("active");
-          }
+          });
+          
+          const clubNavItem = document.querySelector('.navbar .nav-item:nth-child(2)');
+          clubNavItem.classList.add("active");
+          
+          const clubNavText = clubNavItem.querySelector('.nav-text');
+          clubNavText.style.color = "#0e207f";
         });
       </script>
       <script type="module" src="../../js/pages/notice-all.js"></script>
